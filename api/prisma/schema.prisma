@@ -12,8 +12,114 @@ datasource db {
   provider = "postgresql"
 }
 
+enum role {
+  ADMIN
+  MANAGER
+  USER
+}
+
+enum projectRole {
+  MANAGER
+  MEMBER
+}
+
 model User {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-  name  String?
+  id            String          @id @unique @default(uuid())
+  username      String          @unique
+  password      String          @default(cuid())
+  email         String          @unique
+  firstname     String?
+  lastname      String?
+  role          role            @default(USER)
+  UserInProject UserInProject[]
+  Finding       Finding?        @relation(fields: [findingId], references: [id])
+  findingId     String?
+}
+
+model UserInProject {
+  user        User        @relation(fields: [userId], references: [id])
+  userId      String
+  project     Project     @relation(fields: [projectId], references: [id])
+  projectId   String
+  projectRole projectRole @default(MEMBER)
+
+  @@id([userId, projectId])
+}
+
+model Project {
+  id             String          @id @unique @default(cuid())
+  status         Status          @relation(fields: [statusId], references: [id])
+  title          String?
+  description    String?
+  updatedat      DateTime?       @default(now()) @updatedAt
+  createdat      DateTime?       @default(now())
+  heuristicset   HeuristicSet?   @relation(fields: [heuristicsetId], references: [id])
+  severityset    SeveritySet?    @relation(fields: [severitysetId], references: [id])
+  statusId       String
+  heuristicsetId String?
+  severitysetId  String?
+  UserInProject  UserInProject[]
+  Findings       Finding[]
+}
+
+model Finding {
+  id          String      @id @unique @default(cuid())
+  project     Project     @relation(fields: [projectId], references: [id])
+  title       String?
+  description String?
+  user        User[]
+  heuristics  Heuristic[]
+  severity    Severity?   @relation(fields: [severityId], references: [id])
+  projectId   String
+  severityId  String?
+}
+
+model Status {
+  id        String    @id @unique @default(cuid())
+  title     String
+  color     String?
+  textcolor String?
+  project   Project[]
+  order     Int
+}
+
+model HeuristicSet {
+  id          String      @id @unique @default(cuid())
+  title       String?
+  description String?
+  project     Project[]
+  heuristics  Heuristic[]
+}
+
+model Heuristic {
+  id             String        @id @unique @default(cuid())
+  title          String?
+  description    String?
+  set            HeuristicSet? @relation(fields: [heuristicsetId], references: [id])
+  color          String?
+  textcolor      String?
+  heuristicsetId String?
+  Finding        Finding?      @relation(fields: [findingId], references: [id])
+  findingId      String?
+  order          Int
+}
+
+model SeveritySet {
+  id          String     @id @unique @default(cuid())
+  title       String?
+  description String?
+  project     Project[]
+  severities  Severity[]
+}
+
+model Severity {
+  id            String       @id @unique @default(cuid())
+  title         String?
+  description   String?
+  set           SeveritySet? @relation(fields: [severitysetId], references: [id])
+  color         String?
+  textcolor     String?
+  severitysetId String?
+  Finding       Finding[]
+  order         Int
 }
