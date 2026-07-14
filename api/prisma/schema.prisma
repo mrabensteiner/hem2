@@ -80,7 +80,7 @@ model Status {
   color     String?
   textcolor String?
   project   Project[]
-  order     Int
+  order     Int?
 }
 
 model HeuristicSet {
@@ -99,9 +99,8 @@ model Heuristic {
   color          String?
   textcolor      String?
   heuristicsetId String?
-  Finding        Finding?      @relation(fields: [findingId], references: [id])
-  findingId      String?
-  order          Int
+  Finding        Finding[]
+  order          Int?
 }
 
 model SeveritySet {
@@ -121,5 +120,5 @@ model Severity {
   textcolor     String?
   severitysetId String?
   Finding       Finding[]
-  order         Int
+  order         Int?
 }
