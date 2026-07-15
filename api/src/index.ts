@@ -34,7 +34,7 @@ app.get('/project/:id', async (req:any, res:any) => {
       heuristicset: true,
       severityset: true,
       status: true,
-      Findings: true
+      Findings: { include: { user: true, heuristics: true , severity: true }}
     }
   });
 
@@ -44,15 +44,79 @@ app.get('/project/:id', async (req:any, res:any) => {
 
 app.put('/project', async (req:any, res:any) => {
   const data = req.body;
-  console.log(data)
+
+  const managers = data.managers;
+  const members = data.members.filter(uid => !managers.includes(uid));
+
+  await prisma.userInProject.deleteMany({
+    where: { projectId: data.id },
+  })
+
+  await prisma.userInProject.createMany({
+    data: [
+      ...members.map(uid => ({
+        userId: uid, projectId: data.id, projectRole: "MEMBER"
+      })),
+      ...managers.map(uid => ({
+        userId: uid, projectId: data.id, projectRole: "MANAGER"
+      })),
+    ]
+  })
+
   try {
     const q = await prisma.project.update({
       where: { id: data.id },
       data: {
         title: data.title,
         description: data.description,
+      },
+      include: {
+        UserInProject: { include: { user: true }},
+        heuristicset: true,
+        severityset: true,
+        status: true,
+        Findings: { include: { user: true, heuristics: true , severity: true }}
       }
     })
+    res.json(q);
+  } catch (error) {
+    res.json({ error: error.message });
+  }
+})
+
+app.post('/project', async (req:any, res:any) => {
+  const data = req.body;
+
+  const managers = data.managers;
+  const members = data.members.filter(uid => !managers.includes(uid));
+
+  delete data.members;
+  delete data.managers;
+
+  try {
+    const q = await prisma.project.create({
+      data: data,
+      include: {
+        UserInProject: { include: { user: true }},
+        heuristicset: true,
+        severityset: true,
+        status: true,
+        Findings: { include: { user: true, heuristics: true , severity: true }}
+      }
+    })
+    const id = q.id;
+
+    await prisma.userInProject.createMany({
+      data: [
+        ...members.map(uid => ({
+          userId: uid, projectId: id, projectRole: "MEMBER"
+        })),
+        ...managers.map(uid => ({
+          userId: uid, projectId: id, projectRole: "MANAGER"
+        })),
+      ]
+    })
+
     res.json(q);
   } catch (error) {
     res.json({ error: error.message });
@@ -101,6 +165,9 @@ app.get('/user/:id', async (req:any, res:any) => {
   const q = await prisma.user.findUnique({
     where: { id: req.params.id }
   });
+  if (q == null) {
+    res.json({"msg": "User not found"});
+  }
   res.json(q);
 });
 
@@ -109,6 +176,7 @@ app.post(`/user`, async (req:any, res:any) => {
   const q = await prisma.user.create({
     data: data
   })
+  q.msg = "Added Successfully";
   res.json(q);
 });
 
