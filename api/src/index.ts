@@ -1,5 +1,3 @@
-//import { generate } from "./example";
-
 const express = require('express');
 const cors = require("cors");
 import { prisma } from "../lib/prisma";
@@ -13,11 +11,6 @@ app.use(express.json());
 
 app.get('/', (req:any, res:any) => {
   res.send("hello hem2api");
-});
-
-app.get('/gen', async (req:any, res:any) => {
-  //generate();
-  res.send("generated");
 });
 
 app.get('/projects', async (req:any, res:any) => {
