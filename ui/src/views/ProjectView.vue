@@ -82,7 +82,7 @@ function save() {
 </script>
 
 <style>
-input[type="text"], select {
+input[type="text"], select, textarea {
   width: 100%;
 }
 
@@ -130,11 +130,13 @@ hr {
         <td>{{ finding.title }}</td>
         <td>{{ finding.description }}</td>
         <td>{{ finding.heuristics.map(h => h.title).join(", ") }}</td>
-        <td>{{ finding.severity }}</td>
+        <td>{{ finding.severity?.title }}</td>
         <td><template v-for="u in finding.user">{{u.firstname}} {{u.lastname}}</template></td>
+        <td><RouterLink :to="{ path: '/project/' + project.id + '/finding/' + finding.id}">Open</RouterLink></td>
       </tr>
       </tbody>
     </table>
+    <RouterLink :to="{ path: '/project/' + project.id + '/finding/new'}">New Finding</RouterLink>
 
     <h2>Edit</h2>
     </template>

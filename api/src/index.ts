@@ -31,8 +31,8 @@ app.get('/project/:id', async (req:any, res:any) => {
     where: {id: req.params.id},
     include: {
       UserInProject: { include: { user: true }},
-      heuristicset: true,
-      severityset: true,
+      heuristicset: { include: { heuristics: true }},
+      severityset: { include: { severities: true }},
       status: true,
       Findings: { include: { user: true, heuristics: true , severity: true }}
     }
@@ -123,12 +123,87 @@ app.post('/project', async (req:any, res:any) => {
   }
 })
 
+app.post('/finding', async (req:any, res:any) => {
+  const data = req.body;
+
+  const authors = data.authors;
+  const heuristics = data.heuristics;
+
+  delete data.authors;
+  delete data.heuristics;
+
+  try {
+    const q = await prisma.finding.create({
+      data: {
+        ...data,
+        user: { connect: [...authors.map(uid => ({id: uid}))] },
+        heuristics: { connect: [...heuristics.map(hid => ({id: hid}))] }
+      },
+      include: {
+        user: { include: { UserInProject: true }},
+        project: true,
+        heuristics: true,
+        severity: true,
+      }
+    });
+
+    res.json(q);
+  } catch (error) {
+    res.json({ error: error.message });
+  }
+})
+
+app.put('/finding', async (req:any, res:any) => {
+  const data = req.body;
+
+  let authors = data.authors;
+  let heuristics = data.heuristics;
+
+  if(authors == null) {
+    authors = [];
+  }
+  if(heuristics == null) {
+    heuristics = [];
+  }
+
+  delete data.authors;
+  delete data.heuristics;
+
+  delete data.project;
+  delete data.severity;
+  delete data.user;
+
+  try {
+    const q = await prisma.finding.update({
+      where: { id: data.id },
+      data: {
+        ...data,
+        user: { set: [...authors.map(uid => ({id: uid}))] },
+        heuristics: { set: [...heuristics.map(hid => ({id: hid}))] }
+      },
+      include: {
+        user: { include: { UserInProject: true }},
+        project: true,
+        heuristics: true,
+        severity: true,
+      }
+    });
+
+    res.json(q);
+  } catch (error) {
+    res.json({ error: error.message });
+  }
+})
+
 app.get('/finding/:id', async (req:any, res:any) => {
   const finding = await prisma.finding.findUnique({
     where: {id: req.params.id},
     include: {
       user: { include: { UserInProject: true }},
-      project: true,
+      project: { include: {
+        severityset: { include: { severities: true } },
+        heuristicset: { include: { heuristics: true } },
+      }},
       heuristics: true,
       severity: true,
     }
@@ -149,6 +224,13 @@ app.get('/heuristics', async (req:any, res:any) => {
 
 app.get('/severities', async (req:any, res:any) => {
   const q = await prisma.severitySet.findMany();
+  res.json(q);
+});
+
+app.get('/severities/{:id}', async (req:any, res:any) => {
+  const q = await prisma.severity.findMany({
+    where: { severitysetId: req.params.id },
+  });
   res.json(q);
 });
 

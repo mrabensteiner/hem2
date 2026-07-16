@@ -4,6 +4,7 @@ import ProjectsView from "@/views/ProjectsView.vue";
 import ProjectView from "@/views/ProjectView.vue";
 import UserView from "@/views/UserView.vue";
 import UsersView from "@/views/UsersView.vue";
+import FindingView from "@/views/FindingView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,6 +23,11 @@ const router = createRouter({
       path: '/project/:id',
       name: 'project',
       component: ProjectView,
+    },
+    {
+      path: '/project/:pid/finding/:id',
+      name: 'finding',
+      component: FindingView,
     },
     {
       path: '/users',
