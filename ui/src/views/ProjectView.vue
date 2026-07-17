@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
+import Table from "@/components/Table.vue";
 
 const route = useRoute();
 const router = useRouter();
 
 const project = ref({});
+const findings = ref([]);
+
 const statuses = ref({});
 const heuristics = ref({});
 const severities = ref({});
-const users = ref({});
+const users = ref([]);
 
 const managers = ref([]);
 const members = ref([]);
@@ -30,10 +33,19 @@ if (!newProject) {
   fetch("http://localhost:3000/project/" + route.params.id)
     .then(response => response.json())
     .then(json => project.value = json)
-    .then(json => managersAndMembers(json))
+    .then(json => {
+      managersAndMembers(json);
+      prepareForTable(json);
+    })
 }
 
-
+function prepareForTable(data) {
+  findings.value = data.Findings.map((finding) => {
+    finding.user = finding.user.map(u => u.firstname + " " + u.lastname);
+    finding.link = '/project/' + project.value.id + '/finding/' + finding.id;
+    return finding;
+  });
+}
 
 fetch("http://localhost:3000/statuses")
   .then(response => response.json())
@@ -79,6 +91,16 @@ function save() {
     );
 }
 
+const tablehead = [
+  { "key": "id", "title": "ID", "hidden": true },
+  { "key": "title", "title": "Title", "locked": true },
+  { "key": "description", "title": "Description", "hidden": true },
+  { "key": "heuristics", "title": "Heuristic(s)", "type": "multichip" },
+  { "key": "severity", "title": "Severity", "type": "chip" },
+  { "key": "user", "title": "Author(s)", "type": "multi" },
+  { "key": "updatedat", "title": "Last Change", "type": "time" },
+  { "key": "link", "title": "Open", "type": "link", "locked": true },
+];
 </script>
 
 <style>
@@ -115,27 +137,7 @@ hr {
     <p>{{project.description}}</p>
     <hr/>
     <h2>Findings</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Heuristic(s)</th>
-          <th>Severity</th>
-          <th>Author(s)</th>
-        </tr>
-      </thead>
-      <tbody>
-      <tr v-for="finding in project.Findings" :key="finding.id">
-        <td>{{ finding.title }}</td>
-        <td>{{ finding.description }}</td>
-        <td>{{ finding.heuristics.map(h => h.title).join(", ") }}</td>
-        <td>{{ finding.severity?.title }}</td>
-        <td><template v-for="u in finding.user">{{u.firstname}} {{u.lastname}}</template></td>
-        <td><RouterLink :to="{ path: '/project/' + project.id + '/finding/' + finding.id}">Open</RouterLink></td>
-      </tr>
-      </tbody>
-    </table>
+    <Table :head="tablehead" :data="findings" sort="updatedat" dir="asc"/>
     <RouterLink :to="{ path: '/project/' + project.id + '/finding/new'}">New Finding</RouterLink>
 
     <h2>Edit</h2>
@@ -172,15 +174,15 @@ hr {
       </div>
       <div>
         <label>Managers</label><br/>
-        <label v-for="u in users" :key="u.id">
+        <label v-for="u in users">
           <input type="checkbox" name="manager" :value="u.id" v-model="managers"/>
           {{u.firstname}} {{u.lastname}}<br/>
         </label>
       </div>
       <div>
         <label>Members</label><br/>
-          <label v-for="u in users" :key="u.id">
-            <input type="checkbox" name="members" :value="u.id" v-model="members"/>
+          <label v-for="u in users">
+            <input type="checkbox" name="members" :value="u.id" v-model="members" :disabled="managers.includes(u.id)"/>
             {{u.firstname}} {{u.lastname}}<br/>
           </label>
       </div>

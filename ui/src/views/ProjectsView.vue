@@ -1,37 +1,39 @@
 <script setup lang="ts">
 import {ref} from "vue";
+import Table from "@/components/Table.vue";
 
-const data = ref({});
+const data = ref([]);
 fetch("http://localhost:3000/projects")
   .then(response => response.json())
+  .then(json => prepareForTable(json))
   .then(json => data.value = json);
+
+function prepareForTable(data) {
+  data = data.map((project) => {
+    project.link = "/project/" + project.id;
+    project.manager = project.UserInProject.map(uip => uip.user.firstname + " " + uip.user.lastname);
+    return project;
+  });
+
+  data.title = "blabla";
+
+  return data;
+}
+
+const tablehead = [
+  { "key": "id", "title": "ID", "hidden": true },
+  { "key": "title", "title": "Title", "locked": true },
+  { "key": "description", "title": "Description", "hidden": true },
+  { "key": "status", "title": "Status", "type": "chip" },
+  { "key": "manager", "title": "Manager", "type": "multi" },
+  { "key": "updatedat", "title": "Last Change", "type": "time" },
+  { "key": "link", "title": "Open", "type": "link", "locked": true  },
+];
 </script>
 
 <template>
   <main>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Status</th>
-          <th>Manager</th>
-          <th>Last Change</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="project in data" :key="project.id">
-          <td><abbr :title="project.id">{{ project.id.slice(20) }}</abbr></td>
-          <td>{{ project.title }}</td>
-          <td>{{ project.description }}</td>
-          <td>{{ project.status.title }}</td>
-          <td>{{ project.manager }}</td>
-          <td>{{ project.updatedat }}</td>
-          <td><RouterLink :to="{ path: '/project/' + project.id}">Open</RouterLink></td>
-        </tr>
-      </tbody>
-    </table>
+    <Table :head="tablehead" :data="data" sort="updatedat" dir="asc"></Table>
     <RouterLink :to="{ path: '/project/new' }">New Project</RouterLink>
   </main>
 </template>
