@@ -108,7 +108,7 @@ input[type="text"], select, textarea {
   width: 100%;
 }
 
-div:has(label, input) {
+div:has(> label, > input) {
   margin-top: 1rem;
 }
 

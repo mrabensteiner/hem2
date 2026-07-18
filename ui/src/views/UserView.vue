@@ -50,37 +50,35 @@ async function save() {
 </script>
 
 <template>
-  <main>
-    <h1>User {{user?.firstname}} {{user?.lastname}} ({{user?.username}})</h1>
-    <form @submit.prevent="save">
-      <div>
-        <label>Email</label>
-        <input type="text" placeholder="Email" v-model="user.email" />
-      </div>
-      <div>
-        <label>Username</label>
-        <input type="text" placeholder="Username" v-model="user.username" />
-      </div>
-      <div>
-        <label>Firstname</label>
-        <input type="text" placeholder="Firstname" v-model="user.firstname" />
-      </div>
-      <div>
-        <label>Lastname</label>
-        <input type="text" placeholder="Lastname" v-model="user.lastname" />
-      </div>
-      <div>
-        <label>Role</label>
-        <select v-model="user.role">
-          <option value="ADMIN">Admin</option>
-          <option value="MANAGER">Manager</option>
-          <option value="USER">User</option>
-        </select>
-      </div>
+  <h1>User: {{user?.firstname}} {{user?.lastname}} ({{user?.username}})</h1>
+  <form @submit.prevent="save">
+    <div>
+      <label>Email</label>
+      <input type="text" placeholder="Email" v-model="user.email" />
+    </div>
+    <div>
+      <label>Username</label>
+      <input type="text" placeholder="Username" v-model="user.username" />
+    </div>
+    <div>
+      <label>Firstname</label>
+      <input type="text" placeholder="Firstname" v-model="user.firstname" />
+    </div>
+    <div>
+      <label>Lastname</label>
+      <input type="text" placeholder="Lastname" v-model="user.lastname" />
+    </div>
+    <div>
+      <label>Role</label>
+      <select v-model="user.role">
+        <option value="ADMIN">Admin</option>
+        <option value="MANAGER">Manager</option>
+        <option value="USER">User</option>
+      </select>
+    </div>
 
-      <input type="submit" value="Save"/>
-      {{q}}
-      <div v-if="status.msg">{{status.msg}}</div>
-    </form>
-  </main>
+    <input type="submit" value="Save"/>
+    {{q}}
+    <div v-if="status.msg">{{status.msg}}</div>
+  </form>
 </template>

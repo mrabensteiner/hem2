@@ -63,6 +63,7 @@ watch(
   <div class="celltoggle">
     <a v-for="c in hiddenCols" href="javascript:;" @click="toggleCol(c)">{{ head.find(col => col.key == c).title }}</a>
   </div>
+  <div class="tablecontainer">
   <table>
     <thead>
     <tr>
@@ -74,6 +75,9 @@ watch(
     </tr>
     </thead>
     <tbody>
+      <tr v-if="data.length == 0" class="">
+        <td :colspan="head.length">Empty - create new entries</td>
+      </tr>
       <tr v-for="r in sortedData">
         <td v-for="h in head" :data-key="h.key" :data-value="r[h.key]"  :class="hiddenCols.includes(h.key) ? 'hidden' : ''">
           <template v-if="h.key === 'link'">
@@ -96,11 +100,19 @@ watch(
       </tr>
     </tbody>
   </table>
+  </div>
 </template>
 
 <style scoped>
+.tablecontainer {
+  width: 100%;
+  overflow-x: scroll;
+  margin-bottom: 1rem;
+}
+
 table {
   width: 100%;
+  overflow: hidden;
   border-collapse: collapse;
 }
 
@@ -109,15 +121,21 @@ thead {
   border-bottom: 1px solid dimgrey;
   color: dimgrey;
   text-transform: uppercase;
-  font-size: .7rem;
+  font-size: 1rem;
 
   th {
     white-space: nowrap;
   }
 }
 
-tbody tr:nth-child(odd) {
-  background-color: whitesmoke;
+tbody {
+  tr:nth-child(odd) {
+    background-color: whitesmoke;
+  }
+  td {
+    padding: .5rem;
+  }
+
 }
 
 .hidden {

@@ -32,8 +32,7 @@ const tablehead = [
 </script>
 
 <template>
-  <main>
-    <Table :head="tablehead" :data="data" sort="updatedat" dir="asc"></Table>
-    <RouterLink :to="{ path: '/project/new' }">New Project</RouterLink>
-  </main>
+  <h1>Projects</h1>
+  <Table :head="tablehead" :data="data" sort="updatedat" dir="asc"></Table>
+  <RouterLink :to="{ path: '/project/new' }" class="button">New Project</RouterLink>
 </template>

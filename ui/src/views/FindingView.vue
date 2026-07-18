@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
+import Chip from "@/components/Chip.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -82,21 +83,6 @@ function save() {
 
 </script>
 
-<style>
-input[type="text"], select {
-  width: 100%;
-}
-
-div:has(label, input) {
-  margin-top: 1rem;
-}
-
-hr {
-  margin: 1rem 0;
-}
-
-</style>
-
 <template>
   <main>
     <template v-if="!newFinding">
@@ -111,6 +97,7 @@ hr {
     <p>Heuristics(s):
       <template v-for="h in finding.heuristics" :key="h.id">
         <span>{{h.title}}</span>
+        <Chip :chip="h" />
       </template>
     </p>
     <hr/>
@@ -135,7 +122,7 @@ hr {
       <div>
         <label>Severity</label>
         <select v-model="finding.severityId" name="severityId">
-          <option v-for="h in severityset" :value="h.id">{{ h.title }}</option>
+          <option v-for="h in severityset" :value="h.id"><Chip :chip="h"/></option>
         </select>
       </div>
       <div>
