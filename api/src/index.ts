@@ -1,8 +1,10 @@
 const express = require('express');
 const cors = require("cors");
 import { prisma } from "../lib/prisma";
+import multer = require("multer");
 
 const app = express();
+const upload = multer({ dest: 'images/' });
 
 app.use(cors({
   origin: "http://localhost:5173"
@@ -11,6 +13,13 @@ app.use(express.json());
 
 app.get('/', (req:any, res:any) => {
   res.send("hello hem2api");
+});
+
+app.use("/images", express.static("images"));
+
+app.post("/images", upload.array("image"), async (req, res) => {
+  const files = req.files as Express.Multer.File[];
+  res.json(files);
 });
 
 app.get('/projects', async (req:any, res:any) => {
@@ -169,9 +178,18 @@ app.put('/finding', async (req:any, res:any) => {
   delete data.authors;
   delete data.heuristics;
 
+  // Trigger to update the project modification time
+  await prisma.project.update({
+    where: { id: data.project.id },
+    data: { updatedat: new Date() }
+  });
+
   delete data.project;
   delete data.severity;
   delete data.user;
+
+  delete data.updatedat;
+
 
   try {
     const q = await prisma.finding.update({
