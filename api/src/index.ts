@@ -1,11 +1,12 @@
-const express = require('express');
-const cors = require("cors");
-import { prisma } from "../lib/prisma";
-import multer = require("multer");
-const path = require('path');
-const fs = require('fs');
+import express from 'express';
+import cors from "cors";
+import { prisma } from '../lib/prisma';
+import multer from "multer";
+import path from 'path';
+import fs from 'fs';
 
 import { customAlphabet, urlAlphabet } from "nanoid";
+import projectRoutes from "./routes/project.routes";
 const nanoid = customAlphabet(urlAlphabet, 12);
 
 const app = express();
@@ -77,115 +78,7 @@ app.post("/images/:id", upload.array("image"), async (req, res) => {
   }
 });
 
-app.get('/projects', async (req:any, res:any) => {
-  const projects = await prisma.project.findMany({
-    include: {
-       UserInProject: { include: { user: true } },
-       heuristicset: true,
-       severityset: true,
-       status: true,
-       _count: { select: { Findings: true } }
-    }
-  });
-  res.json(projects);
-});
-
-app.get('/project/:id', async (req:any, res:any) => {
-  const projects = await prisma.project.findUnique({
-    where: {id: req.params.id},
-    include: {
-      UserInProject: { include: { user: true }},
-      heuristicset: { include: { heuristics: true }},
-      severityset: { include: { severities: true }},
-      status: true,
-      Findings: { include: { user: true, heuristics: true , severity: true }}
-    }
-  });
-
-  res.json(projects);
-});
-
-
-app.put('/project', async (req:any, res:any) => {
-  const data = req.body;
-
-  const managers = data.managers;
-  const members = data.members.filter(uid => !managers.includes(uid));
-
-  await prisma.userInProject.deleteMany({
-    where: { projectId: data.id },
-  })
-
-  await prisma.userInProject.createMany({
-    data: [
-      ...members.map(uid => ({
-        userId: uid, projectId: data.id, projectRole: "MEMBER"
-      })),
-      ...managers.map(uid => ({
-        userId: uid, projectId: data.id, projectRole: "MANAGER"
-      })),
-    ]
-  })
-
-  try {
-    const q = await prisma.project.update({
-      where: { id: data.id },
-      data: {
-        title: data.title,
-        description: data.description,
-      },
-      include: {
-        UserInProject: { include: { user: true }},
-        heuristicset: true,
-        severityset: true,
-        status: true,
-        Findings: { include: { user: true, heuristics: true , severity: true }}
-      }
-    })
-    res.json(q);
-  } catch (error) {
-    res.json({ error: error.message });
-  }
-})
-
-app.post('/project', async (req:any, res:any) => {
-  const data = req.body;
-
-  const managers = data.managers;
-  const members = data.members.filter(uid => !managers.includes(uid));
-
-  delete data.members;
-  delete data.managers;
-
-  try {
-    const q = await prisma.project.create({
-      data: data,
-      include: {
-        UserInProject: { include: { user: true }},
-        heuristicset: true,
-        severityset: true,
-        status: true,
-        Findings: { include: { user: true, heuristics: true , severity: true }}
-      }
-    })
-    const id = q.id;
-
-    await prisma.userInProject.createMany({
-      data: [
-        ...members.map(uid => ({
-          userId: uid, projectId: id, projectRole: "MEMBER"
-        })),
-        ...managers.map(uid => ({
-          userId: uid, projectId: id, projectRole: "MANAGER"
-        })),
-      ]
-    })
-
-    res.json(q);
-  } catch (error) {
-    res.json({ error: error.message });
-  }
-})
+app.use('/projects', projectRoutes);
 
 app.post('/finding', async (req:any, res:any) => {
   const data = req.body;
