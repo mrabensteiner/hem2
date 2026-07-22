@@ -24,16 +24,18 @@ enum projectRole {
 }
 
 model User {
-  id            String          @id @unique @default(uuid())
+  id            String          @id @unique @default(nanoid(8))
   username      String          @unique
-  password      String          @default(cuid())
+  password      String          @default(nanoid(8))
   email         String          @unique
   firstname     String?
   lastname      String?
+  image         Image?          @relation(fields: [imageId], references: [id])
   role          role            @default(USER)
   UserInProject UserInProject[]
   Finding       Finding?        @relation(fields: [findingId], references: [id])
   findingId     String?
+  imageId       String?
 }
 
 model UserInProject {
@@ -47,10 +49,11 @@ model UserInProject {
 }
 
 model Project {
-  id             String          @id @unique @default(cuid())
+  id             String          @id @unique @default(nanoid(8))
   status         Status          @relation(fields: [statusId], references: [id])
   title          String?
   description    String?
+  logo           Image?          @relation(fields: [imageId], references: [id])
   updatedat      DateTime?       @default(now()) @updatedAt
   createdat      DateTime?       @default(now())
   heuristicset   HeuristicSet?   @relation(fields: [heuristicsetId], references: [id])
@@ -60,22 +63,26 @@ model Project {
   severitysetId  String?
   UserInProject  UserInProject[]
   Findings       Finding[]
+  imageId        String?
 }
 
 model Finding {
-  id          String      @id @unique @default(cuid())
+  id          String      @id @unique @default(nanoid(10))
   project     Project     @relation(fields: [projectId], references: [id])
   title       String?
   description String?
+  images      Image[]
   user        User[]
   heuristics  Heuristic[]
   severity    Severity?   @relation(fields: [severityId], references: [id])
   projectId   String
   severityId  String?
+  updatedat   DateTime?   @default(now()) @updatedAt
+  createdat   DateTime?   @default(now())
 }
 
 model Status {
-  id        String    @id @unique @default(cuid())
+  id        String    @id @unique @default(nanoid(8))
   title     String
   color     String?
   textcolor String?
@@ -84,7 +91,7 @@ model Status {
 }
 
 model HeuristicSet {
-  id          String      @id @unique @default(cuid())
+  id          String      @id @unique @default(nanoid(8))
   title       String?
   description String?
   project     Project[]
@@ -92,7 +99,7 @@ model HeuristicSet {
 }
 
 model Heuristic {
-  id             String        @id @unique @default(cuid())
+  id             String        @id @unique @default(nanoid(8))
   title          String?
   description    String?
   set            HeuristicSet? @relation(fields: [heuristicsetId], references: [id])
@@ -104,7 +111,7 @@ model Heuristic {
 }
 
 model SeveritySet {
-  id          String     @id @unique @default(cuid())
+  id          String     @id @unique @default(nanoid(8))
   title       String?
   description String?
   project     Project[]
@@ -112,7 +119,7 @@ model SeveritySet {
 }
 
 model Severity {
-  id            String       @id @unique @default(cuid())
+  id            String       @id @unique @default(nanoid(8))
   title         String?
   description   String?
   set           SeveritySet? @relation(fields: [severitysetId], references: [id])
@@ -121,4 +128,14 @@ model Severity {
   severitysetId String?
   Finding       Finding[]
   order         Int?
+}
+
+model Image {
+  id        String    @id @unique @default(nanoid(8))
+  filename  String
+  path      String
+  users     User[]
+  projects  Project[]
+  finding   Finding?  @relation(fields: [findingId], references: [id])
+  findingId String?
 }

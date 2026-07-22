@@ -2,9 +2,14 @@ const express = require('express');
 const cors = require("cors");
 import { prisma } from "../lib/prisma";
 import multer = require("multer");
+const path = require('path');
+const fs = require('fs');
+
+import { customAlphabet, urlAlphabet } from "nanoid";
+const nanoid = customAlphabet(urlAlphabet, 12);
 
 const app = express();
-const upload = multer({ dest: 'images/' });
+const upload = multer({storage: multer.memoryStorage()});
 
 app.use(cors({
   origin: "http://localhost:5173"
@@ -15,11 +20,61 @@ app.get('/', (req:any, res:any) => {
   res.send("hello hem2api");
 });
 
-app.use("/images", express.static("images"));
+app.use("/uploads", express.static("uploads"));
 
-app.post("/images", upload.array("image"), async (req, res) => {
-  const files = req.files as Express.Multer.File[];
-  res.json(files);
+app.post("/images/:id", upload.array("image"), async (req, res) => {
+  try {
+    const findingId = req.params.id;
+    const finding = await prisma.finding.findUnique({
+      where: { id: findingId },
+    });
+    const pId = finding?.projectId;
+
+    // TODO: auth
+
+    const files = req.files as Express.Multer.File[];
+
+    const projectDir = path.join(
+      process.cwd(),
+      "uploads",
+      "projects",
+      pId
+    );
+
+    await fs.promises.mkdir(projectDir, { recursive: true });
+
+    for (const file of files) {
+      const extension = "jpg";
+      const filename = `finding-${nanoid()}.${extension}`
+
+      file.filename = filename;
+
+      await fs.writeFile(
+        path.join(projectDir, filename),
+        file.buffer, () => {}
+      );
+    }
+
+    await prisma.image.createMany({
+      data: files.map(file => ({
+        filename: file.filename,
+        path: `uploads/projects/${pId}/${file.filename}`,
+        findingId: findingId
+      })),
+    });
+
+    const allimages = await prisma.image.findMany({
+      where: { findingId: req.params.id }
+    });
+
+    res.json(allimages);
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      error: "Upload failed",
+    });
+  }
 });
 
 app.get('/projects', async (req:any, res:any) => {
@@ -224,6 +279,7 @@ app.get('/finding/:id', async (req:any, res:any) => {
       }},
       heuristics: true,
       severity: true,
+      images: true
     }
   });
 
