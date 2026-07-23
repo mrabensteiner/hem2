@@ -5,6 +5,7 @@ import ProjectView from "@/views/ProjectView.vue";
 import UserView from "@/views/UserView.vue";
 import UsersView from "@/views/UsersView.vue";
 import FindingView from "@/views/FindingView.vue";
+import StatusView from "@/views/StatusView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +34,11 @@ const router = createRouter({
       path: '/users',
       name: 'users',
       component: UsersView,
+    },
+    {
+      path: '/status',
+      name: 'status',
+      component: StatusView,
     },
     {
       path: '/user/:id',

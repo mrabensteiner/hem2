@@ -115,13 +115,14 @@ button, a.button, input[type="submit"] {
   display: inline-block;
 }
 
-label, input, select, textarea {
+label, input:not([type="submit"]), select, textarea {
   font-size: 1.5rem;
   padding: .5rem;
 }
 
 @media (hover: hover) {
-  a:hover {
+  a:hover, button:hover, input[type="submit"]:hover {
+    cursor: pointer;
     background-color: rgba(var(--app-primary-rgb), 0.2);
   }
 }
