@@ -1,24 +1,13 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import { onMounted } from 'vue';
+import { useProjectsList } from '../composables/useProjectList.ts';
 import Table from "@/components/Table.vue";
 
-const data = ref([]);
-fetch("http://localhost:3000/projects")
-  .then(response => response.json())
-  .then(json => prepareForTable(json))
-  .then(json => data.value = json);
+const { projects, loadProjects } = useProjectsList();
 
-function prepareForTable(data) {
-  data = data.map((project) => {
-    project.link = "/project/" + project.id;
-    project.manager = project.UserInProject.map(uip => uip.user.firstname + " " + uip.user.lastname);
-    return project;
-  });
-
-  data.title = "blabla";
-
-  return data;
-}
+onMounted(() => {
+  loadProjects();
+});
 
 const tablehead = [
   { "key": "id", "title": "ID", "hidden": true },
@@ -33,6 +22,6 @@ const tablehead = [
 
 <template>
   <h1>Projects</h1>
-  <Table :head="tablehead" :data="data" sort="updatedat" dir="asc"></Table>
-  <RouterLink :to="{ path: '/project/new' }" class="button">New Project</RouterLink>
+  <Table :head="tablehead" :data="projects" sort="updatedat" dir="asc" />
+  <RouterLink to="/project/new" class="button">New Project</RouterLink>
 </template>

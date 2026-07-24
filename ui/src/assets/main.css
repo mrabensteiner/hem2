@@ -126,3 +126,8 @@ label, input:not([type="submit"]), select, textarea {
     background-color: rgba(var(--app-primary-rgb), 0.2);
   }
 }
+
+div:has(> label, > input), label:has(> input), label:has(> textarea) {
+  display: block;
+  margin-top: 1rem;
+}

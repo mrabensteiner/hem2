@@ -1,0 +1,38 @@
+import { ref } from 'vue';
+import { projectApi } from '../api/project.api.js';
+
+export function useProjectsList() {
+  const projects = ref<any[]>([]);
+  const isLoading = ref(false);
+  const error = ref<string | null>(null);
+
+  function prepareForTable(data: any[]) {
+    return data.map((project: any) => ({
+      ...project,
+      link: `/project/${project.id}`,
+      manager: project.UserInProject
+        ? project.UserInProject.map((uip: any) => `${uip.user.firstname} ${uip.user.lastname}`)
+        : []
+    }));
+  }
+
+  async function loadProjects() {
+    isLoading.value = true;
+    error.value = null;
+    try {
+      const rawData = await projectApi.getAll();
+      projects.value = prepareForTable(rawData);
+    } catch (err: any) {
+      error.value = err.message;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  return {
+    projects,
+    isLoading,
+    error,
+    loadProjects
+  };
+}
