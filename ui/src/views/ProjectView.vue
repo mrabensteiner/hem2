@@ -49,7 +49,7 @@ const tablehead = [
 </script>
 
 <style>
-input[type="text"], select, textarea {
+input[type="text"], input[type="password"], select, textarea {
   width: 100%;
 }
 

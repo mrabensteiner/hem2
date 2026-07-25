@@ -9,6 +9,7 @@ import { customAlphabet, urlAlphabet } from "nanoid";
 import projectRoutes from "./routes/project.routes";
 import statusRoutes from "./routes/status.routes";
 import heuristicSetRoutes from "./routes/heuristicSet.routes";
+import authRoutes from "./routes/auth.routes";
 const nanoid = customAlphabet(urlAlphabet, 12);
 
 const app = express();
@@ -83,6 +84,7 @@ app.post("/images/:id", upload.array("image"), async (req, res) => {
 app.use('/projects', projectRoutes);
 app.use('/status', statusRoutes);
 app.use('/heuristic-sets', heuristicSetRoutes);
+app.use('/auth', authRoutes);
 
 app.post('/finding', async (req:any, res:any) => {
   const data = req.body;

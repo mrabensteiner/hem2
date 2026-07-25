@@ -22,6 +22,14 @@ export async function apiClient(endpoint: string, method = Method.GET, options: 
     };
   }
 
+  const token = localStorage.getItem('auth_token');
+  if (token) {
+    options.headers = {
+      ...options.headers,
+      'Authorization': `Bearer ${token}`
+    };
+  }
+
   try {
     const response = await fetch(url, options);
 

@@ -6,6 +6,8 @@ import UserView from "@/views/UserView.vue";
 import UsersView from "@/views/UsersView.vue";
 import FindingView from "@/views/FindingView.vue";
 import StatusView from "@/views/StatusView.vue";
+import LoginView from "@/views/LoginView.vue";
+import {useAuth} from "@/composables/useAuth.ts";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,14 +18,21 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: '/login',
+      name: 'login',
+      component: LoginView,
+    },
+    {
       path: '/projects',
       name: 'projects',
       component: ProjectsView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/project/:id',
       name: 'project',
       component: ProjectView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/project/:pid/finding/:id',
@@ -55,5 +64,13 @@ const router = createRouter({
     },
   ],
 })
+
+router.beforeEach((to) => {
+  const { isAuthenticated } = useAuth();
+
+  if (to.meta.requiresAuth && !isAuthenticated.value) {
+    return { name: 'login' };
+  }
+});
 
 export default router
