@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue';
+import {computed, ref} from 'vue';
 import {apiClient, Method} from "@/api/client.ts";
 
 const user = ref<any>(null);
@@ -8,7 +8,14 @@ export function useAuth() {
   const isLoading = ref(false);
   const error = ref<string | null>(null);
 
-  const isAuthenticated = computed(() => !!token.value);
+  const isAuthenticated = computed(() => {
+    if (!token.value) {
+      return false;
+    } else if (user.value == null) {
+      fetchCurrentUser();
+    }
+    return true;
+  });
 
   async function login(credentials: { username: string; password: string}) {
     isLoading.value = true;
@@ -28,6 +35,17 @@ export function useAuth() {
       throw err;
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  async function fetchCurrentUser() {
+    if (!token.value) return null;
+
+    try {
+      const data = await apiClient('auth/me');
+      user.value = data.user;
+    } catch (err) {
+      logout();
     }
   }
 

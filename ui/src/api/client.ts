@@ -36,6 +36,8 @@ export async function apiClient(endpoint: string, method = Method.GET, options: 
     if (!response.ok) {
       switch (response.status) {
         case 401:
+          localStorage.removeItem('token');
+          window.location.href = '/login';
           throw new Error('User session has expired.');
         case 403:
           throw new Error('No rights for this action.');

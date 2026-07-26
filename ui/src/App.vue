@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { useAuth } from "@/composables/useAuth.ts";
+
+const { isAuthenticated, user, logout } = useAuth();
 </script>
 
 <template>
@@ -11,9 +13,17 @@ import HelloWorld from './components/HelloWorld.vue'
 
     <nav>
       <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/projects">Projects</RouterLink>
-      <RouterLink to="/users">Users</RouterLink>
-      <RouterLink to="/status">Status</RouterLink>
+      <RouterLink v-if="isAuthenticated" to="/projects">Projects</RouterLink>
+      <RouterLink v-if="isAuthenticated" to="/users">Users</RouterLink>
+      <RouterLink v-if="isAuthenticated" to="/status">Status</RouterLink>
+      <RouterLink v-if="isAuthenticated" to="/heuristics">Heuristics</RouterLink>
+    </nav>
+    <nav class="user">
+      <RouterLink v-if="!isAuthenticated" to="/login">Login</RouterLink>
+      <div v-if="user">
+        Hello, {{user.firstname}} {{user.lastname}}!
+      </div>
+      <a v-if="isAuthenticated" @click="logout">Logout</a>
     </nav>
   </header>
 
