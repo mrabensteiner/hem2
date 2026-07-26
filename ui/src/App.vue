@@ -17,6 +17,7 @@ const { isAuthenticated, user, logout } = useAuth();
       <RouterLink v-if="isAuthenticated" to="/users">Users</RouterLink>
       <RouterLink v-if="isAuthenticated" to="/status">Status</RouterLink>
       <RouterLink v-if="isAuthenticated" to="/heuristics">Heuristics</RouterLink>
+      <RouterLink v-if="isAuthenticated" to="/severities">Severities</RouterLink>
     </nav>
     <nav class="user">
       <RouterLink v-if="!isAuthenticated" to="/login">Login</RouterLink>

@@ -11,6 +11,8 @@ import { projectService } from "./services/project.service";
 import statusRoutes from "./routes/status.routes";
 import heuristicSetRoutes from "./routes/heuristicSet.routes";
 import authRoutes from "./routes/auth.routes";
+import userRoutes from "./routes/user.routes";
+import severitySetRoutes from "./routes/severitySet.routes";
 const nanoid = customAlphabet(urlAlphabet, 12);
 
 const app = express();
@@ -86,6 +88,8 @@ app.use('/projects', projectRoutes);
 app.use('/status', statusRoutes);
 app.use('/heuristic-sets', heuristicSetRoutes);
 app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/severities', severitySetRoutes);
 
 app.post('/finding', async (req:any, res:any) => {
   const data = req.body;

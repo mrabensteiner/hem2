@@ -11,7 +11,7 @@ const newUser = route.params.id == "new";
 if (!newUser) {
   console.log("get", route.params.id)
   try {
-    fetch("http://localhost:3000/user/" + route.params.id)
+    fetch("http://localhost:3000/users/" + route.params.id)
       .then(response => response.json())
       .then(json => user.value = json);
   } catch (e) {
@@ -32,7 +32,7 @@ async function save() {
   }
 
   try {
-    await fetch("http://localhost:3000/user", requestOptions)
+    await fetch("http://localhost:3000/users", requestOptions)
       .then(response => response.json())
       .then(json => status.value = json)
       .then(

@@ -8,6 +8,8 @@ import FindingView from "@/views/FindingView.vue";
 import StatusView from "@/views/StatusView.vue";
 import HeuristicSetsView from "@/views/HeuristicSetsView.vue";
 import HeuristicSetView from "@/views/HeuristicSetView.vue";
+import SeverityListView from "@/views/SeverityListView.vue";
+import SeverityDetailsView from "@/views/SeverityDetailsView.vue";
 import LoginView from "@/views/LoginView.vue";
 import {useAuth} from "@/composables/useAuth.ts";
 
@@ -60,6 +62,16 @@ const router = createRouter({
       path: '/heuristics/:id',
       name: 'heuristics',
       component: HeuristicSetView,
+    },
+    {
+      path: '/severities',
+      name: 'severitylist',
+      component: SeverityListView,
+    },
+    {
+      path: '/severities/:id',
+      name: 'severitydetails',
+      component: SeverityDetailsView,
     },
     {
       path: '/user/:id',

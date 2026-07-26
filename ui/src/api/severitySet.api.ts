@@ -1,4 +1,4 @@
-import {apiClient} from './client.ts';
+import {apiClient, Method} from './client.ts';
 
 const endpoint = "severities";
 
@@ -9,5 +9,11 @@ export const severitySetApi = {
 
   async getById(id: string) {
     return apiClient(`${endpoint}/${id}`);
+  },
+
+  async save(severityData: any, isNew: boolean) {
+    return apiClient(endpoint, isNew ? Method.POST : Method.PUT, {
+      body: severityData
+    });
   },
 };
