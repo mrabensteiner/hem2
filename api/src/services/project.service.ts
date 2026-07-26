@@ -82,7 +82,9 @@ async function update(data: any) {
     where: { id: data.id },
     data: {
       title: data.title,
-      description: data.description
+      description: data.description,
+      heuristicsetId: data.heuristicsetId,
+      severitysetId: data.severitysetId
     },
     include: {
       UserInProject: { include: { user: true }},
@@ -94,9 +96,17 @@ async function update(data: any) {
   });
 }
 
+async function changes(id: string) {
+  return prisma.project.update({
+    where: { id },
+    data: { updatedat: new Date() }
+  });
+}
+
 export const projectService = {
   getById,
   getAll,
   create,
-  update
+  update,
+  changes
 };

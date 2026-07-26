@@ -73,7 +73,7 @@ function remove(event: MouseEvent) {
   align-items: center;
 
   &:nth-child(odd) {
-    background-color: whitesmoke;
+    background-color: var(--color-background-mute);
   }
 
   :nth-child(2) {

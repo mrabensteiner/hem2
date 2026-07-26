@@ -117,7 +117,8 @@ async function main() {
       },
       include: {
         Findings: true,
-        heuristicset: { include: { heuristics: true } }
+        heuristicset: { include: { heuristics: true } },
+        severityset: { include: { severities: true } }
       }
     },
   );
@@ -141,19 +142,31 @@ async function main() {
   // Add heuristics to findings
   await prisma.finding.update({
     where: {id: project.Findings[0].id},
-    data: {heuristics: {connect: {id: project.heuristicset.heuristics[0].id}}}
+    data: {
+      heuristics: {connect: {id: project.heuristicset.heuristics[0].id}},
+      severity: {connect: {id: project.severityset.severities[1].id}}
+    }
   });
   await prisma.finding.update({
     where: {id: project.Findings[1].id},
-    data: {heuristics: {connect: {id: project.heuristicset.heuristics[0].id}}}
+    data: {
+      heuristics: {connect: {id: project.heuristicset.heuristics[0].id}},
+      severity: {connect: {id: project.severityset.severities[2].id}}
+    }
   });
   await prisma.finding.update({
     where: {id: project.Findings[1].id},
-    data: {heuristics: {connect: {id: project.heuristicset.heuristics[3].id}}}
+    data: {
+      heuristics: {connect: {id: project.heuristicset.heuristics[3].id}},
+      severity: {connect: {id: project.severityset.severities[0].id}}
+    }
   });
   await prisma.finding.update({
     where: {id: project.Findings[2].id},
-    data: {heuristics: {connect: {id: project.heuristicset.heuristics[9].id}}}
+    data: {
+      heuristics: {connect: {id: project.heuristicset.heuristics[9].id}},
+      severity: {connect: {id: project.severityset.severities[2].id}}
+    }
   });
 }
 

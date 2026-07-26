@@ -7,6 +7,7 @@ import fs from 'fs';
 
 import { customAlphabet, urlAlphabet } from "nanoid";
 import projectRoutes from "./routes/project.routes";
+import { projectService } from "./services/project.service";
 import statusRoutes from "./routes/status.routes";
 import heuristicSetRoutes from "./routes/heuristicSet.routes";
 import authRoutes from "./routes/auth.routes";
@@ -133,14 +134,12 @@ app.put('/finding', async (req:any, res:any) => {
   delete data.heuristics;
 
   // Trigger to update the project modification time
-  await prisma.project.update({
-    where: { id: data.project.id },
-    data: { updatedat: new Date() }
-  });
+  await projectService.changes(data.project.id);
 
   delete data.project;
   delete data.severity;
   delete data.user;
+  delete data.images;
 
   delete data.updatedat;
 
@@ -183,16 +182,6 @@ app.get('/finding/:id', async (req:any, res:any) => {
   });
 
   res.json(finding);
-});
-
-app.get('/statuses', async (req:any, res:any) => {
-  const q = await prisma.status.findMany();
-  res.json(q);
-});
-
-app.get('/heuristics', async (req:any, res:any) => {
-  const q = await prisma.heuristicSet.findMany();
-  res.json(q);
 });
 
 app.get('/severities', async (req:any, res:any) => {

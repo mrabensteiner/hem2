@@ -11,7 +11,6 @@ async function create(data = {}) {
 }
 
 async function remove(data: any) {
-  console.log(data);
   await prisma.status.delete({
     where: { id: data.id }
   });

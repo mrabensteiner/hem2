@@ -28,8 +28,8 @@ model User {
   username      String          @unique
   password      String          @default(nanoid(8))
   email         String          @unique
-  firstname     String?
-  lastname      String?
+  firstname     String          @default("")
+  lastname      String          @default("")
   image         Image?          @relation(fields: [imageId], references: [id])
   role          role            @default(USER)
   UserInProject UserInProject[]
@@ -51,8 +51,8 @@ model UserInProject {
 model Project {
   id             String          @id @unique @default(nanoid(8))
   status         Status          @relation(fields: [statusId], references: [id])
-  title          String?
-  description    String?
+  title          String          @default("")
+  description    String          @default("")
   logo           Image?          @relation(fields: [imageId], references: [id])
   updatedat      DateTime?       @default(now()) @updatedAt
   createdat      DateTime?       @default(now())
@@ -69,8 +69,8 @@ model Project {
 model Finding {
   id          String      @id @unique @default(nanoid(10))
   project     Project     @relation(fields: [projectId], references: [id])
-  title       String?
-  description String?
+  title       String      @default("")
+  description String      @default("")
   images      Image[]
   user        User[]
   heuristics  Heuristic[]
@@ -83,28 +83,28 @@ model Finding {
 
 model Status {
   id        String    @id @unique @default(nanoid(8))
-  title     String
-  color     String?
-  textcolor String?
+  title     String    @default("")
+  color     String    @default("#aaa")
+  textcolor String    @default("#eee")
   project   Project[]
-  order     Int?
+  order     Int       @default(0)
 }
 
 model HeuristicSet {
   id          String      @id @unique @default(nanoid(8))
-  title       String?
-  description String?
+  title       String      @default("")
+  description String      @default("")
   project     Project[]
   heuristics  Heuristic[]
 }
 
 model Heuristic {
   id             String        @id @unique @default(nanoid(8))
-  title          String?
-  description    String?
+  title          String        @default("")
+  description    String        @default("")
   set            HeuristicSet? @relation(fields: [heuristicsetId], references: [id])
-  color          String?
-  textcolor      String?
+  color          String        @default("#aaa")
+  textcolor      String        @default("#eee")
   heuristicsetId String?
   Finding        Finding[]
   order          Int?
@@ -112,22 +112,22 @@ model Heuristic {
 
 model SeveritySet {
   id          String     @id @unique @default(nanoid(8))
-  title       String?
-  description String?
+  title       String     @default("")
+  description String     @default("")
   project     Project[]
   severities  Severity[]
 }
 
 model Severity {
   id            String       @id @unique @default(nanoid(8))
-  title         String?
-  description   String?
+  title         String       @default("")
+  description   String       @default("")
   set           SeveritySet? @relation(fields: [severitysetId], references: [id])
-  color         String?
-  textcolor     String?
+  color         String?      @default("#aaa")
+  textcolor     String?      @default("#eee")
   severitysetId String?
   Finding       Finding[]
-  order         Int?
+  order         Int          @default(0)
 }
 
 model Image {

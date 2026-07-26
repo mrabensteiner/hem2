@@ -40,7 +40,7 @@ if (!newFinding) {
 } else {
   finding.value.projectId = route.params.pid;
 
-  fetch("http://localhost:3000/project/" + route.params.pid)
+  fetch("http://localhost:3000/projects/" + route.params.pid)
     .then(response => response.json())
     .then(json => {
       //transformAuthors(json); // TODO --> current user

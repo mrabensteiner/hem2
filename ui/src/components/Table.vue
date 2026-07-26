@@ -6,8 +6,8 @@ import Chip from "@/components/Chip.vue";
 const props = defineProps<{
   head: Object[],
   data: Object[],
-  sort: string,
-  dir: string
+  sort?: string,
+  dir?: string
 }>()
 
 const sortKey = ref(props.sort);
@@ -16,9 +16,14 @@ const hiddenCols = ref( props.head.filter(col => col.hidden).map(col => col.key)
 
 const sortedData = computed(() => {
   const key = sortKey.value;
+
+  if (key == "" || key == null || props.data.length === 0) {
+    return props.data;
+  }
+
   return [...props.data].sort((a, b) => {
-    const valA = a[key].toUpperCase();
-    const valB = b[key].toUpperCase();
+    const valA = (a[key] as string).toUpperCase();
+    const valB = (b[key] as string).toUpperCase();
 
     let modifier = 1;
     if(sortDir.value === 'desc') modifier = -1;
@@ -50,8 +55,18 @@ function toggleCol(key) {
 watch(
   () => props.sort,
   (newsort) => {
+    if (props.sort == undefined) {
+      return;
+    }
+
     const col = props.head.find(col => col.key == newsort);
-    col.dir = props.dir;
+
+    if (props.dir == undefined) {
+      col.dir = "asc";
+    } else {
+      col.dir = props.dir;
+    }
+
     sortCol(newsort, col);
   },
   { immediate: true }
@@ -120,7 +135,6 @@ thead {
   border-top: 1px solid dimgrey;
   border-bottom: 1px solid dimgrey;
   color: dimgrey;
-  text-transform: uppercase;
   font-size: 1rem;
 
   th {
@@ -130,7 +144,7 @@ thead {
 
 tbody {
   tr:nth-child(odd) {
-    background-color: whitesmoke;
+    background-color: var(--color-background-mute);
   }
   td {
     padding: .5rem;
@@ -148,7 +162,7 @@ tbody {
   gap: .1rem;
   a {
     border-radius: .25rem .25rem 0 0;
-    background-color: #eee;
+    background-color: var(--color-background-mute);
     &::before {
       content: "+";
     }

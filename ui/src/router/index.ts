@@ -6,6 +6,8 @@ import UserView from "@/views/UserView.vue";
 import UsersView from "@/views/UsersView.vue";
 import FindingView from "@/views/FindingView.vue";
 import StatusView from "@/views/StatusView.vue";
+import HeuristicSetsView from "@/views/HeuristicSetsView.vue";
+import HeuristicSetView from "@/views/HeuristicSetView.vue";
 import LoginView from "@/views/LoginView.vue";
 import {useAuth} from "@/composables/useAuth.ts";
 
@@ -48,6 +50,16 @@ const router = createRouter({
       path: '/status',
       name: 'status',
       component: StatusView,
+    },
+    {
+      path: '/heuristics',
+      name: 'heuristicsets',
+      component: HeuristicSetsView,
+    },
+    {
+      path: '/heuristics/:id',
+      name: 'heuristics',
+      component: HeuristicSetView,
     },
     {
       path: '/user/:id',
