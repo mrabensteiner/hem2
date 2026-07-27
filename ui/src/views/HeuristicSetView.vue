@@ -57,6 +57,7 @@ function remove(event: MouseEvent) {
       Description
       <textarea v-model="data.description"/>
     </label>
+    <label>Heuristics</label>
     <draggable v-model="data.heuristics" item-key="id" handle=".drag-handle" ghost-class="ghost">
       <template #item="{ element }">
         <div class="list-row">

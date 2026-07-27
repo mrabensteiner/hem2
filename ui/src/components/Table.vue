@@ -76,7 +76,14 @@ watch(
 
 <template>
   <div class="celltoggle">
-    <a v-for="c in hiddenCols" href="javascript:;" @click="toggleCol(c)">{{ head.find(col => col.key == c).title }}</a>
+    <a
+      v-for="c in hiddenCols"
+      href="javascript:;"
+      @click="toggleCol(c)"
+      title="Show this cell"
+    >
+      {{ head.find(col => col.key == c).title }}
+    </a>
   </div>
   <div class="tablecontainer">
   <table>
@@ -84,8 +91,18 @@ watch(
     <tr>
       <th v-for="h in head" :data-key="h.key" :class="hiddenCols.includes(h.key) ? 'hidden' : ''">
         {{ h.title }}
-        <span v-if="!['link', 'chip', 'multi', 'multichip'].includes(h.type)" :data-dir="h.dir ? h.dir : ''" @click="sortCol(h.key, h)"></span>
-        <span v-if="!h.locked" @click="toggleCol(h.key)" data-toggle></span>
+        <span
+          v-if="!['link', 'chip', 'multi', 'multichip'].includes(h.type)"
+          :data-dir="h.dir ? h.dir : ''"
+          @click="sortCol(h.key, h)"
+          title="Sort"
+        ></span>
+        <span
+          v-if="!h.locked"
+          @click="toggleCol(h.key)"
+          data-toggle
+          title="Hide this cell"
+        ></span>
       </th>
     </tr>
     </thead>

@@ -21,7 +21,7 @@ const { isAuthenticated, user, logout } = useAuth();
     </nav>
     <nav class="user">
       <RouterLink v-if="!isAuthenticated" to="/login">Login</RouterLink>
-      <div v-if="user">
+      <div v-if="user" class="hello">
         Hello, {{user.firstname}} {{user.lastname}}!
       </div>
       <a v-if="isAuthenticated" @click="logout">Logout</a>

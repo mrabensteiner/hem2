@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import Table from "@/components/Table.vue";
+import {useRouter} from "vue-router";
+
+const router = useRouter();
 
 const data = ref([]);
 fetch("http://localhost:3000/heuristic-sets")
@@ -25,7 +28,10 @@ const tablehead = [
 function add() {
   fetch("http://localhost:3000/heuristic-sets", {method: "POST"})
       .then(response => response.json())
-      .then(json => data.value.push(json))
+      .then(json => {
+        data.value.push(json);
+        router.push('/heuristics/' + json.id);
+      })
 }
 </script>
 

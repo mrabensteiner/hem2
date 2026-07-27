@@ -71,6 +71,7 @@ function remove(event: MouseEvent) {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  margin-bottom: .5rem;
 
   &:nth-child(odd) {
     background-color: var(--color-background-mute);

@@ -107,6 +107,7 @@ const uploadImages = async (event: Event) => {
 
 <template>
   <template v-if="!newFinding">
+    <RouterLink :to="{ path: '/project/' + route.params.pid}">Project: {{finding.project.title}}</RouterLink>
   <h1 @keydown="console.log($refs.title.innerText)" ref="title">Finding:
     {{ finding.title }}</h1>
   <hr/>
@@ -166,7 +167,7 @@ const uploadImages = async (event: Event) => {
       </select>
     </div>
     <input type="submit" value="Save"/>
-    <RouterLink v-if="!newFinding" :to="{ path: '/project/' + route.params.pid + '/finding/new'}">New Finding</RouterLink>
+    <RouterLink v-if="!newFinding" :to="{ path: '/project/' + route.params.pid + '/finding/new'}" class="button">New Finding</RouterLink>
   </form>
 </template>
 

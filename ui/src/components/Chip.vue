@@ -30,7 +30,7 @@ const { chip } = defineProps<{
     background-color: v-bind("chip?.textcolor || 'inherit'");
     display: inline-block;
     height: .5rem;
-    width: .5rem;
+    //width: .5rem;
     content: '';
   }
 }
