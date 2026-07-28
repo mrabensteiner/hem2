@@ -14,9 +14,10 @@ export enum Method {
 export async function apiClient(endpoint: string, method = Method.GET, options: RequestOptions = {}) {
   const url = `${BASE_URL}/${endpoint.replace(/^\//, '')}`;
 
+  options.method = method;
+
   if (options.body && typeof options.body === 'object') {
     options.body = JSON.stringify(options.body);
-    options.method = method;
     options.headers = {
       'Content-Type': 'application/json'
     };

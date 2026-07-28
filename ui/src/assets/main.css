@@ -181,6 +181,7 @@ input, textarea, select {
 
   &[type="color"] {
     cursor: pointer;
+    height: 3rem;
   }
 
   &:hover, &:focus {

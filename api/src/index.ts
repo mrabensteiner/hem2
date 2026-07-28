@@ -188,60 +188,6 @@ app.get('/finding/:id', async (req:any, res:any) => {
   res.json(finding);
 });
 
-app.get('/severities', async (req:any, res:any) => {
-  const q = await prisma.severitySet.findMany();
-  res.json(q);
-});
-
-app.get('/severities/{:id}', async (req:any, res:any) => {
-  const q = await prisma.severity.findMany({
-    where: { severitysetId: req.params.id },
-  });
-  res.json(q);
-});
-
-// ### USER ###########################################################
-
-app.get('/users', async (req:any, res:any) => {
-  const q = await prisma.user.findMany({
-    where: { id: req.params.id }
-  });
-  res.json(q);
-});
-
-app.get('/user/:id', async (req:any, res:any) => {
-  const q = await prisma.user.findUnique({
-    where: { id: req.params.id }
-  });
-  if (q == null) {
-    res.json({"msg": "User not found"});
-  }
-  res.json(q);
-});
-
-app.post(`/user`, async (req:any, res:any) => {
-  const data = req.body;
-  const q = await prisma.user.create({
-    data: data
-  })
-  q.msg = "Added Successfully";
-  res.json(q);
-});
-
-app.put('/user', async (req:any, res:any) => {
-  const data = req.body;
-  try {
-    const q = await prisma.user.update({
-      where: { id: data.id },
-      data: data
-    })
-    res.json(q);
-  } catch (error) {
-    res.json({ error: `ID ${data.id} does not exist in the database` })
-  }
-})
-
-// ####################################################################
 
 app.listen(3000, () => console.log('API server port 3000'));
 

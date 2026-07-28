@@ -22,6 +22,6 @@ const tablehead = [
 
 <template>
   <h1>Projects</h1>
-  <Table :head="tablehead" :data="projects" sort="updatedat" dir="asc" />
+  <Table :head="tablehead" :data="projects" sort="updatedat" />
   <RouterLink to="/project/new" class="button">New Project</RouterLink>
 </template>

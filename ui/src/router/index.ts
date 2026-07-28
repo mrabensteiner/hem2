@@ -20,63 +20,73 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+      meta: { title: 'Start' }
     },
     {
       path: '/login',
       name: 'login',
       component: LoginView,
+      meta: { title: 'Login' }
     },
     {
       path: '/projects',
       name: 'projects',
       component: ProjectsView,
-      meta: { requiresAuth: true }
+      meta: { title: 'Projects', requiresAuth: true }
     },
     {
       path: '/project/:id',
       name: 'project',
       component: ProjectView,
-      meta: { requiresAuth: true }
+      meta: {  title: 'Project', requiresAuth: true }
     },
     {
       path: '/project/:pid/finding/:id',
       name: 'finding',
       component: FindingView,
+      meta: { title: 'Finding', requiresAuth: true }
     },
     {
       path: '/users',
       name: 'users',
       component: UsersView,
+      meta: { title: 'Users', requiresAuth: true }
     },
     {
       path: '/status',
       name: 'status',
       component: StatusView,
+      meta: { title: 'Status', requiresAuth: true }
     },
     {
       path: '/heuristics',
       name: 'heuristicsets',
       component: HeuristicSetsView,
+      meta: { title: 'Heuristic Sets', requiresAuth: true }
     },
     {
       path: '/heuristics/:id',
       name: 'heuristics',
       component: HeuristicSetView,
+      meta: { title: 'Heuristics', requiresAuth: true }
     },
     {
       path: '/severities',
       name: 'severitylist',
       component: SeverityListView,
+      meta: { title: 'Severity Sets', requiresAuth: true }
     },
     {
       path: '/severities/:id',
       name: 'severitydetails',
       component: SeverityDetailsView,
+      meta: { title: 'Severity Set', requiresAuth: true }
     },
     {
       path: '/user/:id',
       name: 'User',
       component: UserView,
+      meta: { title: 'User', requiresAuth: true }
     },
     {
       path: '/about',
@@ -95,6 +105,8 @@ router.beforeEach((to) => {
   if (to.meta.requiresAuth && !isAuthenticated.value) {
     return { name: 'login' };
   }
+
+  document.title = to.meta?.title ? to.meta?.title + ' - HEM2' : 'HEM2';
 });
 
 export default router

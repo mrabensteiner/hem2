@@ -16,12 +16,4 @@ export const projectApi = {
       body: projectData
     });
   },
-
-  async getFormMetadata() {
-    const endpoints = ['statuses', 'heuristics', 'severities', 'users'];
-    const [statuses, heuristics, severities, users] = await Promise.all(
-      endpoints.map(endpoint => apiClient(endpoint))
-    );
-    return { statuses, heuristics, severities, users };
-  }
 };

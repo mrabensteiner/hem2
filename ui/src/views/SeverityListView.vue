@@ -17,6 +17,6 @@ const tablehead = [
 
 <template>
   <h1>Severity Sets</h1>
-  <Table :head="tablehead" :data="severitySets" sort="title" dir="asc" />
+  <Table :head="tablehead" :data="severitySets" sort="title" />
   <RouterLink to="/severities/new" class="button">New Set</RouterLink>
 </template>

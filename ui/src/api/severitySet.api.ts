@@ -16,4 +16,22 @@ export const severitySetApi = {
       body: severityData
     });
   },
+
+  async remove(id: string) {
+    return apiClient(`${endpoint}/${id}`, Method.DELETE, {
+      body: { id: id }
+    });
+  },
+
+  async createSingle(id: string) {
+    console.log("creasingel")
+    console.log(`${endpoint}/${id}`, Method.POST);
+    return apiClient(`${endpoint}/${encodeURI(id)}`, Method.POST);
+  },
+
+  async removeSingle(setId: string, id: string) {
+    return apiClient(`${endpoint}/${setId}`, Method.DELETE, {
+      body: { id: id }
+    });
+  },
 };

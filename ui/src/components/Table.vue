@@ -3,50 +3,85 @@ import {ref, computed, watch} from "vue";
 import { Timeago } from 'vue2-timeago';
 import Chip from "@/components/Chip.vue";
 
-const props = defineProps<{
-  head: Object[],
-  data: Object[],
-  sort?: string,
-  dir?: string
-}>()
+interface HeaderColumn {
+  key: string;
+  title: string;
+  type?: 'link' | 'multi' | 'chip' | 'multichip' | 'time';
+  hidden?: boolean;
+  locked?: boolean;
+}
 
-const sortKey = ref(props.sort);
-const sortDir = ref("asc");
-const hiddenCols = ref( props.head.filter(col => col.hidden).map(col => col.key));
+type DataRow = Record<string, any>;
+type SortDirection = 'asc' | 'desc';
+
+const props = defineProps<{
+  head: HeaderColumn[];
+  data: DataRow[];
+  sort?: string;
+  dir?: SortDirection;
+}>();
+
+const columnDirections = ref<Record<string, SortDirection>>({});
+const sortKey = ref<string>(props.sort || "");
+const sortDir = ref<SortDirection>(props.dir || "asc");
+
+const hiddenCols = ref<string[]>(
+  props.head.filter(col => col.hidden).map(col => col.key)
+);
 
 const sortedData = computed(() => {
   const key = sortKey.value;
 
-  if (key == "" || key == null || props.data.length === 0) {
+  if (!key || props.data.length === 0) {
     return props.data;
   }
 
-  return [...props.data].sort((a, b) => {
-    const valA = (a[key] as string).toUpperCase();
-    const valB = (b[key] as string).toUpperCase();
+  return [...props.data].sort((a: DataRow, b: DataRow) => {
+    const rawA = a[key];
+    const rawB = b[key];
 
-    let modifier = 1;
-    if(sortDir.value === 'desc') modifier = -1;
-    if(valA < valB) return -1 * modifier;
-    if(valA > valB) return 1 * modifier;
+    const isNumA = typeof rawA === 'number' || (!isNaN(Number(rawA)) && rawA !== '');
+    const isNumB = typeof rawB === 'number' || (!isNaN(Number(rawB)) && rawB !== '');
+
+    let valA: string | number = rawA;
+    let valB: string | number = rawB;
+
+    if (isNumA && isNumB) {
+      valA = Number(rawA);
+      valB = Number(rawB);
+    } else {
+      valA = String(rawA).toUpperCase();
+      valB = String(rawB).toUpperCase();
+    }
+
+    const modifier = sortDir.value === 'desc' ? -1 : 1;
+    if (valA < valB) return -1 * modifier;
+    if (valA > valB) return 1 * modifier;
     return 0;
   });
 });
 
-function sortCol(key, col) {
-  if (col.dir == "asc") {
-    col.dir = "desc";
-  } else if (col.dir == "desc" || col.dir == null) {
-    col.dir = "asc";
+function sortCol(key: string) {
+  const currentDir = columnDirections.value[key];
+
+  let nextDir: SortDirection = 'asc';
+  if (sortKey.value === key) {
+    nextDir = currentDir === 'asc' ? 'desc' : 'asc';
+  } else if (currentDir) {
+    nextDir = currentDir;
   }
+
+  columnDirections.value[key] = nextDir;
   sortKey.value = key;
-  sortDir.value = col.dir;
+  sortDir.value = nextDir;
 }
 
-function toggleCol(key) {
+function toggleCol(key: string) {
   const hidden = hiddenCols.value;
-  if (hidden.includes(key)) {
-    hidden.splice(hidden.indexOf(key), 1);
+  const index = hidden.indexOf(key);
+
+  if (index !== -1) {
+    hidden.splice(index, 1);
   } else {
     hidden.push(key);
   }
@@ -54,20 +89,13 @@ function toggleCol(key) {
 
 watch(
   () => props.sort,
-  (newsort) => {
-    if (props.sort == undefined) {
-      return;
-    }
+  (newSort) => {
+    if (!newSort) return;
 
-    const col = props.head.find(col => col.key == newsort);
-
-    if (props.dir == undefined) {
-      col.dir = "asc";
-    } else {
-      col.dir = props.dir;
-    }
-
-    sortCol(newsort, col);
+    const initialDir = props.dir || "asc";
+    columnDirections.value[newSort] = initialDir;
+    sortKey.value = newSort;
+    sortDir.value = initialDir;
   },
   { immediate: true }
 );
@@ -76,42 +104,56 @@ watch(
 
 <template>
   <div class="celltoggle">
-    <a
+    <button
       v-for="c in hiddenCols"
-      href="javascript:;"
+      :key="c"
       @click="toggleCol(c)"
       title="Show this cell"
     >
-      {{ head.find(col => col.key == c).title }}
-    </a>
+      {{ head.find(col => col.key === c)?.title }}
+    </button>
   </div>
+
   <div class="tablecontainer">
-  <table>
-    <thead>
-    <tr>
-      <th v-for="h in head" :data-key="h.key" :class="hiddenCols.includes(h.key) ? 'hidden' : ''">
-        {{ h.title }}
-        <span
-          v-if="!['link', 'chip', 'multi', 'multichip'].includes(h.type)"
-          :data-dir="h.dir ? h.dir : ''"
-          @click="sortCol(h.key, h)"
-          title="Sort"
-        ></span>
-        <span
-          v-if="!h.locked"
-          @click="toggleCol(h.key)"
-          data-toggle
-          title="Hide this cell"
-        ></span>
-      </th>
-    </tr>
-    </thead>
-    <tbody>
-      <tr v-if="data.length == 0" class="">
+    <table>
+      <thead>
+      <tr>
+        <th
+          v-for="h in head"
+          :key="h.key"
+          :data-key="h.key"
+          :class="{ 'hidden': hiddenCols.includes(h.key) }"
+        >
+          {{ h.title }}
+
+          <span
+            v-if="!['link', 'chip', 'multi', 'multichip'].includes(h.type || '')"
+            :data-dir="sortKey === h.key ? sortDir : ''"
+            @click="sortCol(h.key)"
+            title="Sort"
+          ></span>
+
+          <span
+            v-if="!h.locked"
+            @click="toggleCol(h.key)"
+            data-toggle
+            title="Hide this cell"
+          ></span>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-if="data.length === 0">
         <td :colspan="head.length">Empty - create new entries</td>
       </tr>
-      <tr v-for="r in sortedData">
-        <td v-for="h in head" :data-key="h.key" :data-value="r[h.key]"  :class="hiddenCols.includes(h.key) ? 'hidden' : ''">
+      <tr v-for="(r, rIdx) in sortedData" :key="rIdx">
+        <td
+          v-for="h in head"
+          :key="h.key"
+          :data-key="h.key"
+          :data-value="r[h.key]"
+          :class="{ 'hidden': hiddenCols.includes(h.key) }"
+        >
           <template v-if="h.key === 'link'">
             <RouterLink :to="{ path: r.link }">Open</RouterLink>
           </template>
@@ -130,15 +172,15 @@ watch(
           <template v-else>{{ r[h.key] }}</template>
         </td>
       </tr>
-    </tbody>
-  </table>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <style scoped>
 .tablecontainer {
   width: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
   margin-bottom: 1rem;
 }
 
@@ -176,12 +218,24 @@ tbody {
 .celltoggle {
   display: flex;
   justify-content: flex-end;
-  gap: .1rem;
-  a {
+  gap: .5rem;
+
+  button {
+    border: none;
+    font-weight: normal;
+    color: var(--app-primary);
+    margin: 0;
     border-radius: .25rem .25rem 0 0;
     background-color: var(--color-background-mute);
+    text-decoration: none;
+    padding: 0.2rem 0.5rem;
+
     &::before {
-      content: "+";
+      content: "+ ";
+    }
+
+    &:hover {
+      background-color: rgba(var(--app-primary-rgb), 0.25);
     }
   }
 }

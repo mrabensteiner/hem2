@@ -74,7 +74,7 @@ hr {
               <textarea v-model="element.description"></textarea>
             </label>
           </div>
-          <button type="button" @click="removeSeverity" :data-statusid="element.id">Remove</button>
+          <button type="button" @click="removeSeverity(element.id)">Remove</button>
         </div>
       </template>
     </draggable>

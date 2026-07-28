@@ -83,18 +83,59 @@ async function main() {
           create: {
             // https://www.nngroup.com/articles/ten-usability-heuristics/
             title: "Nielsen's 10 Usability Heuristics",
+            description: " Jakob Nielsen's 10 general principles for interaction design. They are called \"heuristics\" because they are broad rules of thumb and not specific usability guidelines.",
             heuristics: {
               create: [
-                { title: "#1: Visibility of System Status" },
-                { title: "#2: Match Between the System and the Real World" },
-                { title: "#3: User Control and Freedom" },
-                { title: "#4: Consistency and Standards" },
-                { title: "#5: Error Prevention" },
-                { title: "#6: Recognition Rather than Recall" },
-                { title: "#7: Flexibility and Efficiency of Use" },
-                { title: "#8: Aesthetic and Minimalist Design" },
-                { title: "#9: Help Users Recognize, Diagnose, and Recover from Errors" },
-                { title: "#10: Help and Documentation" }
+                {
+                  title: "#1: Visibility of System Status",
+                  color: "#3c74b2", textcolor: "white",
+                  description: "The design should always keep users informed about what is going on, through appropriate feedback within a reasonable amount of time."
+                },
+                {
+                  title: "#2: Match Between the System and the Real World",
+                  color: "#00a790", textcolor: "white",
+                  description: "The design should speak the users' language. Use words, phrases, and concepts familiar to the user, rather than internal jargon. Follow real-world conventions, making information appear in a natural and logical order."
+                },
+                {
+                  title: "#3: User Control and Freedom",
+                  color: "#b0247b", textcolor: "white",
+                  description: "Users often perform actions by mistake. They need a clearly marked \"emergency exit\" to leave the unwanted action without having to go through an extended process."
+                },
+                {
+                  title: "#4: Consistency and Standards",
+                  color: "#e61c4b", textcolor: "white",
+                  description: "Users should not have to wonder whether different words, situations, or actions mean the same thing. Follow platform and industry conventions."
+                },
+                {
+                  title: "#5: Error Prevention",
+                  color: "#c75428", textcolor: "white",
+                  description: "Good error messages are important, but the best designs carefully prevent problems from occurring in the first place. Either eliminate error-prone conditions, or check for them and present users with a confirmation option before they commit to the action."
+                },
+                {
+                  title: "#6: Recognition Rather than Recall",
+                  color: "#638138", textcolor: "white",
+                  description: "Minimize the user's memory load by making elements, actions, and options visible. The user should not have to remember information from one part of the interface to another. Information required to use the design (e.g. field labels or menu items) should be visible or"
+                },
+                {
+                  title: "#7: Flexibility and Efficiency of Use",
+                  color: "#e72128", textcolor: "white",
+                  description: "Shortcuts — hidden from novice users — may speed up the interaction for the expert user so that the design can cater to both inexperienced and experienced users. Allow users to tailor frequent actions."
+                },
+                {
+                  title: "#8: Aesthetic and Minimalist Design",
+                  color: "#96702a", textcolor: "white",
+                  description: "Interfaces should not contain information that is irrelevant or rarely needed. Every extra unit of information in an interface competes with the relevant units of information and diminishes their relative visibility."
+                },
+                {
+                  title: "#9: Help Users Recognize, Diagnose, and Recover from Errors",
+                  color: "#1d8293", textcolor: "white",
+                  description: "Error messages should be expressed in plain language (no error codes), precisely indicate the problem, and constructively suggest a solution."
+                },
+                {
+                  title: "#10: Help and Documentation",
+                  color: "#716fb3", textcolor: "white",
+                  description: "It’s best if the system doesn’t need any additional explanation. However, it may be necessary to provide documentation to help users understand how to complete their tasks."
+                }
               ]
             }
           }
@@ -105,11 +146,11 @@ async function main() {
             title: "Andrews' Severity Rating",
             severities: {
               create: [
-                { title: "catastrophic" },
-                { title: "major" },
-                { title: "minor" },
-                { title: "cosmetic" },
-                { title: "none" },
+                { title: "Catastrophic Problem", color: "red", textcolor: "white" },
+                { title: "Major Problem", color: "orange", textcolor: "white" },
+                { title: "Minor Problem", color: "#87cefa", textcolor: "white" },
+                { title: "Cosmetic Problem only", color: "lightgreen", textcolor: "white" },
+                { title: "Not a Problem at all", color: "darkgreen", textcolor: "white" },
               ]
             }
           }

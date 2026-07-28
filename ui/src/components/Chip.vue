@@ -23,6 +23,7 @@ const { chip } = defineProps<{
   font-size: .75rem;
   padding: .5rem;
   border-radius: .5rem;
+  margin-right: .5rem;
   white-space: pre;
   display: inline-block;
 

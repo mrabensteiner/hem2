@@ -10,4 +10,10 @@ export const heuristicSetApi = {
   async getById(id: string) {
     return apiClient(`${endpoint}/${id}`);
   },
+
+  async save(heuristicData: any, isNew: boolean) {
+    return apiClient(endpoint, isNew ? Method.POST : Method.PUT, {
+      body: heuristicData
+    });
+  },
 };
