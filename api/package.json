@@ -11,8 +11,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "db:init": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:setup": "pnpm db:init; pnpm db:migrate dev --name=init",
+    "db:migrate": "prisma migrate dev --name=init",
+    "db:setup": "pnpm db:init; pnpm db:migrate",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset"
