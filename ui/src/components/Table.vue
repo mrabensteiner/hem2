@@ -25,8 +25,8 @@ const columnDirections = ref<Record<string, SortDirection>>({});
 const sortKey = ref<string>(props.sort || "");
 const sortDir = ref<SortDirection>(props.dir || "asc");
 
-const hiddenCols = ref<string[]>(
-  props.head.filter(col => col.hidden).map(col => col.key)
+const visibleCols = ref<string[]>(
+  props.head.filter(col => !col.hidden).map(col => col.key)
 );
 
 const sortedData = computed(() => {
@@ -37,21 +37,18 @@ const sortedData = computed(() => {
   }
 
   return [...props.data].sort((a: DataRow, b: DataRow) => {
-    const rawA = a[key];
-    const rawB = b[key];
+    let valA = a[key];
+    let valB = b[key];
 
-    const isNumA = typeof rawA === 'number' || (!isNaN(Number(rawA)) && rawA !== '');
-    const isNumB = typeof rawB === 'number' || (!isNaN(Number(rawB)) && rawB !== '');
-
-    let valA: string | number = rawA;
-    let valB: string | number = rawB;
+    const isNumA = typeof valA === 'number' || (!isNaN(Number(valA)) && valA !== '');
+    const isNumB = typeof valB === 'number' || (!isNaN(Number(valB)) && valB !== '');
 
     if (isNumA && isNumB) {
-      valA = Number(rawA);
-      valB = Number(rawB);
+      valA = Number(valA);
+      valB = Number(valB);
     } else {
-      valA = String(rawA).toUpperCase();
-      valB = String(rawB).toUpperCase();
+      valA = String(valA).toUpperCase();
+      valB = String(valB).toUpperCase();
     }
 
     const modifier = sortDir.value === 'desc' ? -1 : 1;
@@ -76,17 +73,6 @@ function sortCol(key: string) {
   sortDir.value = nextDir;
 }
 
-function toggleCol(key: string) {
-  const hidden = hiddenCols.value;
-  const index = hidden.indexOf(key);
-
-  if (index !== -1) {
-    hidden.splice(index, 1);
-  } else {
-    hidden.push(key);
-  }
-}
-
 watch(
   () => props.sort,
   (newSort) => {
@@ -103,15 +89,16 @@ watch(
 </script>
 
 <template>
-  <div class="celltoggle">
-    <button
-      v-for="c in hiddenCols"
-      :key="c"
-      @click="toggleCol(c)"
-      title="Show this cell"
-    >
-      {{ head.find(col => col.key === c)?.title }}
-    </button>
+  <div class="col-toggle-container">
+    <div class="col-toggle">
+      <div>Toggle Columns</div>
+      <div v-for="col in head">
+        <label>
+          <input type="checkbox" :value="col.key" v-model="visibleCols" :disabled="col.locked" />
+          {{ col.title }}
+        </label>
+      </div>
+    </div>
   </div>
 
   <div class="tablecontainer">
@@ -122,7 +109,7 @@ watch(
           v-for="h in head"
           :key="h.key"
           :data-key="h.key"
-          :class="{ 'hidden': hiddenCols.includes(h.key) }"
+          :class="{ 'hidden': !visibleCols.includes(h.key) }"
         >
           {{ h.title }}
 
@@ -131,13 +118,6 @@ watch(
             :data-dir="sortKey === h.key ? sortDir : ''"
             @click="sortCol(h.key)"
             title="Sort"
-          ></span>
-
-          <span
-            v-if="!h.locked"
-            @click="toggleCol(h.key)"
-            data-toggle
-            title="Hide this cell"
           ></span>
         </th>
       </tr>
@@ -152,10 +132,13 @@ watch(
           :key="h.key"
           :data-key="h.key"
           :data-value="r[h.key]"
-          :class="{ 'hidden': hiddenCols.includes(h.key) }"
+          :class="{ 'hidden': !visibleCols.includes(h.key) }"
         >
-          <template v-if="h.key === 'link'">
-            <RouterLink :to="{ path: r.link }">Open</RouterLink>
+          <template v-if="h.type === 'link'">
+            <RouterLink :to="{ path: r.link }">
+              <template v-if="h.key === 'link'">Open</template>
+              <template v-else>{{ r[h.key] }}</template>
+            </RouterLink>
           </template>
           <template v-else-if="h.type === 'multi'">
             {{ r[h.key].join(", ") }}
@@ -188,6 +171,7 @@ table {
   width: 100%;
   overflow: hidden;
   border-collapse: collapse;
+  margin-top: 2.6rem;
 }
 
 thead {
@@ -215,42 +199,34 @@ tbody {
   display: none;
 }
 
-.celltoggle {
+.col-toggle-container {
   display: flex;
-  justify-content: flex-end;
-  gap: .5rem;
-
-  button {
-    border: none;
-    font-weight: normal;
-    color: var(--app-primary);
-    margin: 0;
-    border-radius: .25rem .25rem 0 0;
-    background-color: var(--color-background-mute);
-    text-decoration: none;
-    padding: 0.2rem 0.5rem;
-
-    &::before {
-      content: "+ ";
-    }
-
-    &:hover {
-      background-color: rgba(var(--app-primary-rgb), 0.25);
-    }
-  }
+  justify-content: end;
 }
 
-[data-toggle] {
+.col-toggle {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
   cursor: pointer;
 
-  &::after {
-    display: inline-block;
-    margin-left: .5rem;
-    font-size: 1rem;
-    width: 1.5rem;
-    background-color: #eee;
-    content: "-";
-    border-radius: .25rem;
+  > div {
+    background-color: var(--color-background-mute);
+  }
+
+  > div:first-child {
+    padding: .5rem;
+    border-radius: .5rem .5rem 0 0;
+    align-self: end;
+  }
+
+  > div:not(:first-child) {
+    display: none;
+  }
+
+  &:hover > div:not(:first-child) {
+    display: block;
+    padding: 0 .25rem;
   }
 }
 

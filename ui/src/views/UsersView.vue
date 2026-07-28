@@ -12,7 +12,7 @@ fetch("http://localhost:3000/users")
 
 const tablehead = [
   { "key": "id", "title": "ID", "hidden": true },
-  { "key": "username", "title": "Username", "locked": true },
+  { "key": "username", "title": "Username", "type": "link", "locked": true },
   { "key": "firstname", "title": "Firstname" },
   { "key": "lastname", "title": "Lastname" },
   { "key": "role", "title": "Role" },
