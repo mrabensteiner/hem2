@@ -7,62 +7,53 @@ Master's Thesis, Graz University of Technology
 
 
 
-## Database initialisation
+## Database Initialisation
 
-Setup environment variable (.env)
+Set up your database environment variables in the `.env` file.
+When using included the docker file, the content of `.env.example` can be used.
 
+Start the docker container either with the Docker app or command line:
 ```
-echo 'POSTGRES_USER="admin"
-POSTGRES_PASSWORD="hem2admin"
-POSTGRES_DB="hem2_db"
-
-DATABASE_URL="postgresql://admin:hem2admin@localhost:5432/hem2_db?schema=public"
-' > .env
+pnpm docker
 ```
 
 Install dependencies
 ```
-cd api; pnpm install; cd ..
-cd ui; pnpm install; cd ..
+pnpm install
 ```
 
 Generate database and model
-
 ```
-docker compose up -d
-cd api
-pnpm prisma migrate dev --name init
-pnpm prisma generate
+pnpm db:setup
 ```
 
 
 Create sample data
-
 ```
-pnpm prisma db seed
-```
-
-Stop the docker server (optional)
-```
-docker stop hem2_postgres_db
+pnpm db:seed
 ```
 
 
 ## Run Development Servers
 
-Each in one terminal
+To start both API and UI
 
 ```
-docker compose up
-```
-```
-cd api; pnpm dev
-```
-```
-cd ui; pnpm dev
+pnpm dev
 ```
 
 Open [http://localhost:5173/](http://localhost:5173/)
+
+Alternative commands - start API and UI togehter with docker, or each separately;
+
+```
+pnpm dev:all
+pnpm dev:api
+pnpm dev:ui
+```
+
+## Example User
+Adminstrator - Username: `admin`, Password: `admin`
 
 
 ## Reset
@@ -70,5 +61,5 @@ Open [http://localhost:5173/](http://localhost:5173/)
 Clear old data (development only!)
 
 ```
-pnpm prisma migrate reset -f
+pnpm  -filter hem2-api db:cleanup
 ```
