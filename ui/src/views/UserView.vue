@@ -61,6 +61,10 @@ async function save() {
       <input type="text" placeholder="Username" v-model="user.username" />
     </div>
     <div>
+      <label>Password</label>
+      <input type="password" placeholder="Password" v-model="user.password" />
+    </div>
+    <div>
       <label>Firstname</label>
       <input type="text" placeholder="Firstname" v-model="user.firstname" />
     </div>
@@ -78,7 +82,6 @@ async function save() {
     </div>
 
     <input type="submit" value="Save"/>
-    {{q}}
     <div v-if="status.msg">{{status.msg}}</div>
   </form>
 </template>

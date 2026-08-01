@@ -1,6 +1,6 @@
 import {prisma} from "../../lib/prisma";
 import jwt from 'jsonwebtoken';
-//import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secure-secret-key';
 
@@ -12,7 +12,7 @@ async function login(username: string, password: string) {
     throw new Error('Wrong username or password.');
   }
 
-  const isMatch = password == user.password;//await bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     throw new Error('Wrong useranme or password.');
   }
