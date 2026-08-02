@@ -2,6 +2,41 @@
 import { prisma } from "../lib/prisma";
 
 async function main() {
+  const adminrole = await prisma.role.create({
+    data: {
+      title: "Administrator",
+      description: "All privileges",
+      order: 0,
+      userAdd: true,
+      userEdit: true,
+      projectAdd: true,
+      projectViewAll: true,
+      projectEditAll: true,
+      heuristicSetEdit: true,
+      ratingSetEdit: true,
+      statusEdit: true
+    }
+  });
+
+  const managerrole = await prisma.role.create({
+    data: {
+      title: "Manager",
+      description: "Can add users and projects, and view all porejcts",
+      order: 1,
+      userAdd: true,
+      projectAdd: true,
+      projectViewAll: true,
+    }
+  });
+
+  const userrole = await prisma.role.create({
+    data: {
+      title: "Simple user",
+      description: "No system privileges",
+      order: 2,
+    }
+  });
+
   let user = await prisma.user.create({
       data: {
         username: "admin",
@@ -9,7 +44,7 @@ async function main() {
         email: "admin@hem.com",
         firstname: "Adam",
         lastname: "Inistrator",
-        role: "ADMIN"
+        roleId: adminrole.id
       },
     }
   );
@@ -21,7 +56,7 @@ async function main() {
         email: "man.ager@hem.com",
         firstname: "Manuel",
         lastname: "Ager",
-        role: "MANAGER"
+        roleId: managerrole.id
       },
     }
   );
@@ -33,7 +68,7 @@ async function main() {
         email: "eval@hem.com",
         firstname: "Eva",
         lastname: "Luator",
-        role: "USER"
+        roleId: userrole.id
       },
     }
   );

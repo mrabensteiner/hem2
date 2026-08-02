@@ -12,15 +12,25 @@ datasource db {
   provider = "postgresql"
 }
 
-enum role {
-  ADMIN
-  MANAGER
-  USER
-}
-
 enum projectRole {
   MANAGER
   MEMBER
+}
+
+model Role {
+  id               String  @id @unique @default(nanoid(8))
+  title            String  @default("")
+  description      String  @default("")
+  order            Int     @default(0)
+  userAdd          Boolean @default(false)
+  userEdit         Boolean @default(false)
+  projectAdd       Boolean @default(false)
+  projectViewAll   Boolean @default(false)
+  projectEditAll   Boolean @default(false)
+  heuristicSetEdit Boolean @default(false)
+  ratingSetEdit    Boolean @default(false)
+  statusEdit       Boolean @default(false)
+  users            User[]
 }
 
 model User {
@@ -31,11 +41,12 @@ model User {
   firstname     String          @default("")
   lastname      String          @default("")
   image         Image?          @relation(fields: [imageId], references: [id])
-  role          role            @default(USER)
+  role          Role            @relation(fields: [roleId], references: [id])
   UserInProject UserInProject[]
   Finding       Finding?        @relation(fields: [findingId], references: [id])
   findingId     String?
   imageId       String?
+  roleId        String
 }
 
 model UserInProject {
@@ -82,12 +93,19 @@ model Finding {
 }
 
 model Status {
-  id        String    @id @unique @default(nanoid(8))
-  title     String    @default("")
-  color     String    @default("#aaa")
-  textcolor String    @default("#eee")
-  project   Project[]
-  order     Int       @default(0)
+  id                 String    @id @unique @default(nanoid(8))
+  title              String    @default("")
+  color              String    @default("#aaa")
+  textcolor          String    @default("#eee")
+  order              Int       @default(0)
+  projectViewDetails Boolean   @default(false)
+  findingsAdd        Boolean   @default(false)
+  findingsViewOwn    Boolean   @default(false)
+  findingsViewAll    Boolean   @default(false)
+  findingsEditOwn    Boolean   @default(false)
+  findingsEditAll    Boolean   @default(false)
+  ratingEdit         Boolean   @default(false)
+  project            Project[]
 }
 
 model HeuristicSet {

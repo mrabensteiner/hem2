@@ -7,6 +7,7 @@ fetch("http://localhost:3000/users")
   .then(response => response.json())
   .then(json => data.value = json.map(user => ({
     ...user,
+    roletitle: user.role.title,
     link: '/user/' + user.id
   })));
 
@@ -15,7 +16,7 @@ const tablehead = [
   { "key": "username", "title": "Username", "type": "link", "locked": true },
   { "key": "firstname", "title": "Firstname" },
   { "key": "lastname", "title": "Lastname" },
-  { "key": "role", "title": "Role" },
+  { "key": "roletitle", "title": "Role" },
   { "key": "link", "title": "Open", "type": "link", "locked": true },
 ];
 </script>

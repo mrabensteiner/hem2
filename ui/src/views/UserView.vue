@@ -74,10 +74,8 @@ async function save() {
     </div>
     <div>
       <label>Role</label>
-      <select v-model="user.role">
-        <option value="ADMIN">Admin</option>
-        <option value="MANAGER">Manager</option>
-        <option value="USER">User</option>
+      <select v-model="user.role.id" disabled>
+        <option :value="user.role.id">{{ user.role.title }}</option>
       </select>
     </div>
 
