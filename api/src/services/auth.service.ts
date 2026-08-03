@@ -15,7 +15,7 @@ async function login(username: string, password: string) {
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    throw new Error('Wrong useranme or password.');
+    throw new Error('Wrong username or password.');
   }
 
  const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1d' });

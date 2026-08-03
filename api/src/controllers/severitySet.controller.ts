@@ -22,7 +22,10 @@ async function getById(req: Request, res: Response) {
 async function create(req: Request, res: Response) {
   try {
     const severitySet = await severitySetService.create(req.body);
-    res.status(201).json(severitySet);
+    res.status(201).json({
+      ...severitySet,
+      success: "Created severity set successfully."
+    });
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }
@@ -40,7 +43,10 @@ async function createSingle(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const severitySet = await severitySetService.remove(req.body);
-    res.status(201).json(severitySet);
+    res.status(201).json({
+      ...severitySet,
+      success: "Removed severity set."
+    });
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }
@@ -49,7 +55,10 @@ async function remove(req: Request, res: Response) {
 async function removeSingle(req: Request, res: Response) {
   try {
     const severitySet = await severitySetService.removeSingle(req.params.id as string, req.body.id as string);
-    res.status(201).json(severitySet);
+    res.status(201).json({
+      ...severitySet,
+      success: "Removed severity."
+    });
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }
@@ -58,7 +67,10 @@ async function removeSingle(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const severitySet = await severitySetService.update(req.body);
-    res.json(severitySet);
+    res.json({
+      ...severitySet,
+      success: "Updated severity set successfully."
+    });
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }

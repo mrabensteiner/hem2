@@ -6,6 +6,7 @@ export function useSeverityDetail() {
   const severities = ref<any>([]);
 
   const isLoading = ref(false);
+  const success = ref<string | null>(null);
   const error = ref<string | null>(null);
 
   async function loadSeveritySet(severitySetId: string, isNew: boolean) {
@@ -27,12 +28,14 @@ export function useSeverityDetail() {
 
   async function saveSeveritySet(isNew: boolean) {
     error.value = null;
+    success.value = null;
 
     try {
       const payload = severitySet.value;
 
       const savedData = await severitySetApi.save(payload, isNew);
       severitySet.value = savedData;
+      success.value = savedData.success;
 
       return savedData;
     } catch (err: any) {
@@ -43,6 +46,7 @@ export function useSeverityDetail() {
 
   async function addSeverity() {
     error.value = null;
+    success.value = null;
 
     try {
       const payload = severitySet.value;
@@ -56,11 +60,13 @@ export function useSeverityDetail() {
 
   async function removeSeverity(id: string) {
     error.value = null;
+    success.value = null;
 
     try {
       const setId = severitySet.value.id;
       const updatedData = await severitySetApi.removeSingle(setId, id);
       severitySet.value = updatedData;
+      success.value = updatedData.success;
 
       return updatedData;
     } catch (err: any) {
@@ -76,5 +82,7 @@ export function useSeverityDetail() {
     saveSeveritySet,
     addSeverity,
     removeSeverity,
+    success,
+    error
   };
 }

@@ -26,7 +26,7 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView,
-      meta: { title: 'Login' }
+      meta: { title: 'Login', authView: true }
     },
     {
       path: '/projects',
@@ -104,6 +104,8 @@ router.beforeEach((to) => {
 
   if (to.meta.requiresAuth && !isAuthenticated.value) {
     return { name: 'login' };
+  } else if (to.meta.authView && isAuthenticated.value) {
+    return { name: 'projects' };
   }
 
   document.title = to.meta?.title ? to.meta?.title + ' - HEM2' : 'HEM2';

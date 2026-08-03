@@ -13,7 +13,7 @@ async function login(req: Request, res: Response): Promise<void> {
     const result = await authService.login(username, password);
     res.json(result);
   } catch (error: any) {
-    const status = error.message.includes('Wrong user credentials.') ? 401 : 500;
+    const status = error.message.includes('Wrong username or password.') ? 401 : 500;
     res.status(status).json({error: error.message});
   }
 }

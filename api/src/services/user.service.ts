@@ -30,9 +30,16 @@ async function create(data: any) {
 }
 
 async function update(data: any) {
-    return prisma.user.update({
+  delete data.role;
+  return prisma.user.update({
     where: { id: data.id },
-    data: data,
+    data: {
+      username: data.username,
+      firstname: data.firstname,
+      lastname: data.lastname,
+      roleId: data.role,
+      password: data.password,
+    },
     select : userSelect
   });
 }

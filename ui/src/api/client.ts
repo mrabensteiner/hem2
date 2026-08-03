@@ -38,6 +38,10 @@ export async function apiClient(endpoint: string, method = Method.GET, options: 
       switch (response.status) {
         case 401:
           localStorage.removeItem('token');
+          let responseJson = await response.json();
+          if (responseJson.error) {
+            throw new Error(responseJson.error);
+          }
           window.location.href = '/login';
           throw new Error('User session has expired.');
         case 403:

@@ -3,6 +3,8 @@ import { onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useSeverityDetail } from "@/composables/useSeverityDetail.ts";
 import draggable from 'vuedraggable';
+import Chip from "@/components/Chip.vue";
+import Message from "@/components/Message.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -14,7 +16,9 @@ const {
   loadSeveritySet,
   saveSeveritySet,
   addSeverity,
-  removeSeverity
+  removeSeverity,
+  success,
+  error
 } = useSeverityDetail();
 
 onMounted(() => {

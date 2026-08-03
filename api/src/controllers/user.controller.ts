@@ -22,7 +22,10 @@ async function getById(req: Request, res: Response) {
 async function create(req: Request, res: Response) {
   try {
     const user = await userService.create(req.body);
-    res.status(201).json(user);
+    res.status(201).json({
+      ...user,
+      success: "Created user successfully."
+    });
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }
@@ -31,7 +34,10 @@ async function create(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const user = await userService.update(req.body);
-    res.json(user);
+    res.json({
+      ...user,
+      success: "Updated user successfully."
+    });
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }

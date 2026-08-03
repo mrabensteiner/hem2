@@ -13,15 +13,22 @@ const prisma = new PrismaClient({ adapter }).$extends({
   query: {
     user: {
       async create({ args, query }) {
-        args.data.password = bcrypt.hashSync(args.data['password'] as string, 10);
-        return query(args);
+        return query(passwordSanitizeOrEncrypt(args));
       },
       async update({ args, query }) {
-        args.data.password = bcrypt.hashSync(args.data['password'] as string, 10);
-        return query(args);
+        return query(passwordSanitizeOrEncrypt(args));
       }
     },
   },
 });
+
+function passwordSanitizeOrEncrypt(args: any) {
+  if (args.data['password'] == undefined || args.data['password'] == "") {
+    delete args.data['password'];
+  } else {
+    args.data['password'] = bcrypt.hashSync(args.data['password'] as string, 10);
+  }
+  return args;
+}
 
 export { prisma };

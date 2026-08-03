@@ -22,7 +22,10 @@ async function getById(req: Request, res: Response) {
 async function create(req: Request, res: Response) {
   try {
     const project = await projectService.create(req.body);
-    res.status(201).json(project);
+    res.status(201).json({
+      ...project,
+      success: "Created project successfully."
+    });
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }
@@ -31,7 +34,10 @@ async function create(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const project = await projectService.update(req.body);
-    res.json(project);
+    res.json({
+      ...project,
+      success: "Updated project successfully."
+    });
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }

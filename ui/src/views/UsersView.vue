@@ -7,7 +7,7 @@ fetch("http://localhost:3000/users")
   .then(response => response.json())
   .then(json => data.value = json.map(user => ({
     ...user,
-    roletitle: user.role.title,
+    roletitle: (user.role ?? {}).title ?? undefined,
     link: '/user/' + user.id
   })));
 

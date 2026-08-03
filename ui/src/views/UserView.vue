@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
+import Message from "@/components/Message.vue";
 
 const route = useRoute();
 const router = useRouter();
+const success = ref("");
+const error = ref("");
 const user = ref({});
-const status = ref({});
 const newUser = route.params.id == "new";
 
 if (!newUser) {
@@ -13,10 +15,19 @@ if (!newUser) {
   try {
     fetch("http://localhost:3000/users/" + route.params.id)
       .then(response => response.json())
-      .then(json => user.value = json);
+      .then(json => {
+        user.value = json;
+
+        if (json == null) {
+          error.value = "User not found";
+          user.value = {};
+        }
+        else if (json.success) {
+          success.value = json.success;
+        }
+      });
   } catch (e) {
-    console.log(e);
-    status.value.msg = e;
+    error.value = e.error;
   }
 }
 
@@ -34,7 +45,11 @@ async function save() {
   try {
     await fetch("http://localhost:3000/users", requestOptions)
       .then(response => response.json())
-      .then(json => status.value = json)
+      .then(json => {
+        user.value = json ?? {};
+        success.value = json.success ?? "";
+        error.value = json.error ?? "";
+      })
       .then(
         () => {
           if (newUser) {
@@ -42,16 +57,15 @@ async function save() {
           }
         }
       );
-  } catch (error) {
-    console.log(error);
-    console.log(error);
+  } catch (e) {
+    error.value = e.error;
   }
 }
 </script>
 
 <template>
   <h1>User: {{user?.firstname}} {{user?.lastname}} ({{user?.username}})</h1>
-  <form @submit.prevent="save">
+  <form @submit.prevent="save" v-if="user.id || !error">
     <div>
       <label>Email</label>
       <input type="text" placeholder="Email" v-model="user.email" />
@@ -72,14 +86,13 @@ async function save() {
       <label>Lastname</label>
       <input type="text" placeholder="Lastname" v-model="user.lastname" />
     </div>
-    <div>
+    <div v-if="user.role">
       <label>Role</label>
       <select v-model="user.role.id" disabled>
         <option :value="user.role.id">{{ user.role.title }}</option>
       </select>
     </div>
-
     <input type="submit" value="Save"/>
-    <div v-if="status.msg">{{status.msg}}</div>
   </form>
+  <Message :success="success" :error="error"/>
 </template>
