@@ -13,6 +13,7 @@ import heuristicSetRoutes from "./routes/heuristicSet.routes";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import severitySetRoutes from "./routes/severitySet.routes";
+import roleRoutes from "./routes/role.routes";
 const nanoid = customAlphabet(urlAlphabet, 12);
 
 const app = express();
@@ -85,7 +86,8 @@ app.post("/images/:id", upload.array("image"), async (req, res) => {
 });
 
 app.use('/projects', projectRoutes);
-app.use('/status', statusRoutes);
+app.use('/statuses', statusRoutes);
+app.use('/roles', roleRoutes);
 app.use('/heuristic-sets', heuristicSetRoutes);
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);

@@ -55,7 +55,11 @@ export function useProjectDetail() {
         heuristicSetApi.getAll(),
         severitySetApi.getAll(),
         userApi.getAll()
-      ])
+      ]);
+
+      [statuses].map(set => {
+        set.value = set.value.data;
+      });
 
       if (!isNew) {
         const data = await projectApi.getById(projectId);

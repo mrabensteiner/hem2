@@ -1,8 +1,8 @@
 import {apiClient, Method} from './client.ts';
 
-const endpoint = "statuses";
+const endpoint = "roles";
 
-export const statusApi = {
+export const roleApi = {
   async getAll() {
     return apiClient(endpoint);
   },

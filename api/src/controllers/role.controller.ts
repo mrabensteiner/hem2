@@ -1,11 +1,11 @@
 import type {Request, Response} from "express";
-import {statusService} from "../services/status.service";
+import {roleService} from "../services/role.service";
 
 async function getAll(req: Request, res: Response) {
   try {
-    const statuses = await statusService.getAll();
+    const roles = await roleService.getAll();
     res.json({
-      data: statuses
+      data: roles
     });
   } catch (error: any) {
     res.status(500).json({error: error.message});
@@ -14,10 +14,10 @@ async function getAll(req: Request, res: Response) {
 
 async function create(req: Request, res: Response) {
   try {
-    const status = await statusService.create(req.body);
+    const role = await roleService.create(req.body);
     res.status(201).json({
-      data: status,
-      success: "Added status successfully."
+      data: role,
+      success: "Added role successfully."
     });
   } catch (error: any) {
     res.status(500).json({error: error.message});
@@ -26,10 +26,10 @@ async function create(req: Request, res: Response) {
 
 async function remove(req: Request, res: Response) {
   try {
-    const status = await statusService.remove(req.body);
+    const role = await roleService.remove(req.body);
     res.status(201).json({
-      data: status,
-      success: "Removed status successfully."
+      data: role,
+      success: "Removed role successfully."
     });
   } catch (error: any) {
     res.status(500).json({error: error.message});
@@ -38,17 +38,17 @@ async function remove(req: Request, res: Response) {
 
 async function updateMany(req: Request, res: Response) {
   try {
-    const statuses = await statusService.updateMany(req.body);
+    const roles = await roleService.updateMany(req.body);
     res.json({
-      data: statuses,
-      success: "Updated statuses successfully."
+      data: roles,
+      success: "Updated roles successfully."
     });
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }
 }
 
-export const statusController = {
+export const roleController = {
   getAll,
   create,
   remove,

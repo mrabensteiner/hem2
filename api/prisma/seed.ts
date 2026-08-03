@@ -77,12 +77,12 @@ async function main() {
   const statuses = await prisma.status.createMany({
     data: [
       {title: "Draft"},
-      {title: "Preparing"},
-      {title: "Evaluating"},
-      {title: "Manager Review"},
-      {title: "Severity Rating"},
-      {title: "Concluding"},
-      {title: "Finished"},
+      {title: "Preparing", projectViewDetails: true},
+      {title: "Evaluating", projectViewDetails: true, findingsAdd: true, findingsViewOwn: true, findingsEditOwn: true},
+      {title: "Manager Review", projectViewDetails: true},
+      {title: "Severity Rating", projectViewDetails: true, findingsViewAll: true, ratingEdit: true},
+      {title: "Concluding", projectViewDetails: true},
+      {title: "Finished", projectViewDetails: true},
     ]
   })
 
