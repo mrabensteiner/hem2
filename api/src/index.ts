@@ -7,13 +7,13 @@ import fs from 'fs';
 
 import { customAlphabet, urlAlphabet } from "nanoid";
 import projectRoutes from "./routes/project.routes";
-import { projectService } from "./services/project.service";
 import statusRoutes from "./routes/status.routes";
 import heuristicSetRoutes from "./routes/heuristicSet.routes";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import ratingSetRoutes from "./routes/ratingSet.routes";
 import roleRoutes from "./routes/role.routes";
+import findingsRoutes from "./routes/finding.routes";
 const nanoid = customAlphabet(urlAlphabet, 12);
 
 const app = express();
@@ -92,104 +92,7 @@ app.use('/heuristic-sets', heuristicSetRoutes);
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/ratingsets', ratingSetRoutes);
-
-app.post('/finding', async (req:any, res:any) => {
-  const data = req.body;
-
-  const authors = data.authors;
-  const heuristics = data.heuristics;
-
-  delete data.authors;
-  delete data.heuristics;
-
-  try {
-    const q = await prisma.finding.create({
-      data: {
-        ...data,
-        user: { connect: [...authors.map(uid => ({id: uid}))] },
-        heuristics: { connect: [...heuristics.map(hid => ({id: hid}))] }
-      },
-      include: {
-        user: { include: { UserInProject: true }},
-        project: true,
-        heuristics: true,
-        rating: true,
-      }
-    });
-
-    res.json(q);
-  } catch (error) {
-    res.json({ error: error.message });
-  }
-})
-
-app.put('/finding', async (req:any, res:any) => {
-  const data = req.body;
-
-  let authors = data.authors;
-  let heuristics = data.heuristics;
-
-  if(authors == null) {
-    authors = [];
-  }
-  if(heuristics == null) {
-    heuristics = [];
-  }
-
-  delete data.authors;
-  delete data.heuristics;
-
-  // Trigger to update the project modification time
-  await projectService.changes(data.project.id);
-
-  delete data.project;
-  delete data.rating;
-  delete data.user;
-  delete data.images;
-
-  delete data.updatedat;
-
-
-  try {
-    const q = await prisma.finding.update({
-      where: { id: data.id },
-      data: {
-        ...data,
-        user: { set: [...authors.map(uid => ({id: uid}))] },
-        heuristics: { set: [...heuristics.map(hid => ({id: hid}))] }
-      },
-      include: {
-        user: { include: { UserInProject: true }},
-        project: true,
-        heuristics: true,
-        rating: true,
-      }
-    });
-
-    res.json(q);
-  } catch (error) {
-    res.json({ error: error.message });
-  }
-})
-
-app.get('/finding/:id', async (req:any, res:any) => {
-  const finding = await prisma.finding.findUnique({
-    where: {id: req.params.id},
-    include: {
-      user: { include: { UserInProject: true }},
-      project: { include: {
-        ratingset: { include: { ratings: true } },
-        heuristicset: { include: { heuristics: true } },
-      }},
-      heuristics: true,
-      rating: true,
-      images: true
-    }
-  });
-
-  res.json(finding);
-});
-
+app.use('/findings', findingsRoutes);
 
 app.listen(3000, () => console.log('API server port 3000'));
 

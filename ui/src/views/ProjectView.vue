@@ -84,7 +84,7 @@ hr {
 
     <h2>Findings</h2>
     <Table :head="tablehead" :data="findings" sort="updatedat" dir="asc" />
-    <RouterLink :to="`/project/${project.id}/finding/new`" class="button">New Finding</RouterLink>
+    <RouterLink :to="`/project/${project.id}/findings/new`" class="button">New Finding</RouterLink>
 
     <h2>Edit Project</h2>
   </template>

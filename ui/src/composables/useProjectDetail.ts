@@ -41,11 +41,11 @@ export function useProjectDetail() {
     findings.value = projectData.Findings.map((finding: any) => ({
       ...finding,
       user: finding.user ? finding.user.map((u: any) => `${u.firstname} ${u.lastname}`) : [],
-      link: `/project/${projectData.id}/finding/${finding.id}`
+      link: `/project/${projectData.id}/findings/${finding.id}`
     }));
   }
 
-  async function loadProject(projectId: string, isNew: boolean) {
+  async function loadProject(projectId: string, isNew: boolean = false) {
     isLoading.value = true;
     error.value = null;
 

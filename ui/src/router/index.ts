@@ -4,7 +4,6 @@ import ProjectsView from "@/views/ProjectsView.vue";
 import ProjectView from "@/views/ProjectView.vue";
 import UserView from "@/views/UserView.vue";
 import UsersView from "@/views/UsersView.vue";
-import FindingView from "@/views/FindingView.vue";
 import HeuristicSetsView from "@/views/HeuristicSetsView.vue";
 import HeuristicSetView from "@/views/HeuristicSetView.vue";
 import RatingListView from "@/views/RatingListView.vue";
@@ -14,6 +13,7 @@ import {useAuth} from "@/composables/useAuth.ts";
 
 import statusRoutes from '@/modules/statuses/routes';
 import roleRoutes from '@/modules/roles/routes';
+import findingRoutes from '@/modules/findings/routes';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,12 +43,6 @@ const router = createRouter({
       meta: {  title: 'Project', requiresAuth: true }
     },
     {
-      path: '/project/:pid/finding/:id',
-      name: 'finding',
-      component: FindingView,
-      meta: { title: 'Finding', requiresAuth: true }
-    },
-    {
       path: '/users',
       name: 'users',
       component: UsersView,
@@ -56,6 +50,7 @@ const router = createRouter({
     },
     ...statusRoutes,
     ...roleRoutes,
+    ...findingRoutes,
     {
       path: '/heuristics',
       name: 'heuristicsets',

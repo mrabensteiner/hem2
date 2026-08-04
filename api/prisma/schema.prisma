@@ -44,8 +44,7 @@ model User {
   image         Image?          @relation(fields: [imageId], references: [id])
   role          Role            @relation(fields: [roleId], references: [id])
   UserInProject UserInProject[]
-  Finding       Finding?        @relation(fields: [findingId], references: [id])
-  findingId     String?
+  Findings      Finding[]
   imageId       String?
   roleId        String
   userRatings   UserRating[]
