@@ -48,6 +48,7 @@ model User {
   findingId     String?
   imageId       String?
   roleId        String
+  userRatings   UserRating[]
 }
 
 model UserInProject {
@@ -69,28 +70,40 @@ model Project {
   updatedat      DateTime?       @default(now()) @updatedAt
   createdat      DateTime?       @default(now())
   heuristicset   HeuristicSet?   @relation(fields: [heuristicsetId], references: [id])
-  severityset    SeveritySet?    @relation(fields: [severitysetId], references: [id])
+  ratingset      RatingSet?      @relation(fields: [ratingsetId], references: [id])
   statusId       String
   heuristicsetId String?
-  severitysetId  String?
+  ratingsetId    String?
   UserInProject  UserInProject[]
   Findings       Finding[]
   imageId        String?
 }
 
 model Finding {
-  id          String      @id @unique @default(nanoid(10))
-  project     Project     @relation(fields: [projectId], references: [id])
-  title       String      @default("")
-  description String      @default("")
+  id          String       @id @unique @default(nanoid(10))
+  project     Project      @relation(fields: [projectId], references: [id])
+  title       String       @default("")
+  description String       @default("")
   images      Image[]
   user        User[]
   heuristics  Heuristic[]
-  severity    Severity?   @relation(fields: [severityId], references: [id])
+  rating      Rating?      @relation(fields: [ratingId], references: [id])
   projectId   String
-  severityId  String?
-  updatedat   DateTime?   @default(now()) @updatedAt
-  createdat   DateTime?   @default(now())
+  ratingId    String?
+  updatedat   DateTime?    @default(now()) @updatedAt
+  createdat   DateTime?    @default(now())
+  userRatings UserRating[]
+}
+
+model UserRating {
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  finding   Finding @relation(fields: [findingId], references: [id])
+  findingId String
+  rating    Rating  @relation(fields: [ratingId], references: [id])
+  ratingId  String
+
+  @@id([userId, findingId])
 }
 
 model Status {
@@ -129,24 +142,25 @@ model Heuristic {
   order          Int?
 }
 
-model SeveritySet {
-  id          String     @id @unique @default(nanoid(8))
-  title       String     @default("")
-  description String     @default("")
+model RatingSet {
+  id          String    @id @unique @default(nanoid(8))
+  title       String    @default("")
+  description String    @default("")
   project     Project[]
-  severities  Severity[]
+  ratings     Rating[]
 }
 
-model Severity {
-  id            String       @id @unique @default(nanoid(8))
-  title         String       @default("")
-  description   String       @default("")
-  set           SeveritySet? @relation(fields: [severitysetId], references: [id])
-  color         String?      @default("#aaa")
-  textcolor     String?      @default("#eee")
-  severitysetId String?
-  Finding       Finding[]
-  order         Int          @default(0)
+model Rating {
+  id          String       @id @unique @default(nanoid(8))
+  title       String       @default("")
+  description String       @default("")
+  set         RatingSet?   @relation(fields: [ratingsetId], references: [id])
+  color       String?      @default("#aaa")
+  textcolor   String?      @default("#eee")
+  ratingsetId String?
+  Finding     Finding[]
+  order       Int          @default(0)
+  userRatings UserRating[]
 }
 
 model Image {

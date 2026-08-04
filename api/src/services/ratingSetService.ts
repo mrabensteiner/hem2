@@ -1,47 +1,47 @@
 import {prisma} from "../../lib/prisma";
 
 async function getAll(): Promise<any> {
-  return prisma.severitySet.findMany();
+  return prisma.ratingSet.findMany();
 }
 
 async function getById(id: string) {
-  return prisma.severitySet.findUnique({
+  return prisma.ratingSet.findUnique({
     where: { id: id },
-    include: { severities: true }
+    include: { ratings: true }
   });
 }
 
 async function create(data = {}) {
-  return prisma.severitySet.create({
+  return prisma.ratingSet.create({
     data: data
   });
 }
 
 async function createSingle(id: string) {
-  return prisma.severity.create({
-    data: { severitysetId: id }
+  return prisma.rating.create({
+    data: { ratingsetId: id }
   });
 }
 
 async function remove(data: any) {
-  await prisma.severitySet.delete({
+  await prisma.ratingSet.delete({
     where: { id: data.id }
   });
   return getAll();
 }
 
-async function removeSingle(setId: string, severityId: string) {
-  const findings = await prisma.severity.findUnique({
-    where: { id: severityId },
+async function removeSingle(setId: string, ratingId: string) {
+  const findings = await prisma.rating.findUnique({
+    where: { id: ratingId },
     select: { Finding: true }
   }).Finding();
 
   if (findings != null && findings.length > 0) {
-    throw Error("Severity is still linked to findings and cannot be removed.")
+    throw Error("Rating is still linked to findings and cannot be removed.")
   }
 
-  await prisma.severity.delete({
-    where: { id: severityId }
+  await prisma.rating.delete({
+    where: { id: ratingId }
   });
 
   return getById(setId);
@@ -49,8 +49,8 @@ async function removeSingle(setId: string, severityId: string) {
 
 async function update(data: any) {
   await prisma.$transaction(
-    data.severities.map((s: any, i: Number) =>
-      prisma.severity.update({
+    data.ratings.map((s: any, i: Number) =>
+      prisma.rating.update({
         where: { id: s.id },
         data: {
           ...s,
@@ -60,17 +60,17 @@ async function update(data: any) {
     )
   );
 
-  return await prisma.severitySet.update({
+  return await prisma.ratingSet.update({
     where: {id: data.id},
     data: {
       title: data.title,
       description: data.description
     },
-    include: { severities: true }
+    include: { ratings: true }
   });
 }
 
-export const severitySetService = {
+export const ratingSetService = {
   getAll,
   getById,
   remove,

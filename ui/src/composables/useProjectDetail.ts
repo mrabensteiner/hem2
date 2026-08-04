@@ -1,12 +1,12 @@
 import { ref } from 'vue';
 import { projectApi } from '../api/project.api.js';
 import {heuristicSetApi} from "@/api/heuristicSet.api.ts";
-import {severitySetApi} from "@/api/severitySet.api.ts";
+import {ratingSetApi} from "@/api/ratingSetApi.ts";
 import {statusApi} from "@/modules/statuses/statusApi.ts";
 import {userApi} from "@/api/user.api.ts";
 
 export function useProjectDetail() {
-  const project = ref<any>({ title: '', description: '', statusId: '', heuristicsetId: '', severitysetId: '' });
+  const project = ref<any>({ title: '', description: '', statusId: '', heuristicsetId: '', ratingsetId: '' });
   const findings = ref<any[]>([]);
   const managers = ref<string[]>([]);
   const members = ref<string[]>([]);
@@ -16,7 +16,7 @@ export function useProjectDetail() {
 
   const statuses = ref<any>([]);
   const heuristics = ref<any>([]);
-  const severities = ref<any>([]);
+  const ratings = ref<any>([]);
   const users = ref<any[]>([]);
 
   function extractRoles(userInProjectList: any[]) {
@@ -50,10 +50,10 @@ export function useProjectDetail() {
     error.value = null;
 
     try {
-      [statuses.value, heuristics.value, severities.value, users.value] = await Promise.all([
+      [statuses.value, heuristics.value, ratings.value, users.value] = await Promise.all([
         statusApi.getAll(),
         heuristicSetApi.getAll(),
-        severitySetApi.getAll(),
+        ratingSetApi.getAll(),
         userApi.getAll()
       ]);
 
@@ -102,7 +102,7 @@ export function useProjectDetail() {
     members,
     statuses,
     heuristics,
-    severities,
+    ratings,
     users,
     isLoading,
     error,

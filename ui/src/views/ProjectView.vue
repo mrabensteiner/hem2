@@ -17,7 +17,7 @@ const {
   members,
   statuses,
   heuristics,
-  severities,
+  ratings,
   users,
   error,
   loadProject,
@@ -41,7 +41,7 @@ const tablehead = [
   { "key": "title", "title": "Title", "locked": true },
   { "key": "description", "title": "Description", "hidden": true },
   { "key": "heuristics", "title": "Heuristic(s)", "type": "multichip" },
-  { "key": "severity", "title": "Severity", "type": "chip" },
+  { "key": "rating", "title": "Rating", "type": "chip" },
   { "key": "user", "title": "Author(s)", "type": "multi" },
   { "key": "updatedat", "title": "Last Change", "type": "time" },
   { "key": "link", "title": "Open", "type": "link", "locked": true },
@@ -62,7 +62,6 @@ hr {
   <template v-if="!isNewProject">
     <h1>Project: {{ project.title }}</h1>
     <hr/>
-
     <p>Status:
       <Chip :chip="project.status" />
     </p>
@@ -124,9 +123,9 @@ hr {
     </div>
 
     <div>
-      <label for="severity">Severity Rating Set</label>
-      <select id="severity" v-model="project.severitysetId">
-        <option v-for="s in severities" :key="s.id" :value="s.id">
+      <label for="rating">Rating Set</label>
+      <select id="rating" v-model="project.ratingsetId">
+        <option v-for="s in ratings" :key="s.id" :value="s.id">
           {{ s.title }}
         </option>
       </select>

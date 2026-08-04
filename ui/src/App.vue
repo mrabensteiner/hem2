@@ -18,7 +18,7 @@ const { isAuthenticated, hasPrivilege, user, logout } = useAuth();
       <RouterLink v-if="hasPrivilege('roleEdit')" to="/roles">Roles</RouterLink>
       <RouterLink v-if="hasPrivilege('statusEdit')" to="/statuses">Statuses</RouterLink>
       <RouterLink v-if="hasPrivilege('heuristicSetEdit')" to="/heuristics">Heuristics</RouterLink>
-      <RouterLink v-if="hasPrivilege('ratingSetEdit')" to="/severities">Severities</RouterLink>
+      <RouterLink v-if="hasPrivilege('ratingSetEdit')" to="/ratings">Ratings</RouterLink>
     </nav>
     <nav class="user">
       <RouterLink v-if="!isAuthenticated" to="/login">Login</RouterLink>

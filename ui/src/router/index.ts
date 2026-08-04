@@ -7,8 +7,8 @@ import UsersView from "@/views/UsersView.vue";
 import FindingView from "@/views/FindingView.vue";
 import HeuristicSetsView from "@/views/HeuristicSetsView.vue";
 import HeuristicSetView from "@/views/HeuristicSetView.vue";
-import SeverityListView from "@/views/SeverityListView.vue";
-import SeverityDetailsView from "@/views/SeverityDetailsView.vue";
+import RatingListView from "@/views/RatingListView.vue";
+import RatingDetailsView from "@/views/RatingDetailsView.vue";
 import LoginView from "@/views/LoginView.vue";
 import {useAuth} from "@/composables/useAuth.ts";
 
@@ -69,16 +69,16 @@ const router = createRouter({
       meta: { title: 'Heuristics', requiresAuth: true }
     },
     {
-      path: '/severities',
-      name: 'severitylist',
-      component: SeverityListView,
-      meta: { title: 'Severity Sets', requiresAuth: true }
+      path: '/ratings',
+      name: 'ratinglist',
+      component: RatingListView,
+      meta: { title: 'Rating Sets', requiresAuth: true }
     },
     {
-      path: '/severities/:id',
-      name: 'severitydetails',
-      component: SeverityDetailsView,
-      meta: { title: 'Severity Set', requiresAuth: true }
+      path: '/ratings/:id',
+      name: 'ratingdetails',
+      component: RatingDetailsView,
+      meta: { title: 'Rating Set', requiresAuth: true }
     },
     {
       path: '/user/:id',

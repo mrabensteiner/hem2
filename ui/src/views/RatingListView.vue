@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import { useSeverityList } from '../composables/useSeverityList.ts';
+import { useRatingList } from '../composables/useRatingList.ts';
 import Table from "@/components/Table.vue";
 
-const { severitySets, loadSeveritySets } = useSeverityList();
+const { ratingSets, loadRatingSets } = useRatingList();
 
 onMounted(() => {
-  loadSeveritySets();
+  loadRatingSets();
 });
 
 const tablehead = [
@@ -16,7 +16,7 @@ const tablehead = [
 </script>
 
 <template>
-  <h1>Severity Sets</h1>
-  <Table :head="tablehead" :data="severitySets" sort="title" />
-  <RouterLink to="/severities/new" class="button">New Set</RouterLink>
+  <h1>Rating Sets</h1>
+  <Table :head="tablehead" :data="ratingSets" sort="title" />
+  <RouterLink to="/ratings/new" class="button">New Set</RouterLink>
 </template>

@@ -1,10 +1,10 @@
 import type {Request, Response} from "express";
-import {severitySetService} from "../services/severitySet.service";
+import {ratingSetService} from "../services/ratingSetService";
 
 async function getAll(req: Request, res: Response) {
   try {
-    const severitySets = await severitySetService.getAll();
-    res.json(severitySets);
+    const ratingSets = await ratingSetService.getAll();
+    res.json(ratingSets);
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }
@@ -12,8 +12,8 @@ async function getAll(req: Request, res: Response) {
 
 async function getById(req: Request, res: Response) {
   try {
-    const severitySet = await severitySetService.getById(req.params.id as string);
-    res.json(severitySet);
+    const ratingSet = await ratingSetService.getById(req.params.id as string);
+    res.json(ratingSet);
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }
@@ -21,10 +21,10 @@ async function getById(req: Request, res: Response) {
 
 async function create(req: Request, res: Response) {
   try {
-    const severitySet = await severitySetService.create(req.body);
+    const ratingSet = await ratingSetService.create(req.body);
     res.status(201).json({
-      ...severitySet,
-      success: "Created severity set successfully."
+      ...ratingSet,
+      success: "Created rating set successfully."
     });
   } catch (error: any) {
     res.status(500).json({error: error.message});
@@ -33,8 +33,8 @@ async function create(req: Request, res: Response) {
 
 async function createSingle(req: Request, res: Response) {
   try {
-    const severity = await severitySetService.createSingle(req.params.id as string);
-    res.status(201).json(severity);
+    const rating = await ratingSetService.createSingle(req.params.id as string);
+    res.status(201).json(rating);
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }
@@ -42,10 +42,10 @@ async function createSingle(req: Request, res: Response) {
 
 async function remove(req: Request, res: Response) {
   try {
-    const severitySet = await severitySetService.remove(req.body);
+    const ratingSet = await ratingSetService.remove(req.body);
     res.status(201).json({
-      ...severitySet,
-      success: "Removed severity set."
+      ...ratingSet,
+      success: "Removed rating set."
     });
   } catch (error: any) {
     res.status(500).json({error: error.message});
@@ -54,10 +54,10 @@ async function remove(req: Request, res: Response) {
 
 async function removeSingle(req: Request, res: Response) {
   try {
-    const severitySet = await severitySetService.removeSingle(req.params.id as string, req.body.id as string);
+    const ratingSet = await ratingSetService.removeSingle(req.params.id as string, req.body.id as string);
     res.status(201).json({
-      ...severitySet,
-      success: "Removed severity."
+      ...ratingSet,
+      success: "Removed rating."
     });
   } catch (error: any) {
     res.status(500).json({error: error.message});
@@ -66,17 +66,17 @@ async function removeSingle(req: Request, res: Response) {
 
 async function update(req: Request, res: Response) {
   try {
-    const severitySet = await severitySetService.update(req.body);
+    const ratingSet = await ratingSetService.update(req.body);
     res.json({
-      ...severitySet,
-      success: "Updated severity set successfully."
+      ...ratingSet,
+      success: "Updated rating set successfully."
     });
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }
 }
 
-export const severitySetController = {
+export const ratingSetController = {
   getAll,
   getById,
   create,

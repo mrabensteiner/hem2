@@ -1,8 +1,8 @@
 import {apiClient, Method} from './client.ts';
 
-const endpoint = "severities";
+const endpoint = "ratingsets";
 
-export const severitySetApi = {
+export const ratingSetApi = {
   async getAll() {
     return apiClient(endpoint);
   },
@@ -11,9 +11,9 @@ export const severitySetApi = {
     return apiClient(`${endpoint}/${id}`);
   },
 
-  async save(severityData: any, isNew: boolean) {
+  async save(ratingData: any, isNew: boolean) {
     return apiClient(endpoint, isNew ? Method.POST : Method.PUT, {
-      body: severityData
+      body: ratingData
     });
   },
 
@@ -24,8 +24,6 @@ export const severitySetApi = {
   },
 
   async createSingle(id: string) {
-    console.log("creasingel")
-    console.log(`${endpoint}/${id}`, Method.POST);
     return apiClient(`${endpoint}/${encodeURI(id)}`, Method.POST);
   },
 

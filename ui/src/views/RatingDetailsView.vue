@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useSeverityDetail } from "@/composables/useSeverityDetail.ts";
+import { useRatingDetail } from "@/composables/useRatingDetail.ts";
 import draggable from 'vuedraggable';
 import Chip from "@/components/Chip.vue";
 import Message from "@/components/Message.vue";
@@ -9,27 +9,27 @@ import Message from "@/components/Message.vue";
 const route = useRoute();
 const router = useRouter();
 
-const isNewSeveritySet = computed(() => route.params.id === 'new');
+const isNewRatingSet = computed(() => route.params.id === 'new');
 
 const {
-  severitySet,
-  loadSeveritySet,
-  saveSeveritySet,
-  addSeverity,
-  removeSeverity,
+  ratingSet,
+  loadRatingSet,
+  saveRatingSet,
+  addRating,
+  removeRating,
   success,
   error
-} = useSeverityDetail();
+} = useRatingDetail();
 
 onMounted(() => {
-  loadSeveritySet(route.params.id as string, isNewSeveritySet.value);
+  loadRatingSet(route.params.id as string, isNewRatingSet.value);
 });
 
 async function save() {
-  await saveSeveritySet(isNewSeveritySet.value);
+  await saveRatingSet(isNewRatingSet.value);
 
-  if (isNewSeveritySet.value) {
-    router.push('/severities');
+  if (isNewRatingSet.value) {
+    router.push('/ratings');
   }
 }
 </script>
@@ -45,18 +45,18 @@ hr {
 </style>
 
 <template>
-  <h1>Severity Set</h1>
+  <h1>Rating Set</h1>
   <form @submit.prevent="save">
     <label>
       Title
-      <input type="text" v-model="severitySet.title"/>
+      <input type="text" v-model="ratingSet.title"/>
     </label>
     <label>
       Description
-      <textarea v-model="severitySet.description"/>
+      <textarea v-model="ratingSet.description"/>
     </label>
-    <label>Severities</label>
-    <draggable v-model="severitySet.severities" item-key="id" handle=".drag-handle" ghost-class="ghost">
+    <label>Ratings</label>
+    <draggable v-model="ratingSet.ratings" item-key="id" handle=".drag-handle" ghost-class="ghost">
       <template #item="{ element }">
         <div class="list-row">
           <div class="drag-handle">⋮⋮</div>
@@ -74,16 +74,21 @@ hr {
               <input v-model="element.textcolor" type="color"/>
             </label>
             <label>
+              Preview<br/>
+              <Chip :chip="element"/>
+            </label>
+            <label>
               Description
               <textarea v-model="element.description"></textarea>
             </label>
           </div>
-          <button type="button" @click="removeSeverity(element.id)">Remove</button>
+          <button type="button" @click="removeRating(element.id)">Remove</button>
         </div>
       </template>
     </draggable>
-    <button type="button" @click="addSeverity">Add Severity</button>
+    <button type="button" @click="addRating">Add Rating</button>
     <input type="submit" value="Save"/>
+    <Message :success="success" :error="error" />
   </form>
 </template>
 

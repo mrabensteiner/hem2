@@ -5,7 +5,7 @@ async function getAll(): Promise<any> {
     include: {
       UserInProject: { include: { user: true } },
       heuristicset: true,
-      severityset: true,
+      ratingset: true,
       status: true,
       _count: { select: { Findings: true } }
     }
@@ -18,9 +18,9 @@ async function getById(id: string) {
     include: {
       UserInProject: { include: { user: true }},
       heuristicset: { include: { heuristics: true }},
-      severityset: { include: { severities: true }},
+      ratingset: { include: { ratings: true }},
       status: true,
-      Findings: { include: { user: true, heuristics: true , severity: true }}
+      Findings: { include: { user: true, heuristics: true , rating: true }}
     }
   });
 }
@@ -38,9 +38,9 @@ async function create(data: any) {
     include: {
       UserInProject: { include: { user: true }},
       heuristicset: true,
-      severityset: true,
+      ratingset: true,
       status: true,
-      Findings: { include: { user: true, heuristics: true , severity: true }}
+      Findings: { include: { user: true, heuristics: true , rating: true }}
     }
   })
   const projectId = project.id;
@@ -84,14 +84,14 @@ async function update(data: any) {
       title: data.title,
       description: data.description,
       heuristicsetId: data.heuristicsetId,
-      severitysetId: data.severitysetId
+      ratingsetId: data.ratingsetId
     },
     include: {
       UserInProject: { include: { user: true }},
       heuristicset: true,
-      severityset: true,
+      ratingset: true,
       status: true,
-      Findings: { include: { user: true, heuristics: true , severity: true }}
+      Findings: { include: { user: true, heuristics: true , rating: true }}
     }
   });
 }

@@ -12,7 +12,7 @@ import statusRoutes from "./routes/status.routes";
 import heuristicSetRoutes from "./routes/heuristicSet.routes";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
-import severitySetRoutes from "./routes/severitySet.routes";
+import ratingSetRoutes from "./routes/ratingSet.routes";
 import roleRoutes from "./routes/role.routes";
 const nanoid = customAlphabet(urlAlphabet, 12);
 
@@ -91,7 +91,7 @@ app.use('/roles', roleRoutes);
 app.use('/heuristic-sets', heuristicSetRoutes);
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
-app.use('/severities', severitySetRoutes);
+app.use('/ratingsets', ratingSetRoutes);
 
 app.post('/finding', async (req:any, res:any) => {
   const data = req.body;
@@ -113,7 +113,7 @@ app.post('/finding', async (req:any, res:any) => {
         user: { include: { UserInProject: true }},
         project: true,
         heuristics: true,
-        severity: true,
+        rating: true,
       }
     });
 
@@ -143,7 +143,7 @@ app.put('/finding', async (req:any, res:any) => {
   await projectService.changes(data.project.id);
 
   delete data.project;
-  delete data.severity;
+  delete data.rating;
   delete data.user;
   delete data.images;
 
@@ -162,7 +162,7 @@ app.put('/finding', async (req:any, res:any) => {
         user: { include: { UserInProject: true }},
         project: true,
         heuristics: true,
-        severity: true,
+        rating: true,
       }
     });
 
@@ -178,11 +178,11 @@ app.get('/finding/:id', async (req:any, res:any) => {
     include: {
       user: { include: { UserInProject: true }},
       project: { include: {
-        severityset: { include: { severities: true } },
+        ratingset: { include: { ratings: true } },
         heuristicset: { include: { heuristics: true } },
       }},
       heuristics: true,
-      severity: true,
+      rating: true,
       images: true
     }
   });

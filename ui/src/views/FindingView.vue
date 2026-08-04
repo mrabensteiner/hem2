@@ -8,7 +8,7 @@ const router = useRouter();
 
 const finding = ref({});
 const users = ref({});
-const severityset = ref([]);
+const ratingset = ref([]);
 const heuristicsoptions = ref([]);
 
 const images = ref([]);
@@ -33,7 +33,7 @@ if (!newFinding) {
     .then(json => finding.value = json)
     .then(json => {
       transformAuthors(json);
-      severityset.value = json.project.severityset.severities;
+      ratingset.value = json.project.ratingset.ratings;
       heuristicsoptions.value = json.project.heuristicset.heuristics;
       images.value = json.images;
     })
@@ -44,7 +44,7 @@ if (!newFinding) {
     .then(response => response.json())
     .then(json => {
       //transformAuthors(json); // TODO --> current user
-      severityset.value = json.severityset.severities;
+      ratingset.value = json.ratingset.ratings;
       heuristicsoptions.value = json.heuristicset.heuristics;
     })
 
@@ -147,9 +147,9 @@ const uploadImages = async (event: Event) => {
       <textarea type="text" placeholder="Description" v-model="finding.description"></textarea>
     </div>
     <div>
-      <label>Severity</label>
-      <select v-model="finding.severityId" name="severityId">
-        <option v-for="h in severityset" :value="h.id"><Chip :chip="h"/></option>
+      <label>Rating</label>
+      <select v-model="finding.ratingId" name="ratingId">
+        <option v-for="h in ratingset" :value="h.id"><Chip :chip="h"/></option>
       </select>
     </div>
     <div>

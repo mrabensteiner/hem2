@@ -81,7 +81,7 @@ async function main() {
       {title: "Preparing", projectViewDetails: true},
       {title: "Evaluating", projectViewDetails: true, findingsAdd: true, findingsViewOwn: true, findingsEditOwn: true},
       {title: "Manager Review", projectViewDetails: true},
-      {title: "Severity Rating", projectViewDetails: true, findingsViewAll: true, ratingEdit: true},
+      {title: "Reviewer Rating", projectViewDetails: true, findingsViewAll: true, ratingEdit: true},
       {title: "Concluding", projectViewDetails: true},
       {title: "Finished", projectViewDetails: true},
     ]
@@ -176,11 +176,11 @@ async function main() {
             }
           }
         },
-        severityset : {
+        ratingset : {
           create: {
             // https://courses.isds.tugraz.at/hci/hci.pdf
             title: "Andrews' Severity Rating",
-            severities: {
+            ratings: {
               create: [
                 { title: "Catastrophic Problem", color: "red", textcolor: "white" },
                 { title: "Major Problem", color: "orange", textcolor: "white" },
@@ -195,7 +195,7 @@ async function main() {
       include: {
         Findings: true,
         heuristicset: { include: { heuristics: true } },
-        severityset: { include: { severities: true } }
+        ratingset: { include: { ratings: true } }
       }
     },
   );
@@ -221,28 +221,28 @@ async function main() {
     where: {id: project.Findings[0].id},
     data: {
       heuristics: {connect: {id: project.heuristicset.heuristics[0].id}},
-      severity: {connect: {id: project.severityset.severities[1].id}}
+      rating: {connect: {id: project.ratingset.ratings[1].id}}
     }
   });
   await prisma.finding.update({
     where: {id: project.Findings[1].id},
     data: {
       heuristics: {connect: {id: project.heuristicset.heuristics[0].id}},
-      severity: {connect: {id: project.severityset.severities[2].id}}
+      rating: {connect: {id: project.ratingset.ratings[2].id}}
     }
   });
   await prisma.finding.update({
     where: {id: project.Findings[1].id},
     data: {
       heuristics: {connect: {id: project.heuristicset.heuristics[3].id}},
-      severity: {connect: {id: project.severityset.severities[0].id}}
+      rating: {connect: {id: project.ratingset.ratings[0].id}}
     }
   });
   await prisma.finding.update({
     where: {id: project.Findings[2].id},
     data: {
       heuristics: {connect: {id: project.heuristicset.heuristics[9].id}},
-      severity: {connect: {id: project.severityset.severities[2].id}}
+      rating: {connect: {id: project.ratingset.ratings[2].id}}
     }
   });
 }
