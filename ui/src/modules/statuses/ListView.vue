@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import {useStatusesList} from "@/composables/useStatusList.ts";
+import { onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useStatuses } from "@/modules/statuses/useStatuses.ts";
 import Message from "@/components/Message.vue";
 
 const route = useRoute();
@@ -14,7 +14,7 @@ const {
   removeStatus,
   success,
   error
-} = useStatusesList();
+} = useStatuses();
 
 onMounted(() => {
   loadStatuses();

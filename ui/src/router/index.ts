@@ -5,13 +5,15 @@ import ProjectView from "@/views/ProjectView.vue";
 import UserView from "@/views/UserView.vue";
 import UsersView from "@/views/UsersView.vue";
 import FindingView from "@/views/FindingView.vue";
-import StatusView from "@/views/StatusView.vue";
 import HeuristicSetsView from "@/views/HeuristicSetsView.vue";
 import HeuristicSetView from "@/views/HeuristicSetView.vue";
 import SeverityListView from "@/views/SeverityListView.vue";
 import SeverityDetailsView from "@/views/SeverityDetailsView.vue";
 import LoginView from "@/views/LoginView.vue";
 import {useAuth} from "@/composables/useAuth.ts";
+
+import statusRoutes from '@/modules/statuses/routes';
+import roleRoutes from '@/modules/roles/routes';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,12 +54,8 @@ const router = createRouter({
       component: UsersView,
       meta: { title: 'Users', requiresAuth: true }
     },
-    {
-      path: '/status',
-      name: 'status',
-      component: StatusView,
-      meta: { title: 'Status', requiresAuth: true }
-    },
+    ...statusRoutes,
+    ...roleRoutes,
     {
       path: '/heuristics',
       name: 'heuristicsets',
@@ -100,11 +98,14 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, hasPrivilege } = useAuth();
 
   if (to.meta.requiresAuth && !isAuthenticated.value) {
     return { name: 'login' };
   } else if (to.meta.authView && isAuthenticated.value) {
+    return { name: 'projects' };
+  }
+  if (isAuthenticated.value && to.meta.requiredPrivilege && !hasPrivilege.value(to.meta.requiredPrivilege as string)) {
     return { name: 'projects' };
   }
 

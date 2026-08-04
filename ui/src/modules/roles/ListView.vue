@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import {useRolesList} from "@/composables/useRolesList.ts";
+import { onMounted } from 'vue';
+import { useRoles } from "@/modules/roles/useRoles.ts";
 import Message from "@/components/Message.vue";
-
-const route = useRoute();
 
 const {
   roles,
@@ -14,7 +11,7 @@ const {
   removeRole,
   success,
   error
-} = useRolesList();
+} = useRoles();
 
 onMounted(() => {
   loadRoles();
@@ -64,7 +61,7 @@ async function save() {
           <td><input type="checkbox" v-model="role.heuristicSetEdit"></td>
           <td><input type="checkbox" v-model="role.ratingSetEdit"></td>
           <td><input type="checkbox" v-model="role.statusEdit"></td>
-          <td><input type="checkbox" v-model="role.rolesEdit"></td>
+          <td><input type="checkbox" v-model="role.roleEdit"></td>
           <td>
             <button type="button" @click="removeRole(role.id)">Remove</button></td>
         </tr>

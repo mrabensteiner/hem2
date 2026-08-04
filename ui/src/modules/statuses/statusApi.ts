@@ -1,4 +1,4 @@
-import {apiClient, Method} from './client.ts';
+import { apiClient, Method } from '@/api/client.ts';
 
 const endpoint = "statuses";
 

@@ -2,7 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import { useAuth } from "@/composables/useAuth.ts";
 
-const { isAuthenticated, user, logout } = useAuth();
+const { isAuthenticated, hasPrivilege, user, logout } = useAuth();
 </script>
 
 <template>
@@ -14,11 +14,11 @@ const { isAuthenticated, user, logout } = useAuth();
     <nav>
       <RouterLink to="/">Home</RouterLink>
       <RouterLink v-if="isAuthenticated" to="/projects">Projects</RouterLink>
-      <RouterLink v-if="isAuthenticated" to="/users">Users</RouterLink>
-      <RouterLink v-if="isAuthenticated" to="/roles">Roles</RouterLink>
-      <RouterLink v-if="isAuthenticated" to="/status">Status</RouterLink>
-      <RouterLink v-if="isAuthenticated" to="/heuristics">Heuristics</RouterLink>
-      <RouterLink v-if="isAuthenticated" to="/severities">Severities</RouterLink>
+      <RouterLink v-if="hasPrivilege('userEdit')" to="/users">Users</RouterLink>
+      <RouterLink v-if="hasPrivilege('roleEdit')" to="/roles">Roles</RouterLink>
+      <RouterLink v-if="hasPrivilege('statusEdit')" to="/statuses">Statuses</RouterLink>
+      <RouterLink v-if="hasPrivilege('heuristicSetEdit')" to="/heuristics">Heuristics</RouterLink>
+      <RouterLink v-if="hasPrivilege('ratingSetEdit')" to="/severities">Severities</RouterLink>
     </nav>
     <nav class="user">
       <RouterLink v-if="!isAuthenticated" to="/login">Login</RouterLink>

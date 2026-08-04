@@ -1,7 +1,7 @@
 import { ref } from 'vue';
-import { statusApi } from "@/api/status.api.ts";
+import { statusApi } from "@/modules/statuses/statusApi.ts";
 
-export function useStatusesList() {
+export function useStatuses() {
   const statuses = ref<any>([]);
 
   const isLoading = ref(false);

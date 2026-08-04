@@ -14,7 +14,8 @@ async function main() {
       projectEditAll: true,
       heuristicSetEdit: true,
       ratingSetEdit: true,
-      statusEdit: true
+      statusEdit: true,
+      roleEdit: true,
     }
   });
 

@@ -1,7 +1,7 @@
 import { ref } from 'vue';
-import { roleApi } from "@/api/role.api.ts";
+import { roleApi } from "@/modules/roles/roleApi.ts";
 
-export function useRolesList() {
+export function useRoles() {
   const roles = ref<any>([]);
 
   const isLoading = ref(false);

@@ -30,6 +30,7 @@ model Role {
   heuristicSetEdit Boolean @default(false)
   ratingSetEdit    Boolean @default(false)
   statusEdit       Boolean @default(false)
+  roleEdit         Boolean @default(false)
   users            User[]
 }
 

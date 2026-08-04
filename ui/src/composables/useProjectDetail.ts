@@ -2,7 +2,7 @@ import { ref } from 'vue';
 import { projectApi } from '../api/project.api.js';
 import {heuristicSetApi} from "@/api/heuristicSet.api.ts";
 import {severitySetApi} from "@/api/severitySet.api.ts";
-import {statusApi} from "@/api/status.api.ts";
+import {statusApi} from "@/modules/statuses/statusApi.ts";
 import {userApi} from "@/api/user.api.ts";
 
 export function useProjectDetail() {
