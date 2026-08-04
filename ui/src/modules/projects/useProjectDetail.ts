@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { projectApi } from '../api/project.api.js';
+import { projectApi } from '../../api/project.api.ts';
 import {heuristicSetApi} from "@/api/heuristicSet.api.ts";
 import {ratingSetApi} from "@/api/ratingSetApi.ts";
 import {statusApi} from "@/modules/statuses/statusApi.ts";
@@ -12,6 +12,7 @@ export function useProjectDetail() {
   const members = ref<string[]>([]);
 
   const isLoading = ref(false);
+  const success = ref<string | null>(null);
   const error = ref<string | null>(null);
 
   const statuses = ref<any>([]);
@@ -48,6 +49,7 @@ export function useProjectDetail() {
   async function loadProject(projectId: string, isNew: boolean = false) {
     isLoading.value = true;
     error.value = null;
+    success.value = null;
 
     try {
       [statuses.value, heuristics.value, ratings.value, users.value] = await Promise.all([
@@ -63,6 +65,7 @@ export function useProjectDetail() {
 
       if (!isNew) {
         const data = await projectApi.getById(projectId);
+        success.value = data.success;
         project.value = data;
 
         extractRoles(data.UserInProject);
@@ -75,8 +78,9 @@ export function useProjectDetail() {
     }
   }
 
-  async function saveProject(isNew: boolean) {
+  async function saveProject(isNew: boolean = false) {
     error.value = null;
+    success.value = null;
 
     try {
       const payload = {
@@ -87,6 +91,7 @@ export function useProjectDetail() {
 
       const savedData = await projectApi.save(payload, isNew);
       project.value = savedData;
+      success.value = savedData.success;
 
       return savedData;
     } catch (err: any) {
@@ -105,6 +110,7 @@ export function useProjectDetail() {
     ratings,
     users,
     isLoading,
+    success,
     error,
     loadProject,
     saveProject

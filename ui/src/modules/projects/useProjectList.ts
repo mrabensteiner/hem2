@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { projectApi } from '../api/project.api.js';
+import { projectApi } from '../../api/project.api.ts';
 
 export function useProjectsList() {
   const projects = ref<any[]>([]);
