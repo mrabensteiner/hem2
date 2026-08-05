@@ -22,7 +22,7 @@ onMounted(() => {
 
 const findingsTableHead = [
   { "key": "id", "title": "ID", "hidden": true },
-  { "key": "title", "title": "Title", "locked": true },
+  { "key": "title", "title": "Title", "type": "link", "locked": true, sortable: true },
   { "key": "description", "title": "Description", "hidden": true },
   { "key": "heuristics", "title": "Heuristic(s)", "type": "multichip" },
   { "key": "rating", "title": "Rating", "type": "chip" },
@@ -58,4 +58,18 @@ const findingsTableHead = [
   <h2>Findings</h2>
   <Table :head="findingsTableHead" :data="findings" sort="updatedat" dir="asc" />
   <RouterLink :to="`/project/${project.id}/findings/new`" class="button">New Finding</RouterLink>
+
+  <h2>Findings per Reviewer</h2>
+  <div>
+    <div v-for="user in project.UserInProject?.filter((uip: any) => uip.projectRole === 'MEMBER').map((uip: any) => uip.user)">
+      {{user.firstname}} {{user.lastname}}
+      ({{findings.filter((f: any) => f.user.includes(`${user.firstname} ${user.lastname}`)).length}})
+
+      <ul>
+        <li v-for="f in findings.filter((f: any) => f.user.includes(`${user.firstname} ${user.lastname}`))">
+          <RouterLink :to="{ path: `${route.path}/findings/${f.id}` }">{{f.title}}</RouterLink>
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>

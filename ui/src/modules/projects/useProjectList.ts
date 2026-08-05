@@ -11,7 +11,7 @@ export function useProjectsList() {
       ...project,
       link: `/project/${project.id}`,
       manager: project.UserInProject
-        ? project.UserInProject.map((uip: any) => `${uip.user.firstname} ${uip.user.lastname}`)
+        ? project.UserInProject.filter((uip: any) => uip.projectRole === "MANAGER").map((uip: any) => `${uip.user.firstname} ${uip.user.lastname}`)
         : []
     }));
   }

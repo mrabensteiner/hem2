@@ -21,7 +21,7 @@ model Role {
   id               String  @id @unique @default(nanoid(8))
   title            String  @default("")
   description      String  @default("")
-  order            Int     @default(0)
+  order            Int     @default(autoincrement())
   userAdd          Boolean @default(false)
   userEdit         Boolean @default(false)
   projectAdd       Boolean @default(false)
@@ -109,8 +109,8 @@ model Status {
   id                 String    @id @unique @default(nanoid(8))
   title              String    @default("")
   color              String    @default("#aaa")
-  textcolor          String    @default("#eee")
-  order              Int       @default(0)
+  textcolor          String    @default("#222")
+  order              Int       @default(autoincrement())
   projectViewDetails Boolean   @default(false)
   findingsAdd        Boolean   @default(false)
   findingsViewOwn    Boolean   @default(false)
@@ -135,10 +135,10 @@ model Heuristic {
   description    String        @default("")
   set            HeuristicSet? @relation(fields: [heuristicsetId], references: [id])
   color          String        @default("#aaa")
-  textcolor      String        @default("#eee")
+  textcolor      String        @default("#222")
   heuristicsetId String?
   Finding        Finding[]
-  order          Int?
+  order          Int           @default(autoincrement())
 }
 
 model RatingSet {
@@ -155,10 +155,10 @@ model Rating {
   description String       @default("")
   set         RatingSet?   @relation(fields: [ratingsetId], references: [id])
   color       String?      @default("#aaa")
-  textcolor   String?      @default("#eee")
+  textcolor   String?      @default("#222")
   ratingsetId String?
   Finding     Finding[]
-  order       Int          @default(0)
+  order       Int          @default(autoincrement())
   userRatings UserRating[]
 }
 

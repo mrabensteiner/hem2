@@ -22,7 +22,7 @@ onMounted(() => {
 
 <template>
   <RouterLink :to="{ path: '/project/' + route.params.pid}">Project: {{finding.project?.title}}</RouterLink>
-  <h1>Finding: {{ finding.title }}  <RouterLink :to="{ path: `${route.path}/edit`}">Edit</RouterLink></h1>
+  <h1>Finding: {{ finding.title }} <RouterLink :to="{ path: `${route.path}/edit`}">Edit</RouterLink></h1>
 
   <hr/>
   <p><label>Reviewer(s):</label>
@@ -45,45 +45,3 @@ onMounted(() => {
 
   <Message :success="success" :error="error" />
 </template>
-
-
-<style scoped>
-table {
-  width: 100%;
-  border-collapse: collapse;
-
-  td {
-    padding: .2rem;
-    border-width: 0 1px;
-    border-style: solid;
-    border-color: var(--color-text);
-  }
-
-  thead, tbody tr:nth-child(even) {
-    background-color: var(--color-background-mute);
-  }
-
-  thead {
-    border-bottom: 1px solid var(--color-text);
-    text-align: center;
-
-    tr:first-child td {
-      font-weight: bold;
-    }
-  }
-
-  td:not(:first-child) {
-      text-align: center;
-
-  }
-
-  input {
-    width: 100%;
-  }
-
-  button {
-    margin: 0;
-    font-size: 1rem;
-  }
-}
-</style>

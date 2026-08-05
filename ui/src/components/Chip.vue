@@ -10,7 +10,7 @@ const { chip } = defineProps<{
 </script>
 
 <template>
-  <span v-if="chip?.title" class="chip">
+  <span v-if="chip?.title" class="chip" :title="chip?.description">
     {{ chip.title }}
   </span>
 </template>
@@ -21,17 +21,20 @@ const { chip } = defineProps<{
   background-color: v-bind("chip?.color || 'none'");
 
   font-size: .75rem;
-  padding: .5rem;
+  padding: .25rem .5rem;
   border-radius: .5rem;
-  margin-right: .5rem;
+  margin: .1rem;
   white-space: pre;
   display: inline-block;
+
+  &[title]:not([title=""]) {
+    cursor: help;
+  }
 
   &::before {
     background-color: v-bind("chip?.textcolor || 'inherit'");
     display: inline-block;
     height: .5rem;
-    //width: .5rem;
     content: '';
   }
 }

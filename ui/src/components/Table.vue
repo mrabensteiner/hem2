@@ -7,6 +7,7 @@ interface HeaderColumn {
   key: string;
   title: string;
   type?: 'link' | 'multi' | 'chip' | 'multichip' | 'time';
+  sortable?: boolean;
   hidden?: boolean;
   locked?: boolean;
 }
@@ -39,6 +40,11 @@ const sortedData = computed(() => {
   return [...props.data].sort((a: DataRow, b: DataRow) => {
     let valA = a[key];
     let valB = b[key];
+
+    if (props.head.find(h => h.type === 'chip')) {
+      valA = valA?.order ?? -1;
+      valB = valB?.order ?? -1;
+    }
 
     const isNumA = typeof valA === 'number' || (!isNaN(Number(valA)) && valA !== '');
     const isNumB = typeof valB === 'number' || (!isNaN(Number(valB)) && valB !== '');
@@ -114,7 +120,7 @@ watch(
           {{ h.title }}
 
           <span
-            v-if="!['link', 'chip', 'multi', 'multichip'].includes(h.type || '')"
+            v-if="!['link', 'multi', 'multichip'].includes(h.type || '') || h.sortable"
             :data-dir="sortKey === h.key ? sortDir : ''"
             @click="sortCol(h.key)"
             title="Sort"
@@ -171,7 +177,6 @@ table {
   width: 100%;
   overflow: hidden;
   border-collapse: collapse;
-  margin-top: 2.6rem;
 }
 
 thead {
@@ -202,6 +207,11 @@ tbody {
 .col-toggle-container {
   display: flex;
   justify-content: end;
+  margin-bottom: 2.6rem;
+
+  &:not(:has(input:enabled)) {
+    display: none;
+  }
 }
 
 .col-toggle {

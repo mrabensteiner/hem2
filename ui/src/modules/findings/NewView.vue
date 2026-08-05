@@ -52,7 +52,7 @@ async function save(reload: boolean = false) {
         <option v-for="h in finding.project?.ratingset.ratings" :value="h.id"><Chip :chip="h"/></option>
       </select>
     </div>
-    <div>
+    <div v-if="projectUsers.length">
       <label>Authors</label><br/>
       <select v-model="finding.user" multiple>
         <option v-for="u in projectUsers" :key="u.id" type="checkbox" name="authors" :value="u.id" >

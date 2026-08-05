@@ -10,7 +10,7 @@ Master's Thesis, Graz University of Technology
 ## Database Initialisation
 
 Set up your database environment variables in the `.env` file.
-When using included the docker file, the content of `.env.example` can be used.
+When using the included docker file, the content of `.env.example` can be used.
 
 Start the docker container either with the Docker app or command line:
 ```
@@ -33,6 +33,12 @@ Create sample data
 pnpm db:seed
 ```
 
+When database changes in the development happen, the following command can reset
+the database and make a new setup and seed:
+```
+pnpm db:dev
+```
+
 
 ## Run Development Servers
 
@@ -52,9 +58,9 @@ pnpm dev:api
 pnpm dev:ui
 ```
 
-## Example User
-Adminstrator - Username: `admin`, Password: `admin`
-
+## Example Users
+Administrator - Username: `admin`, Password: `admin`
+Other users have the username as password as well
 
 ## Reset
 

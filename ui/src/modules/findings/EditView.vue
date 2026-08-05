@@ -44,7 +44,7 @@ async function save() {
         <option v-for="h in finding.project?.ratingset.ratings" :value="h.id"><Chip :chip="h"/></option>
       </select>
     </div>
-    <div>
+    <div v-if="projectUsers.length">
       <label>Authors</label><br/>
       <select v-model="finding.user" multiple>
         <option v-for="u in projectUsers" :key="u.id" type="checkbox" name="authors" :value="u.id" >
@@ -63,45 +63,3 @@ async function save() {
   </form>
   <Message :success="success" :error="error" />
 </template>
-
-
-<style scoped>
-table {
-  width: 100%;
-  border-collapse: collapse;
-
-  td {
-    padding: .2rem;
-    border-width: 0 1px;
-    border-style: solid;
-    border-color: var(--color-text);
-  }
-
-  thead, tbody tr:nth-child(even) {
-    background-color: var(--color-background-mute);
-  }
-
-  thead {
-    border-bottom: 1px solid var(--color-text);
-    text-align: center;
-
-    tr:first-child td {
-      font-weight: bold;
-    }
-  }
-
-  td:not(:first-child) {
-      text-align: center;
-
-  }
-
-  input {
-    width: 100%;
-  }
-
-  button {
-    margin: 0;
-    font-size: 1rem;
-  }
-}
-</style>

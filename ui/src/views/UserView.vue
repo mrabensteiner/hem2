@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import Message from "@/components/Message.vue";
+import {useRoles} from "@/modules/roles/useRoles.ts";
 
 const route = useRoute();
 const router = useRouter();
@@ -9,6 +10,15 @@ const success = ref("");
 const error = ref("");
 const user = ref({});
 const newUser = route.params.id == "new";
+
+const {
+  roles,
+  loadRoles
+} = useRoles();
+
+onMounted(() => {
+  loadRoles();
+});
 
 if (!newUser) {
   console.log("get", route.params.id)
@@ -88,8 +98,8 @@ async function save() {
     </div>
     <div v-if="user.role">
       <label>Role</label>
-      <select v-model="user.role.id" disabled>
-        <option :value="user.role.id">{{ user.role.title }}</option>
+      <select v-model="user.role.id">
+        <option v-for="r in roles" :value="r.id">{{ r.title }}</option>
       </select>
     </div>
     <input type="submit" value="Save"/>

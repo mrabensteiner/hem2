@@ -119,7 +119,7 @@ button, a.button, input[type="submit"] {
   background-color: rgba(var(--app-primary-rgb), .05);
   border: 2px solid var(--color-border);
   padding: .5rem;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-family: inherit;
   font-weight: bold;
   margin: 1rem 1rem 1rem 0;
@@ -128,7 +128,6 @@ button, a.button, input[type="submit"] {
 }
 
 label, input:not([type="submit"]), select, textarea {
-  font-size: 1.5rem;
   padding: .5rem;
 }
 
@@ -173,6 +172,7 @@ div:not(.list-row) > {
 }
 
 input, textarea, select {
+  font-size: inherit;
   font-family: inherit;
   background-color: var(--color-background-soft);
   color: var(--color-text);
@@ -187,4 +187,8 @@ input, textarea, select {
   &:hover, &:focus {
     border-color: var(--app-primary);
   }
+}
+
+select[multiple] {
+  min-height: 12rem;
 }

@@ -3,7 +3,5 @@
 </script>
 
 <template>
-  <main>
-    Welcome to HEM2
-  </main>
+  <h1>Welcome to HEM2</h1>
 </template>

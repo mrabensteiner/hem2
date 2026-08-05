@@ -85,7 +85,7 @@ async function save() {
     </div>
 
     <div>
-      <label>Members</label>
+      <label>Reviewers</label>
       <label v-for="u in users" :key="'form-mbr-' + u.id" class="checkbox-label">
         <input type="checkbox" :value="u.id" v-model="members" :disabled="managers.includes(u.id)" />
         {{ u.firstname }} {{ u.lastname }}
