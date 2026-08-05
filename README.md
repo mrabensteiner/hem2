@@ -5,30 +5,44 @@ Martin Rabensteiner
 
 Master's Thesis, Graz University of Technology
 
+[https://github.com/mrabensteiner/hem2](https://github.com/mrabensteiner/hem2)
 
 
-## Database Initialisation
 
-Set up your database environment variables in the `.env` file.
-When using the included docker file, the content of `.env.example` can be used.
+## Software Installation
 
-Start the docker container either with the Docker app or command line:
+Install Docker ... TODO from where.
+
+
+Clone the repository to a local folder:
 ```
-pnpm docker
+git clone git@github.com:mrabensteiner/hem2.git
 ```
 
-Install dependencies
+Install dependencies:
 ```
 pnpm install
 ```
 
-Generate database and model
+
+## Database Setup
+
+Set up your database environment variables in the `.env` file.
+When using the included docker file, the content of `.env.example` can be used.
+
+
+Start Docker and initialise the HEM2 container either with the command:
+```
+pnpm docker
+```
+
+Generate database and model:
 ```
 pnpm db:setup
 ```
 
 
-Create sample data
+Create sample data:
 ```
 pnpm db:seed
 ```
@@ -40,32 +54,65 @@ pnpm db:dev
 ```
 
 
+
+
 ## Run Development Servers
 
-To start both API and UI
+If the HEM2 Docker container is not already running, start it either with
+the Docker app, or using the command:
+```
+pnpm docker
+```
 
+Start both the API and UI servers:
 ```
 pnpm dev
 ```
 
-Open [http://localhost:5173/](http://localhost:5173/)
+Then, open a web browser at [http://localhost:5173/](http://localhost:5173/)
 
-Alternative commands - start API and UI togehter with docker, or each separately;
+
+
+Alternatively, start the docker container, the API server, and the UI
+server all together with the single command:
 
 ```
 pnpm dev:all
+```
+
+The API server and the UI server can also be started individually with
+separate commands:
+```
 pnpm dev:api
 pnpm dev:ui
 ```
 
+
 ## Example Users
-Administrator - Username: `admin`, Password: `admin`
-Other users have the username as password as well
+
+Initially, a default admin user is created:  
+Username: `admin`  
+Password: `admin`
+
+Some other users are created as well. by default, they have the
+same password as their user name.
+
+
 
 ## Reset
 
-Clear old data (development only!)
-
+Clear old data (during development only!):
 ```
 pnpm  -filter hem2-api db:cleanup
 ```
+
+
+
+## Contributors
+
+
+
+## Acknowledgements
+
+
+
