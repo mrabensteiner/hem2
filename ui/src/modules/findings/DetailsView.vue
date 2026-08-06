@@ -4,6 +4,7 @@ import { useFindings } from "@/modules/findings/useFindings.ts";
 import Message from "@/components/Message.vue";
 import {useRoute} from "vue-router";
 import Chip from "@/components/Chip.vue";
+import { Timeago } from 'vue2-timeago';
 
 const route = useRoute();
 
@@ -25,6 +26,8 @@ onMounted(() => {
   <h1>Finding: {{ finding.title }} <RouterLink :to="{ path: `${route.path}/edit`}">Edit</RouterLink></h1>
 
   <hr/>
+  <div class="row">
+  <div class="col-3">
   <p><label>Reviewer(s):</label>
     <span>{{finding.user?.map(u => [u.firstname, u.lastname].join(" ")).join(", ")}}</span>
   </p>
@@ -33,7 +36,11 @@ onMounted(() => {
       <Chip :chip="h" />
     </template>
   </p>
-  <hr/>
+    <p><label>Last Update:</label>
+      <span><abbr :title="new Date(finding.updatedat).toLocaleString('en-GB')"><timeago :datetime="finding.updatedat"/></abbr></span>
+    </p>
+  </div>
+  <div class="col-9">
   <label>Description:</label>
   <p>{{ finding.description }}</p>
 
@@ -41,7 +48,20 @@ onMounted(() => {
   <div class="thumbnails">
     <img v-for="i in finding.images" :src="'http://localhost:3000/'+i.path" width="100"/>
   </div>
-  <hr/>
+  </div>
+  </div>
 
   <Message :success="success" :error="error" />
 </template>
+
+<style scoped>
+.row {
+  display: flex;
+}
+.col-3 {
+  width: 33%;
+}
+.col-9 {
+  width: 66%;
+}
+</style>
