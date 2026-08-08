@@ -16,7 +16,7 @@ export async function apiClient(endpoint: string, method = Method.GET, options: 
 
   options.method = method;
 
-  if (options.body && typeof options.body === 'object') {
+  if (options.body && typeof options.body === 'object' && JSON.stringify(options.body) != "{}") {
     options.body = JSON.stringify(options.body);
     options.headers = {
       'Content-Type': 'application/json'

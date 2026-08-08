@@ -25,7 +25,7 @@ async function uploadFindingImages(req: Request, res: Response) {
     for (const file of files) {
       const filenameSplitted = file.originalname.toLowerCase().split(".");
       const mimetypeSplitted = file.mimetype.toLowerCase().split("/");
-      console.log(mimetypeSplitted, filenameSplitted);
+
       let extension = filenameSplitted[filenameSplitted.length - 1];
       extension = "jpg" ? "jpeg" : extension ?? "";
 

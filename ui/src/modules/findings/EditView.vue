@@ -9,9 +9,11 @@ const route = useRoute();
 
 const {
   finding,
+  images,
   projectUsers,
   loadFinding,
   saveFinding,
+  uploadImages,
   success,
   error
 } = useFindings();
@@ -23,6 +25,21 @@ onMounted(() => {
 async function save() {
   await saveFinding();
 }
+
+const uploadImagesHandler = async (event: Event) => {
+  const input = event.target as HTMLInputElement;
+
+  if (!input.files) return;
+
+  const formData = new FormData();
+
+  for (const file of input.files) {
+    formData.append("image", file);
+  }
+
+  await uploadImages(formData);
+  input.value = "";
+};
 </script>
 
 
@@ -58,8 +75,14 @@ async function save() {
           {{h.title}}</option>
       </select>
     </div>
+    <div>
+      <label>Images</label><br/>
+      <input type="file" @change="uploadImagesHandler" multiple accept="image/png, image/jpeg, image/gif">
+      <div class="thumbnails">
+        <img v-for="i in images" :alt="i.title" :src="'http://localhost:3000/'+i.path" width="100"/>
+      </div>
+    </div>
     <input type="submit" value="Save"/>
-    <RouterLink :to="{ path: '/project/' + route.params.pid + '/finding/new'}" class="button">New Finding</RouterLink>
   </form>
   <Message :success="success" :error="error" />
 </template>
