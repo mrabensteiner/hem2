@@ -25,44 +25,73 @@ const props = defineProps<{
 const columnDirections = ref<Record<string, SortDirection>>({});
 const sortKey = ref<string>(props.sort || "");
 const sortDir = ref<SortDirection>(props.dir || "asc");
+const filterKeys = ref<any>({});
 
 const visibleCols = ref<string[]>(
   props.head.filter(col => !col.hidden).map(col => col.key)
 );
 
-const sortedData = computed(() => {
-  const key = sortKey.value;
+const filteredData = computed(() => {
+  return [...props.data].filter(function (row: any) {
+    let filtered = true;
+    Object.keys(filterKeys.value).forEach((key: string) => {
+      let rowValue = row[key];
+      rowValue = rowValue.id ?? rowValue;
+      const colType = filterKeys.value[key].type;
 
-  if (!key || props.data.length === 0) {
-    return props.data;
-  }
-
-  return [...props.data].sort((a: DataRow, b: DataRow) => {
-    let valA = a[key];
-    let valB = b[key];
-
-    if (props.head.find(h => h.type === 'chip')) {
-      valA = valA?.order ?? -1;
-      valB = valB?.order ?? -1;
-    }
-
-    const isNumA = typeof valA === 'number' || (!isNaN(Number(valA)) && valA !== '');
-    const isNumB = typeof valB === 'number' || (!isNaN(Number(valB)) && valB !== '');
-
-    if (isNumA && isNumB) {
-      valA = Number(valA);
-      valB = Number(valB);
-    } else {
-      valA = String(valA).toUpperCase();
-      valB = String(valB).toUpperCase();
-    }
-
-    const modifier = sortDir.value === 'desc' ? -1 : 1;
-    if (valA < valB) return -1 * modifier;
-    if (valA > valB) return 1 * modifier;
-    return 0;
+      if (colType == undefined || ["link", "chip"].includes(colType) ) {
+        if (!filterKeys.value[key]['filter'].includes(rowValue)) {
+          filtered = false;
+        }
+      } else if (["multi", "multichip"].includes(colType)) {
+        let subfilter = false;
+        rowValue.forEach((f: any) => {
+          const value = f.id ?? f;
+          if (filterKeys.value[key]['filter'].includes(value)) {
+            subfilter = true;
+          }
+        })
+        filtered = filtered && subfilter;
+      }
+    });
+    return filtered;
   });
 });
+
+const sortedData = computed(() => {
+  const key = sortKey.value;
+  const data = filteredData.value;
+
+  if (!key || data.length === 0) {
+    return data;
+  }
+
+  return [...data].sort((a, b) => sortHelper(a,b, key));
+});
+
+function sortHelper(a: DataRow, b: DataRow, key: string) {
+  let valA = a[key];
+  let valB = b[key];
+
+  valA = valA.order ?? valA;
+  valB = valB.order ?? valB;
+
+  const isNumA = typeof valA === 'number' || (!isNaN(Number(valA)) && valA !== '');
+  const isNumB = typeof valB === 'number' || (!isNaN(Number(valB)) && valB !== '');
+
+  if (isNumA && isNumB) {
+    valA = Number(valA);
+    valB = Number(valB);
+  } else {
+    valA = String(valA).toUpperCase();
+    valB = String(valB).toUpperCase();
+  }
+
+  const modifier = sortDir.value === 'desc' ? -1 : 1;
+  if (valA < valB) return -1 * modifier;
+  if (valA > valB) return 1 * modifier;
+  return 0;
+}
 
 function sortCol(key: string) {
   const currentDir = columnDirections.value[key];
@@ -79,6 +108,14 @@ function sortCol(key: string) {
   sortDir.value = nextDir;
 }
 
+function activeFilter(key: string) {
+  return filterKeys.value[key]["filter"].length != filterKeys.value[key]["options"].length;
+}
+
+function resetFilter(key: string) {
+  filterKeys.value[key]["filter"] = filterKeys.value[key]["options"].map((o: any) => o.id);
+}
+
 watch(
   () => props.sort,
   (newSort) => {
@@ -88,6 +125,56 @@ watch(
     columnDirections.value[newSort] = initialDir;
     sortKey.value = newSort;
     sortDir.value = initialDir;
+  },
+  { immediate: true }
+);
+
+watch(
+  () => [props.head, props.data],
+  ([newHead, newData]) => {
+    if (newHead == undefined || newData == undefined) return;
+
+    let localFilter: { [key: string]: any } = {};
+
+    newHead.forEach((h: any) => {
+      const key = h.key ?? "";
+      localFilter[key] = {
+        type: h.type,
+        options: [],
+        filter: []
+      };
+
+      newData.forEach((d: any) => {
+        const value = [d[h.key]].flat();
+
+        value.forEach((v: any) => {
+          const id = v.id ?? v;
+          const title = v.title ?? v;
+          const order = v.order;
+
+          const index = localFilter[key].filter.indexOf(id);
+          if (index === -1) {
+            localFilter[key].filter.push(id);
+            localFilter[key].options.push({
+              id: id,
+              title: title,
+              order: order,
+              count: 1
+            });
+          } else {
+            localFilter[key].options[index].count += 1;
+          }
+        })
+      });
+
+      if (["chip", "multichip"].includes(h.type)) {
+        localFilter[key]['options'].sort((a: any , b: any) => sortHelper(a, b,"order"));
+      } else {
+        localFilter[key]['options'].sort((a: any, b:any) => sortHelper(a, b,"title"));
+      }
+    });
+
+    filterKeys.value = localFilter;
   },
   { immediate: true }
 );
@@ -123,8 +210,33 @@ watch(
             v-if="!['link', 'multi', 'multichip'].includes(h.type || '') || h.sortable"
             :data-dir="sortKey === h.key ? sortDir : ''"
             @click="sortCol(h.key)"
+            :class="sortKey == h.key ? 'active' : ''"
             title="Sort"
           ></span>
+
+          <span
+            v-if="!['link', 'time'].includes(h.type || '') || h.sortable"
+            :data-filter="h.key"
+            :class="activeFilter(h.key) ? 'active' : ''"
+            title="Filter"
+          >
+            <div>
+              <div>
+                <label>
+                  <input type="checkbox" @click="resetFilter(h.key)" :disabled="!activeFilter(h.key)" :checked="!activeFilter(h.key)">
+                  All
+                </label>
+              </div>
+              <div>
+                <div v-for="r in filterKeys[h.key]['options']" :key="'filter-' + h.key + r">
+                  <label>
+                    <input type="checkbox" :value="r.id" v-model="filterKeys[h.key]['filter']">
+                    {{ r.title }} ({{ r.count }})
+                  </label>
+                </div>
+              </div>
+            </div>
+          </span>
         </th>
       </tr>
       </thead>
@@ -177,6 +289,7 @@ table {
   width: 100%;
   overflow: hidden;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 thead {
@@ -240,25 +353,60 @@ tbody {
   }
 }
 
-[data-dir] {
+[data-dir], [data-filter] {
   cursor: pointer;
 
   &::after {
     display: inline-block;
-    margin-left: .5rem;
+    margin-left: .25rem;
     font-size: 1rem;
     width: 1.5rem;
     background-color: #eee;
-    content: "⥮";
     border-radius: .25rem;
+  }
+
+  &[data-dir]::after {
+    content: "⥮";
+  }
+  &[data-filter]::after {
+    content: "V";
+  }
+  &.active::after {
+    background-color: var(--app-primary);
+    color: var(--color-background);
   }
 }
 
-[data-dir="desc"]::after {
+[data-filter]:not(:hover) div {
+  display: none
+}
+
+[data-filter] > div {
+  background-color: var(--color-background-mute);
+  border: 2px solid var(--color-border);
+  position: absolute;
+  width: fit-content;
+  text-align: left;
+
+  > div {
+    margin: .5rem;
+  }
+  > div:last-child {
+    background-color: var(--color-background);
+    max-height: 20vh;
+    overflow-y: scroll;
+
+    > div {
+      border-bottom: 1px solid var(--color-border);
+    }
+  }
+}
+
+[data-dir][data-dir="desc"]::after {
   content: "⥣";
 }
 
-[data-dir="asc"]::after {
+[data-dir][data-dir="asc"]::after {
   content: "⥥";
 }
 </style>
