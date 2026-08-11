@@ -1,7 +1,7 @@
 import { ref } from 'vue';
-import { projectApi } from '../../api/project.api.ts';
-import {heuristicSetApi} from "@/api/heuristicSet.api.ts";
-import {ratingSetApi} from "@/api/ratingSetApi.ts";
+import { projectApi } from '@/api/project.api.ts';
+import {heuristicSetApi} from "@/modules/heuristics/heuristicSetApi.ts";
+import {ratingSetApi} from "@/modules/ratings/ratingSetApi.ts";
 import {statusApi} from "@/modules/statuses/statusApi.ts";
 import {userApi} from "@/api/user.api.ts";
 

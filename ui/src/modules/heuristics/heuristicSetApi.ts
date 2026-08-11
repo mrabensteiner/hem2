@@ -1,8 +1,8 @@
-import {apiClient, Method} from './client.ts';
+import {apiClient, Method} from '@/api/client.ts';
 
-const endpoint = "ratingsets";
+const endpoint = "heuristic-sets";
 
-export const ratingSetApi = {
+export const heuristicSetApi = {
   async getAll() {
     return apiClient(endpoint);
   },
@@ -11,9 +11,9 @@ export const ratingSetApi = {
     return apiClient(`${endpoint}/${id}`);
   },
 
-  async save(ratingData: any, isNew: boolean) {
+  async save(heuristicData: any, isNew: boolean) {
     return apiClient(endpoint, isNew ? Method.POST : Method.PUT, {
-      body: ratingData
+      body: heuristicData
     });
   },
 

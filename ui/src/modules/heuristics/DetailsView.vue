@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {onMounted, computed, ref, watch} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useRatingDetail } from "@/composables/useRatingDetail.ts";
+import { useHeuristic } from "./useHeuristic.ts";
 import draggable from 'vuedraggable';
 import Chip from "@/components/Chip.vue";
 import Message from "@/components/Message.vue";
@@ -9,42 +9,42 @@ import Message from "@/components/Message.vue";
 const route = useRoute();
 const router = useRouter();
 
-const isNewRatingSet = computed(() => route.params.id === 'new');
+const isNewHeuristicSet = computed(() => route.params.id === 'new');
 
 const {
-  ratingSet,
-  loadRatingSet,
-  saveRatingSet,
-  addRating,
-  removeRating,
+  heuristicSet,
+  loadHeuristicSet,
+  saveHeuristicSet,
+  addHeuristic,
+  removeHeuristic,
   success,
   error
-} = useRatingDetail();
+} = useHeuristic();
 
 const colorOverride = ref("#777");
 const textcolorOverride = ref("#fff");
 
 onMounted(() => {
-  loadRatingSet(route.params.id as string, isNewRatingSet.value);
+  loadHeuristicSet(route.params.id as string, isNewHeuristicSet.value);
 });
 
 watch(colorOverride, (newColor: string) => {
-  Object.keys(ratingSet.value.ratings).forEach(key => {
-    ratingSet.value.ratings[key].color = newColor;
+  Object.keys(heuristicSet.value.heuristics).forEach(key => {
+    heuristicSet.value.heuristics[key].color = newColor;
   })
 });
 
 watch(textcolorOverride, (newTextcolor: string) => {
-  Object.keys(ratingSet.value.ratings).forEach(key => {
-    ratingSet.value.ratings[key].textcolor = newTextcolor;
+  Object.keys(heuristicSet.value.heuristics).forEach(key => {
+    heuristicSet.value.heuristics[key].textcolor = newTextcolor;
   })
 });
 
 async function save() {
-  await saveRatingSet(isNewRatingSet.value);
+  await saveHeuristicSet(isNewHeuristicSet.value);
 
-  if (isNewRatingSet.value) {
-    router.push('/ratings');
+  if (isNewHeuristicSet.value) {
+    router.push('/heuristics');
   }
 }
 </script>
@@ -60,15 +60,15 @@ hr {
 </style>
 
 <template>
-  <h1>Rating Set</h1>
+  <h1>Heuristic Set</h1>
   <form @submit.prevent="save">
     <label>
       Title
-      <input type="text" v-model="ratingSet.title"/>
+      <input type="text" v-model="heuristicSet.title"/>
     </label>
     <label>
       Description
-      <textarea v-model="ratingSet.description"/>
+      <textarea v-model="heuristicSet.description"/>
     </label>
     <div>
       <label>
@@ -80,8 +80,8 @@ hr {
         <input v-model="textcolorOverride" type="color"/>
       </label>
     </div>
-    <label>Ratings</label>
-    <draggable v-model="ratingSet.ratings" item-key="id" handle=".drag-handle" ghost-class="ghost">
+    <label>Heuristics</label>
+    <draggable v-model="heuristicSet.heuristics" item-key="id" handle=".drag-handle" ghost-class="ghost">
       <template #item="{ element }">
         <div class="list-row">
           <div class="drag-handle">⋮⋮</div>
@@ -109,11 +109,11 @@ hr {
               <Chip :chip="element"/>
             </label>
           </div>
-          <button type="button" @click="removeRating(element.id)">Remove</button>
+          <button type="button" @click="removeHeuristic(element.id)">Remove</button>
         </div>
       </template>
     </draggable>
-    <button type="button" @click="addRating">Add Rating</button>
+    <button type="button" @click="addHeuristic">Add Heuristic</button>
     <input type="submit" value="Save"/>
     <Message :success="success" :error="error" />
   </form>

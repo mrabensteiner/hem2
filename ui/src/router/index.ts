@@ -2,16 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import UserView from "@/views/UserView.vue";
 import UsersView from "@/views/UsersView.vue";
-import HeuristicSetsView from "@/views/HeuristicSetsView.vue";
-import HeuristicSetView from "@/views/HeuristicSetView.vue";
-import RatingListView from "@/views/RatingListView.vue";
-import RatingDetailsView from "@/views/RatingDetailsView.vue";
 import LoginView from "@/views/LoginView.vue";
 import {useAuth} from "@/composables/useAuth.ts";
 
 import projectRoutes from '@/modules/projects/routes';
 import statusRoutes from '@/modules/statuses/routes';
 import roleRoutes from '@/modules/roles/routes';
+import heuristicRoutes from '@/modules/heuristics/routes';
+import ratingRoutes from '@/modules/ratings/routes';
 import findingRoutes from '@/modules/findings/routes';
 
 const router = createRouter({
@@ -38,31 +36,9 @@ const router = createRouter({
     ...projectRoutes,
     ...statusRoutes,
     ...roleRoutes,
+    ...heuristicRoutes,
+    ...ratingRoutes,
     ...findingRoutes,
-    {
-      path: '/heuristics',
-      name: 'heuristicsets',
-      component: HeuristicSetsView,
-      meta: { title: 'Heuristic Sets', requiresAuth: true }
-    },
-    {
-      path: '/heuristics/:id',
-      name: 'heuristics',
-      component: HeuristicSetView,
-      meta: { title: 'Heuristics', requiresAuth: true }
-    },
-    {
-      path: '/ratings',
-      name: 'ratinglist',
-      component: RatingListView,
-      meta: { title: 'Rating Sets', requiresAuth: true }
-    },
-    {
-      path: '/ratings/:id',
-      name: 'ratingdetails',
-      component: RatingDetailsView,
-      meta: { title: 'Rating Set', requiresAuth: true }
-    },
     {
       path: '/user/:id',
       name: 'User',

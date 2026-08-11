@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import { useRatingList } from '../composables/useRatingList.ts';
+import { useRating } from './useRating.ts';
 import Table from "@/components/Table.vue";
 
-const { ratingSets, loadRatingSets } = useRatingList();
+const { ratingSets, loadRatingSets } = useRating();
 
 onMounted(() => {
   loadRatingSets();
