@@ -16,7 +16,10 @@ async function getById(req: Request, res: Response) {
   try {
     const finding = await findingService.getById(req.params.id as string);
     res.json({
-      data: finding
+      data: {
+        ...finding,
+        userRatings: finding?.userRatings.find(ur => ur.userId == req.user?.id)?.ratingId
+      }
     });
   } catch (error: any) {
     res.status(500).json({error: error.message});
@@ -59,10 +62,22 @@ async function update(req: Request, res: Response) {
   }
 }
 
+async function rate(req: Request, res: Response) {
+  try {
+    await findingService.rate(req.params.id, req.body, req.user);
+    res.json({
+      success: "Finding rated successfully."
+    });
+  } catch (error: any) {
+    res.status(500).json({error: error.message});
+  }
+}
+
 export const findingController = {
   getAll,
   getById,
   create,
   remove,
   update,
+  rate
 };

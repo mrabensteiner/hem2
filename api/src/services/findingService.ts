@@ -31,8 +31,9 @@ async function getById(id: string) {
         }},
       heuristics: true,
       rating: true,
-      images: true
-    }
+      images: true,
+      userRatings: true
+    },
   });
 }
 
@@ -113,10 +114,31 @@ async function remove(data: any) {
   });
 }
 
+async function rate(id: any, rating: any, user: any) {
+  return prisma.userRating.upsert({
+    where: {
+      userId_findingId: {
+        findingId: id,
+        userId: user.id
+      }
+    },
+    update: {
+      ratingId: rating.id
+    },
+    create: {
+      userId: user.id,
+      findingId: id,
+      ratingId: rating.id
+    }
+  })
+}
+
+
 export const findingService = {
   getAll,
   getById,
   create,
   update,
   remove,
+  rate
 };

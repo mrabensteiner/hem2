@@ -1,6 +1,7 @@
 import DetailsView from "@/modules/findings/DetailsView.vue";
 import NewView from "@/modules/findings/NewView.vue";
 import EditView from "@/modules/findings/EditView.vue";
+import RatingView from "@/modules/findings/RatingView.vue";
 
 export default [
   {
@@ -26,5 +27,13 @@ export default [
     meta: {
       requiresAuth: true
     }
-  }
+  },
+  {
+    path: '/project/:pid/findings/:id/rate',
+    name: 'FindingsRate',
+    component: RatingView,
+    meta: {
+      requiresAuth: true
+    }
+  },
 ];

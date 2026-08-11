@@ -10,7 +10,9 @@ const route = useRoute();
 
 const {
   finding,
+  userRating,
   loadFinding,
+  saveRating,
   success,
   error
 } = useFindings();
@@ -23,8 +25,7 @@ onMounted(() => {
 
 <template>
   <RouterLink :to="{ path: '/project/' + route.params.pid}">Project: {{finding.project?.title}}</RouterLink>
-  <h1>Finding: {{ finding.title }} <RouterLink :to="{ path: `${route.path}/edit`}">Edit</RouterLink></h1>
-
+  <h1>Rate: {{ finding.title }}</h1>
   <hr/>
   <div class="row">
   <div class="col-3">
@@ -50,7 +51,16 @@ onMounted(() => {
   </div>
   </div>
   </div>
-  <RouterLink :to="{ path: `${route.path}/rate` }">Rate</RouterLink>
+  <form @submit.prevent="saveRating">
+  <h3>Rate</h3>
+  <div class="ratingbuttons">
+    <label v-for="r in finding.project?.ratingset.ratings" :style="'--main-bg-color:'+ r.color + ';--main-text-color:'+ r.textcolor">
+      <input @click="console.log('submit')" type="radio" name="rating" :value="r.id" v-model="userRating">
+      <span>{{r.title}}</span>
+    </label>
+  </div>
+  <input type="submit" value="Save"/>
+  </form>
 
   <Message :success="success" :error="error" />
 </template>
@@ -64,5 +74,46 @@ onMounted(() => {
 }
 .col-9 {
   width: 66%;
+}
+
+.ratingbuttons {
+  --main-bg-color: #777;
+  --main-text-color: #fff;
+
+  display: flex;
+  gap: 1rem;
+
+  input {
+    appearance: none;
+    border: none;
+    padding: 0;
+  }
+
+  label {
+    text-align: center;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    border: 2px solid black;
+    color: var(--main-bg-color);
+    border-color: var(--main-bg-color);
+    display: flex;
+    justify-content: center;
+
+    span {
+      font-weight: bold;
+    }
+    &:hover {
+      cursor: pointer;
+      background-color: color-mix(in srgb, var(--main-bg-color)20%, transparent);
+    }
+
+    &:has(input:checked) {
+      color: var(--main-text-color);
+      background-color: color-mix(in srgb, var(--main-bg-color)60%, transparent);
+    }
+
+  }
 }
 </style>

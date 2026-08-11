@@ -2,10 +2,12 @@ import { ref } from 'vue';
 import { findingApi } from "@/modules/findings/findingApi.ts";
 import {projectApi} from "@/api/project.api.ts";
 import { imageApi } from "@/api/images.ts";
+import {useAuth} from "@/composables/useAuth.ts";
 
 export function useFindings() {
   const finding = ref<any>([]);
   const images = ref<any>([]);
+  const userRating = ref<any>("");
   const projectUsers = ref<any>([]);
 
   const isLoading = ref(false);
@@ -23,6 +25,7 @@ export function useFindings() {
       error.value = response.error ?? "";
       finding.value = response.data;
       images.value = response.data.images;
+      userRating.value = response.data.userRatings ?? "";
 
       if (edit) {
         mapSelectValues();
@@ -134,15 +137,34 @@ export function useFindings() {
     }
   }
 
+  async function saveRating() {
+    error.value = null;
+    success.value = null;
+
+    try {
+      const findingId = finding.value.id;
+      const rating = userRating.value;
+
+      const response = await findingApi.saveRating(findingId, rating);
+      success.value = response.success ?? "";
+      error.value = response.error ?? "";
+    } catch (err: any) {
+      error.value = err.message;
+      throw err;
+    }
+  }
+
   return {
     finding,
     images,
+    userRating,
     projectUsers,
     loadFinding,
     loadNewFinding,
     createFinding,
     saveFinding,
     removeFinding,
+    saveRating,
     uploadImages,
     success,
     error

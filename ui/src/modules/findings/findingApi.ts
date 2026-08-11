@@ -24,8 +24,14 @@ export const findingApi = {
   },
 
   async remove(id: string) {
-  return apiClient(endpoint, Method.DELETE, {
-    body: { id: id }
-  });
-},
+    return apiClient(endpoint, Method.DELETE, {
+      body: { id: id }
+    });
+  },
+
+  async saveRating(id: string, rating: string) {
+    return apiClient(`${endpoint}/${id}/rate`, Method.POST, {
+      body: { id: rating }
+    });
+  },
 };

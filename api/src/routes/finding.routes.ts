@@ -11,5 +11,6 @@ router.post('/', findingController.create);
 router.delete('/', findingController.remove);
 router.put('/', findingController.update);
 router.get('/:id', findingController.getById);
+router.post('/:id/rate', findingController.rate);
 
 export default router;
