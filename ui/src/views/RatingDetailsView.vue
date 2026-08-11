@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
+import {onMounted, computed, ref, watch} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useRatingDetail } from "@/composables/useRatingDetail.ts";
 import draggable from 'vuedraggable';
@@ -21,8 +21,23 @@ const {
   error
 } = useRatingDetail();
 
+const colorOverride = ref("#777");
+const textcolorOverride = ref("#fff");
+
 onMounted(() => {
   loadRatingSet(route.params.id as string, isNewRatingSet.value);
+});
+
+watch(colorOverride, (newColor: string) => {
+  Object.keys(ratingSet.value.ratings).forEach(key => {
+    ratingSet.value.ratings[key].color = newColor;
+  })
+});
+
+watch(textcolorOverride, (newTextcolor: string) => {
+  Object.keys(ratingSet.value.ratings).forEach(key => {
+    ratingSet.value.ratings[key].textcolor = newTextcolor;
+  })
 });
 
 async function save() {
@@ -55,6 +70,16 @@ hr {
       Description
       <textarea v-model="ratingSet.description"/>
     </label>
+    <div>
+      <label>
+        Override Background
+        <input v-model="colorOverride" type="color"/>
+      </label>
+      <label>
+        Override Textcolour
+        <input v-model="textcolorOverride" type="color"/>
+      </label>
+    </div>
     <label>Ratings</label>
     <draggable v-model="ratingSet.ratings" item-key="id" handle=".drag-handle" ghost-class="ghost">
       <template #item="{ element }">
@@ -65,21 +90,23 @@ hr {
               Title
               <input v-model="element.title"/>
             </label>
+            <div>
             <label>
               Background
-              <input v-model="element.color" type="color"/>
+              <input @change="console.log('ch', element.id, element.color)" v-model="element.color" type="color"/>
             </label>
             <label>
               Text Colour
               <input v-model="element.textcolor" type="color"/>
             </label>
-            <label>
-              Preview<br/>
-              <Chip :chip="element"/>
-            </label>
+            </div>
             <label>
               Description
               <textarea v-model="element.description"></textarea>
+            </label>
+            <label v-if="element.title">
+              Preview<br/>
+              <Chip :chip="element"/>
             </label>
           </div>
           <button type="button" @click="removeRating(element.id)">Remove</button>
@@ -114,8 +141,10 @@ hr {
       flex-grow: 1;
     }
 
-    label:last-child {
+    label:last-child,
+    label:nth-last-child(2) {
       flex-basis: 100%;
+      margin-top: 0;
     }
   }
 
@@ -123,9 +152,10 @@ hr {
     font-size: 1rem;
   }
 
-  input {
-    width: 100%;
-  }
+}
+
+input:not([type="submit"]) {
+  width: 100%;
 }
 
 .drag-handle {

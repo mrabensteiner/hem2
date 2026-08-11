@@ -51,7 +51,7 @@ export function useRatingDetail() {
     try {
       const payload = ratingSet.value;
       const newData = await ratingSetApi.createSingle(payload.id);
-      ratingSet.value.rating.push(newData);
+      ratingSet.value.ratings.push(newData);
     } catch (err: any) {
       error.value = err.message;
       throw err;
