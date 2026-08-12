@@ -20,7 +20,7 @@ async function getById(id: string) {
       heuristicset: { include: { heuristics: true }},
       ratingset: { include: { ratings: true }},
       status: true,
-      Findings: { include: { user: true, heuristics: true , rating: true }}
+      Findings: { include: { user: true, heuristics: true , rating: true, userRatings: true }}
     }
   });
 }

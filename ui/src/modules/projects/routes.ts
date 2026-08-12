@@ -2,6 +2,7 @@ import ListView from "@/modules/projects/ListView.vue";
 import DetailsView from "@/modules/projects/DetailsView.vue";
 import NewView from "@/modules/projects/NewView.vue";
 import EditView from "@/modules/projects/EditView.vue";
+import RatingsView from "@/modules/projects/RatingsView.vue";
 
 export default [
   {
@@ -19,6 +20,15 @@ export default [
     component: DetailsView,
     meta: {
       title: 'Project',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/project/:id/ratings',
+    name: 'ProjectRatings',
+    component: RatingsView,
+    meta: {
+      title: 'Project Ratings',
       requiresAuth: true
     }
   },

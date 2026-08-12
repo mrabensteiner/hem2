@@ -16,8 +16,8 @@ export function useProjectDetail() {
   const error = ref<string | null>(null);
 
   const statuses = ref<any>([]);
-  const heuristics = ref<any>([]);
-  const ratings = ref<any>([]);
+  const heuristicSets = ref<any>([]);
+  const ratingSets = ref<any>([]);
   const users = ref<any[]>([]);
 
   function extractRoles(userInProjectList: any[]) {
@@ -31,6 +31,38 @@ export function useProjectDetail() {
         members.value.push(item.userId);
       }
     });
+  }
+
+  function prepareRatingsForTable() {
+    findings.value = [];
+
+    if (!project.value.Findings) {
+      return;
+    }
+
+    const ratingSet = project.value.ratingset.ratings;
+
+    project.value.Findings.forEach((f: any) => {
+      const ur = f.userRatings;
+
+      f.rpu = members.value.map((uid) => {
+        const ratingId = ur.find((r: any) => r.userId === uid && r.findingId === f.id)?.ratingId;
+        const rating = ratingSet.find((r: any) => r.id === ratingId);
+
+        return {
+          userId: uid,
+          title: rating?.title ?? "",
+          value: rating?.order ?? "-"
+        };
+      })
+
+      let total = f.rpu.map((r: any) => r.value);
+      total = total.filter((i: string | number) => i != "-");
+      total = total.length ? total.reduce((a: number, b: number) => a + b) / total.length : "-";
+      f.totalRating = total;
+
+      findings.value.push(f);
+    })
   }
 
   function prepareFindingsForTable(projectData: any) {
@@ -52,7 +84,7 @@ export function useProjectDetail() {
     success.value = null;
 
     try {
-      [statuses.value, heuristics.value, ratings.value, users.value] = await Promise.all([
+      [statuses.value, heuristicSets.value, ratingSets.value, users.value] = await Promise.all([
         statusApi.getAll(),
         heuristicSetApi.getAll(),
         ratingSetApi.getAll(),
@@ -106,10 +138,11 @@ export function useProjectDetail() {
     managers,
     members,
     statuses,
-    heuristics,
-    ratings,
+    heuristicSets,
+    ratingSets,
     users,
     isLoading,
+    prepareRatingsForTable,
     success,
     error,
     loadProject,

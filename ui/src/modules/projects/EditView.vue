@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import { useFindings } from "@/modules/findings/useFindings.ts";
 import Message from "@/components/Message.vue";
 import {useRoute, useRouter} from "vue-router";
-import Chip from "@/components/Chip.vue";
 import {useProjectDetail} from "@/modules/projects/useProjectDetail.ts";
 
 const route = useRoute();
@@ -14,8 +12,8 @@ const {
   managers,
   members,
   statuses,
-  heuristics,
-  ratings,
+  heuristicSets,
+  ratingSets,
   users,
   success,
   error,
@@ -35,7 +33,7 @@ async function save() {
 
 
 <template>
-  <h1>Edit Project <RouterLink :to="{ name: 'ProjectDetails', params: {id: route.params.pid, id: route.params.id} }">Cancel Edit</RouterLink></h1>
+  <h1>Edit Project <RouterLink :to="{ name: 'ProjectDetails', params: {pid: route.params.pid, id: route.params.id} }">Cancel Edit</RouterLink></h1>
   <form @submit.prevent="save">
     <div>
       <label>Title</label>
@@ -59,7 +57,7 @@ async function save() {
     <div>
       <label for="heuristic">Heuristic Set</label>
       <select id="heuristic" v-model="project.heuristicsetId" required>
-        <option v-for="h in heuristics" :key="h.id" :value="h.id">
+        <option v-for="h in heuristicSets" :key="h.id" :value="h.id">
           {{ h.title }}
         </option>
       </select>
@@ -68,7 +66,7 @@ async function save() {
     <div>
       <label for="rating">Rating Set</label>
       <select id="rating" v-model="project.ratingsetId" required>
-        <option v-for="s in ratings" :key="s.id" :value="s.id">
+        <option v-for="s in ratingSets" :key="s.id" :value="s.id">
           {{ s.title }}
         </option>
       </select>
