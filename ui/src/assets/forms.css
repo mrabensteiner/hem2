@@ -1,0 +1,56 @@
+label, input:not([type="submit"]), select, textarea {
+  padding: .5rem;
+}
+
+label:not(:has(input[type="checkbox"])) {
+  font-weight: bold;
+  margin-top: .5rem;
+  display: inline-block;
+
+
+  > input {
+    font-weight: normal;
+  }
+}
+
+label:has(input[type="checkbox"]) {
+  display: block;
+}
+
+div:not(.list-row) > {
+  div:has(> label, > input), label:has(> input), label:has(> textarea) {
+    display: block;
+    margin-top: 1rem;
+  }
+}
+
+select[multiple] option:checked {
+  background-color: var(--app-primary);
+  color: var(--vt-c-white);
+}
+
+form > label {
+  width: 100%;
+}
+
+input, textarea, select {
+  font-size: inherit;
+  font-family: inherit;
+  background-color: var(--color-background-soft);
+  color: var(--color-text);
+  border-style: solid;
+  border-color: var(--color-border);
+
+  &[type="color"] {
+    cursor: pointer;
+    height: 3rem;
+  }
+
+  &:hover, &:focus {
+    border-color: var(--app-primary);
+  }
+}
+
+select[multiple] {
+  min-height: 12rem;
+}

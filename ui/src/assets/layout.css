@@ -1,0 +1,29 @@
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main, footer {
+  background-color: var(--color-background);
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (min-width: 1280px) {
+  main, footer {
+    width: 1280px;
+  }
+}
+
+main {
+  align-self: stretch;
+  padding: 2rem;
+  flex: 1;
+}
+
+footer {
+  padding: 1rem;
+  background-color: var(--app-secondary);
+  color: var(--vt-c-white);
+}

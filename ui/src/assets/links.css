@@ -1,0 +1,30 @@
+a, .primary-text {
+  color: var(--app-primary);
+}
+
+a {
+  text-decoration: none;
+  transition: 0.4s;
+  padding: 3px;
+}
+
+button, a.button, input[type="submit"] {
+  color: var(--color-text);
+  background-color: rgba(var(--app-primary-rgb), .05);
+  border: 2px solid var(--color-border);
+  padding: .5rem;
+  font-size: 1.1rem;
+  font-family: inherit;
+  font-weight: bold;
+  margin: 1rem 1rem 1rem 0;
+  display: inline-block;
+  line-height: 1.6;
+}
+
+@media (hover: hover) {
+  a:hover, button:hover, input[type="submit"]:hover {
+    cursor: pointer;
+    border-color: var(--app-primary);
+    background-color: rgba(var(--app-primary-rgb), 0.2);
+  }
+}
