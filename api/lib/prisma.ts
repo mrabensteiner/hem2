@@ -9,7 +9,14 @@ loadEnvFile('./../.env');
 const connectionString = `${process.env.DATABASE_URL}`;
 
 const adapter = new PrismaPg({ connectionString });
-const prisma = new PrismaClient({ adapter }).$extends({
+const prisma = new PrismaClient({
+    adapter: adapter,
+    omit: {
+      user: {
+        password: true,
+      },
+    },
+  }).$extends({
   query: {
     user: {
       async create({ args, query }) {

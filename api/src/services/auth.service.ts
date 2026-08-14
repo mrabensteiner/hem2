@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'super-secure-secret-key';
 async function login(username: string, password: string) {
   const user = await prisma.user.findUnique({
     where: { username },
-    include: { role: true }
+    select: { id: true, username: true, password: true, firstname: true, lastname: true, role: true },
   });
   if (!user) {
     throw new Error('Wrong username or password.');

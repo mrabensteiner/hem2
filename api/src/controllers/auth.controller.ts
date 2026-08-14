@@ -18,7 +18,7 @@ async function login(req: Request, res: Response): Promise<void> {
   }
 }
 
-async function getUser(req: Request, res: Response): Promise<void> {
+async function getUser(req: any, res: Response): Promise<void> {
   res.json({ user: req.user });
 }
 
