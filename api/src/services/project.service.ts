@@ -1,6 +1,6 @@
 import {prisma} from "../../lib/prisma";
 
-async function getAll(): Promise<any> {
+async function getAll(userId: string): Promise<any> {
   return prisma.project.findMany({
     include: {
       UserInProject: { include: { user: true } },
@@ -8,6 +8,9 @@ async function getAll(): Promise<any> {
       ratingset: true,
       status: true,
       _count: { select: { Findings: true } }
+    },
+    where: {
+      UserInProject: { some: { userId: userId } }
     }
   });
 }
