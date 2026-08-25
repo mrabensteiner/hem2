@@ -15,8 +15,8 @@ async function getAll(userId: string): Promise<any> {
   });
 }
 
-async function getById(id: string) {
-  return prisma.project.findUnique({
+async function getById(id: string, user: any) {
+  const project = await prisma.project.findUnique({
     where: {id: id},
     include: {
       UserInProject: { include: { user: true }},
@@ -26,6 +26,22 @@ async function getById(id: string) {
       Findings: { include: { user: true, heuristics: true , rating: true, userRatings: true }}
     }
   });
+
+  checkProjectPrivileges(project, user, "projectViewDetails", "projectViewAll");
+
+  const uip = project?.UserInProject.find((u: any) => u.userId === user.id);
+
+  if (uip?.projectRole == "MANAGER" || project?.status.findingsViewAll) {
+    return project;
+  }
+
+  if (project?.status.findingsViewOwn) {
+    project.Findings = project?.Findings.filter(f => f.user.find(u => u.id == user.id))
+  } else if (project) {
+    project.Findings = [];
+  }
+
+  return project;
 }
 
 async function create(data: any) {
@@ -87,7 +103,8 @@ async function update(data: any) {
       title: data.title,
       description: data.description,
       heuristicsetId: data.heuristicsetId,
-      ratingsetId: data.ratingsetId
+      ratingsetId: data.ratingsetId,
+      statusId: data.statusId
     },
     include: {
       UserInProject: { include: { user: true }},
@@ -104,6 +121,13 @@ async function changes(id: string) {
     where: { id },
     data: { updatedat: new Date() }
   });
+}
+
+function checkProjectPrivileges(project: any, user: any, projectPrivilege: string, privilege: string) {
+  const uip = project?.UserInProject.find((u: any) => u.userId === user.id);
+  if (uip == undefined || (!user.role[privilege] && uip.projectRole == "MEMBER" && !project?.status[projectPrivilege])) {
+    throw new Error("Not possible in this project status.");
+  }
 }
 
 export const projectService = {

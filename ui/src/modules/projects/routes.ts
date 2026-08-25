@@ -20,7 +20,8 @@ export default [
     component: DetailsView,
     meta: {
       title: 'Project',
-      requiresAuth: true
+      requiresAuth: true,
+      requiredProjectPrivilege: 'projectViewDetails'
     }
   },
   {

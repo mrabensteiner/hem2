@@ -58,6 +58,7 @@ const uploadImagesHandler = async (event: Event) => {
     <div>
       <label>Rating</label>
       <select v-model="finding.ratingId" name="ratingId">
+        <option>-</option>
         <option v-for="h in finding.project?.ratingset.ratings" :value="h.id"><Chip :chip="h"/></option>
       </select>
     </div>

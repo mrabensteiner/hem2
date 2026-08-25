@@ -12,7 +12,7 @@ async function getAll(req: Request, res: Response) {
 
 async function getById(req: Request, res: Response) {
   try {
-    const project = await projectService.getById(req.params.id as string);
+    const project = await projectService.getById(req.params.id as string, req.user);
     res.json(project);
   } catch (error: any) {
     res.status(500).json({error: error.message});

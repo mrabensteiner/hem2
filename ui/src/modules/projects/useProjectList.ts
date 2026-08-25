@@ -1,5 +1,8 @@
 import { ref } from 'vue';
-import { projectApi } from '../../api/project.api.ts';
+import { projectApi } from '@/api/project.api.ts';
+import {useAuth} from "@/composables/useAuth.ts";
+
+const {hasPrivilege} = useAuth();
 
 export function useProjectsList() {
   const projects = ref<any[]>([]);
@@ -9,6 +12,7 @@ export function useProjectsList() {
   function prepareForTable(data: any[]) {
     return data.map((project: any) => ({
       ...project,
+      deactivated: !project.status.projectViewDetails && !hasPrivilege.value("projectViewAll"),
       link: `/project/${project.id}`,
       manager: project.UserInProject
         ? project.UserInProject.filter((uip: any) => uip.projectRole === "MANAGER").map((uip: any) => `${uip.user.firstname} ${uip.user.lastname}`)

@@ -55,7 +55,10 @@ const findingsTableHead = [
   <p>{{ project.description }}</p>
   <hr/>
 
-  <h2>Findings</h2>
+  <h2>Findings
+    <abbr class="info" v-if="project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, Findings of other Reviewers are hidden.">i</abbr>
+    <abbr class="info" v-if="!project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, all Findings are hidden.">i</abbr>
+  </h2>
   <Table :head="findingsTableHead" :data="findings" sort="updatedat" dir="asc" />
   <RouterLink :to="`/project/${project.id}/findings/new`" class="button">New Finding</RouterLink>
 
@@ -73,3 +76,15 @@ const findingsTableHead = [
     </div>
   </div>
 </template>
+
+<style scoped>
+.info {
+  color: var(--app-primary);
+  cursor: help;
+  width: 1.5em;
+  display: inline-block;
+  border: 2px solid var(--app-primary);
+  text-align: center;
+  border-radius: 50%;
+}
+</style>

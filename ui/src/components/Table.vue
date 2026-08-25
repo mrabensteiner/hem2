@@ -35,7 +35,7 @@ const filteredData = computed(() => {
   return [...props.data].filter(function (row: any) {
     let filtered = true;
     Object.keys(filterKeys.value).forEach((key: string) => {
-      let rowValue = row[key];
+      let rowValue = row[key] ?? "None";
       rowValue = rowValue.id ?? rowValue;
       const colType = filterKeys.value[key].type;
 
@@ -45,6 +45,11 @@ const filteredData = computed(() => {
         }
       } else if (["multi", "multichip"].includes(colType)) {
         let subfilter = false;
+
+        if (rowValue.length === 0) {
+          rowValue.push("None");
+        }
+
         rowValue.forEach((f: any) => {
           const value = f.id ?? f;
           if (filterKeys.value[key]['filter'].includes(value)) {
@@ -147,10 +152,15 @@ watch(
       newData.forEach((d: any) => {
         const value = [d[h.key]].flat();
 
+        if (value.length == 0) {
+          value.push(undefined);
+        }
+
         value.forEach((v: any) => {
+          v = v ?? "None";
           const id = v.id ?? v;
           const title = v.title ?? v;
-          const order = v.order;
+          const order = v.order ?? -1;
 
           const index = localFilter[key].filter.indexOf(id);
           if (index === -1) {
@@ -244,7 +254,7 @@ watch(
       <tr v-if="data.length === 0">
         <td :colspan="head.length">Empty - create new entries</td>
       </tr>
-      <tr v-for="(r, rIdx) in sortedData" :key="rIdx">
+      <tr v-for="(r, rIdx) in sortedData" :key="rIdx" :class="r.deactivated ? 'deactivated' : 'notdea'">
         <td
           v-for="h in head"
           :key="h.key"
@@ -253,10 +263,14 @@ watch(
           :class="{ 'hidden': !visibleCols.includes(h.key) }"
         >
           <template v-if="h.type === 'link'">
-            <RouterLink :to="{ path: r.link }">
+            <RouterLink :to="{ path: r.link }" v-if="!r.deactivated">
               <template v-if="h.key === 'link'">Open</template>
               <template v-else>{{ r[h.key] }}</template>
             </RouterLink>
+            <span v-else>
+              <template v-if="h.key === 'link'"><abbr title="Not available in this status.">---</abbr></template>
+              <template v-else>{{ r[h.key] }}</template>
+            </span>
           </template>
           <template v-else-if="h.type === 'multi'">
             {{ r[h.key].join(", ") }}
