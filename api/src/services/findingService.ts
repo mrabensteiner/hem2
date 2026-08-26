@@ -37,6 +37,26 @@ async function getById(id: string) {
   });
 }
 
+async function getRandom(pid: string, user: any) {
+  return prisma.finding.findFirst({
+    where: {
+      projectId: pid,
+      userRatings: { none: { userId: user.id }}
+    },
+    include: {
+      user: { include: { UserInProject: true }},
+      project: { include: {
+          ratingset: { include: { ratings: true } },
+          heuristicset: { include: { heuristics: true } },
+        }},
+      heuristics: true,
+      rating: true,
+      images: true,
+      userRatings: true
+    },
+  });
+}
+
 async function create(data: any, user: any) {
   let authors = data.user ?? [];
   let heuristics = data.heuristics ?? [];
@@ -137,6 +157,7 @@ async function rate(id: any, rating: any, user: any) {
 export const findingService = {
   getAll,
   getById,
+  getRandom,
   create,
   update,
   remove,

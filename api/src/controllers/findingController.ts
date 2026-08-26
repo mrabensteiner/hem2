@@ -26,6 +26,20 @@ async function getById(req: Request, res: Response) {
   }
 }
 
+async function getRandom(req: Request, res: Response) {
+  try {
+    const finding = await findingService.getRandom(req.params.pid as string, req.user);
+    res.json({
+      data: {
+        ...finding,
+        userRatings: finding?.userRatings.find(ur => ur.userId == req.user?.id)?.ratingId
+      }
+    });
+  } catch (error: any) {
+    res.status(500).json({error: error.message});
+  }
+}
+
 async function create(req: Request, res: Response) {
   try {
     const finding = await findingService.create(req.body, req.user);
@@ -76,6 +90,7 @@ async function rate(req: Request, res: Response) {
 export const findingController = {
   getAll,
   getById,
+  getRandom,
   create,
   remove,
   update,

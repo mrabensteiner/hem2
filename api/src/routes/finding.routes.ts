@@ -6,7 +6,7 @@ const router: Router = Router();
 
 router.use(requireAuth);
 
-router.get('/', findingController.getAll);
+router.get('/', findingController.getRandom);
 router.post('/', findingController.create);
 router.delete('/', findingController.remove);
 router.put('/', findingController.update);
