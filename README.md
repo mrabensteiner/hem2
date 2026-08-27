@@ -11,8 +11,7 @@ Master's Thesis, Graz University of Technology
 
 ## Software Installation
 
-Install Docker ... TODO from where.
-
+Install [Docker](https://www.docker.com/)
 
 Clone the repository to a local folder:
 ```
@@ -109,10 +108,12 @@ pnpm  -filter hem2-api db:cleanup
 
 
 ## Contributors
-
+- Martin Rabensteiner (Conception and Development as Master's Thesis)
+- Keith Andrews (Supervisor)
 
 
 ## Acknowledgements
+- Martin Loitz, who developed the [initial version of HEM](https://github.com/mloitzl/hem) in 2005
 
 
 
