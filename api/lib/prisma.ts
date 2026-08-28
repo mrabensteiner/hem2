@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../generated/prisma/client";
-import { loadEnvFile } from 'node:process';
+import { PrismaClient } from "../prisma/generated/client";
+import { loadEnvFile } from "node:process";
 import bcrypt from 'bcrypt';
 
 loadEnvFile('./../.env');
