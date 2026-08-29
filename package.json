@@ -2,11 +2,18 @@
   "name": "hem2",
   "version": "1.0.0",
   "repository": "git+https://github.com/mrabensteiner/hem2",
-  "keywords": ["heuristic evaluation", "expert review", "issue tracking","ux", "vue", "postgres"],
+  "keywords": [
+    "heuristic evaluation",
+    "expert review",
+    "issue tracking",
+    "ux",
+    "vue",
+    "postgres"
+  ],
   "description": "A Modern Web Application to Support the Expert Review Process",
   "author": "Martin Rabensteiner",
   "license": "MIT",
-  "packageManager": "pnpm@11.17.0",
+  "packageManager": "pnpm@12.1.0",
   "scripts": {
     "install:all": "pnpm install",
     "db:dev": "pnpm -filter hem2-api db:reset && pnpm -filter hem2-api db:setup && pnpm -filter hem2-api db:seed",
@@ -21,6 +28,6 @@
     "docker:stop": "docker compose down"
   },
   "devDependencies": {
-    "concurrently": "^10.0.4"
+    "concurrently": "^10.0.5"
   }
 }

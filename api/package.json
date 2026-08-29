@@ -2,7 +2,14 @@
   "name": "hem2-api",
   "version": "1.0.0",
   "type": "module",
-  "keywords": ["heuristic evaluation", "expert review", "issue tracking","ux", "vue", "postgres"],
+  "keywords": [
+    "heuristic evaluation",
+    "expert review",
+    "issue tracking",
+    "ux",
+    "vue",
+    "postgres"
+  ],
   "description": "The API part of HEM2, handling HTTP requests and database transactions.",
   "author": "Martin Rabensteiner",
   "license": "MIT",
@@ -17,16 +24,16 @@
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset"
   },
-  "packageManager": "pnpm@11.17.0",
+  "packageManager": "pnpm@12.1.0",
   "dependencies": {
-    "@prisma/adapter-pg": "^7.8.0",
-    "@prisma/client": "^7.8.0",
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.2.0",
-    "nanoid": "^6.0.0"
+    "nanoid": "^6.0.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -34,10 +41,10 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.2.0",
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.4.0",
     "dotenv": "^17.4.2",
-    "prisma": "^7.8.0",
-    "tsx": "^4.23.1",
+    "prisma": "8.0.0-rc.12",
+    "tsx": "^4.23.12",
     "typescript": "^7.0.2"
   }
 }

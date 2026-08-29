@@ -2,7 +2,14 @@
   "name": "hem2-ui",
   "version": "1.0.0",
   "type": "module",
-  "keywords": ["heuristic evaluation", "expert review", "issue tracking","ux", "vue", "postgres"],
+  "keywords": [
+    "heuristic evaluation",
+    "expert review",
+    "issue tracking",
+    "ux",
+    "vue",
+    "postgres"
+  ],
   "description": "The API part of HEM2, handling HTTP requests and database transactions.",
   "author": "Martin Rabensteiner",
   "license": "MIT",
@@ -17,11 +24,11 @@
     "lint:eslint": "eslint . --fix --cache",
     "format": "prettier --write --experimental-cli src/"
   },
-  "packageManager": "pnpm@11.17.0",
+  "packageManager": "pnpm@12.1.0",
   "dependencies": {
     "vue": "^3.5.40",
     "vue-router": "^5.2.0",
-    "vue2-timeago": "^3.0.3",
+    "vue3-timeago": "^1.0.6",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
