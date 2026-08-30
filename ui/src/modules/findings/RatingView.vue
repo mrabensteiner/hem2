@@ -4,8 +4,7 @@ import { useFindings } from "@/modules/findings/useFindings.ts";
 import Message from "@/components/Message.vue";
 import {useRoute} from "vue-router";
 import Chip from "@/components/Chip.vue";
-import { Timeago } from 'vue2-timeago';
-
+import TimeAgo from "@/components/TimeAgo.vue";
 const route = useRoute();
 
 const {
@@ -38,7 +37,7 @@ onMounted(() => {
     </template>
   </p>
     <p><label>Last Update:</label>
-      <span><abbr :title="new Date(finding.updatedat).toLocaleString('en-GB')"><timeago :datetime="finding.updatedat"/></abbr></span>
+      <span><TimeAgo :date="finding.updatedat"/></span>
     </p>
   </div>
   <div class="col-9">

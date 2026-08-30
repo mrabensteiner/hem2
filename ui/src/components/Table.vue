@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref, computed, watch} from "vue";
-import { Timeago } from 'vue2-timeago';
 import Chip from "@/components/Chip.vue";
+import TimeAgo from "@/components/TimeAgo.vue";
 
 interface HeaderColumn {
   key: string;
@@ -282,7 +282,7 @@ watch(
             <Chip v-for="c in r[h.key]" :chip="c" />
           </template>
           <template v-else-if="h.type === 'time'">
-            <abbr :title="new Date(r[h.key]).toLocaleString('en-GB')"><timeago :datetime="r[h.key]"/></abbr>
+            <TimeAgo :date="r[h.key]"/>
           </template>
           <template v-else>{{ r[h.key] }}</template>
         </td>
