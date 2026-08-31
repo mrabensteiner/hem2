@@ -5,6 +5,8 @@ import { useHeuristic } from "./useHeuristic.ts";
 import draggable from 'vuedraggable';
 import Chip from "@/components/Chip.vue";
 import Message from "@/components/Message.vue";
+import IconSave from "@/components/icons/IconSave.vue";
+import IconAdd from "@/components/icons/IconAdd.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -46,22 +48,28 @@ async function save() {
   if (isNewHeuristicSet.value) {
     router.push('/heuristics');
   }
+  edited.value = false;
 }
+
+const edited = ref<boolean>(false);
 </script>
 
 <style>
 input[type="text"], input[type="password"], select, textarea {
   width: 100%;
 }
-
-hr {
-  margin: 1rem 0;
-}
 </style>
 
 <template>
-  <h1>Heuristic Set</h1>
-  <form @submit.prevent="save">
+  <form @submit.prevent="save" @input="edited = true">
+    <section class="sticky">
+      <div>
+        <RouterLink :to="{ path: '/heuristics'}">Heuristic Sets</RouterLink>
+        <h1>Heuristic Set: {{heuristicSet.title}}</h1>
+      </div>
+      <button type="button" @click="addHeuristic"><IconAdd class="icon"/> Add Heuristic</button>
+      <button role="submit" :disabled="!edited"><IconSave class="icon"/> Save</button>
+    </section>
     <label>
       Title
       <input type="text" v-model="heuristicSet.title"/>
@@ -81,7 +89,7 @@ hr {
       </label>
     </div>
     <label>Heuristics</label>
-    <draggable v-model="heuristicSet.heuristics" item-key="id" handle=".drag-handle" ghost-class="ghost">
+    <draggable v-model="heuristicSet.heuristics" item-key="id" handle=".drag-handle" ghost-class="ghost" @end="edited = true">
       <template #item="{ element }">
         <div class="list-row">
           <div class="drag-handle">⋮⋮</div>
@@ -114,7 +122,6 @@ hr {
       </template>
     </draggable>
     <button type="button" @click="addHeuristic">Add Heuristic</button>
-    <input type="submit" value="Save"/>
     <Message :success="success" :error="error" />
   </form>
 </template>

@@ -5,6 +5,8 @@ import { useRating } from "./useRating.ts";
 import draggable from 'vuedraggable';
 import Chip from "@/components/Chip.vue";
 import Message from "@/components/Message.vue";
+import IconSave from "@/components/icons/IconSave.vue";
+import IconAdd from "@/components/icons/IconAdd.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -46,22 +48,27 @@ async function save() {
   if (isNewRatingSet.value) {
     router.push('/ratings');
   }
+  edited.value = false;
 }
+
+const edited = ref<boolean>(false);
 </script>
 
 <style>
 input[type="text"], input[type="password"], select, textarea {
   width: 100%;
 }
-
-hr {
-  margin: 1rem 0;
-}
 </style>
 
 <template>
-  <h1>Rating Set</h1>
-  <form @submit.prevent="save">
+  <form @submit.prevent="save" @input="edited = true">
+    <section class="sticky">
+      <div>
+        <RouterLink :to="{ path: '/ratings'}">Rating Sets</RouterLink>
+        <h1>Rating Set: {{ratingSet.title}}</h1>
+      </div>
+      <button type="button" @click="addRating"><IconAdd class="icon"/> Add Rating</button>
+      <button role="submit" :disabled="!edited"><IconSave class="icon"/> Save</button>    </section>
     <label>
       Title
       <input type="text" v-model="ratingSet.title"/>
@@ -81,7 +88,7 @@ hr {
       </label>
     </div>
     <label>Ratings</label>
-    <draggable v-model="ratingSet.ratings" item-key="id" handle=".drag-handle" ghost-class="ghost">
+    <draggable v-model="ratingSet.ratings" item-key="id" handle=".drag-handle" ghost-class="ghost" @end="edited = true">
       <template #item="{ element }">
         <div class="list-row">
           <div class="drag-handle">⋮⋮</div>
@@ -114,7 +121,6 @@ hr {
       </template>
     </draggable>
     <button type="button" @click="addRating">Add Rating</button>
-    <input type="submit" value="Save"/>
     <Message :success="success" :error="error" />
   </form>
 </template>

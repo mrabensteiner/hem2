@@ -56,3 +56,19 @@ nav.user {
 .logo:hover {
   background-image: linear-gradient(135deg,white 0%, var(--app-primary) 75%);
 }
+
+section.sticky {
+  background: var(--color-background-mute) !important;
+  background-color: #eee;
+  border-bottom: 2px solid var(--color-border);
+  margin: -2rem -2rem 1rem -2rem;
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+
+  > :first-child {
+    flex: 1;
+  }
+}

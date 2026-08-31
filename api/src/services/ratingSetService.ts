@@ -7,7 +7,7 @@ async function getAll(): Promise<any> {
 async function getById(id: string) {
   return prisma.ratingSet.findUnique({
     where: { id: id },
-    include: { ratings: true }
+    include: { ratings: { orderBy: { order: 'asc' } } }
   });
 }
 
@@ -66,7 +66,7 @@ async function update(data: any) {
       title: data.title,
       description: data.description
     },
-    include: { ratings: true }
+    include: { ratings: { orderBy: { order: 'asc' } } }
   });
 }
 

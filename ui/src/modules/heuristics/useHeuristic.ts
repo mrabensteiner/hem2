@@ -72,11 +72,12 @@ export function useHeuristic() {
     try {
       const payload = heuristicSet.value;
       const newData = await heuristicSetApi.createSingle(payload.id);
-      heuristicSet.value.heuristics.push(newData);
+      await heuristicSet.value.heuristics.push(newData);
     } catch (err: any) {
       error.value = err.message;
       throw err;
     }
+    window.scrollTo(0, document.body.scrollHeight);
   }
 
   async function removeHeuristic(id: string) {

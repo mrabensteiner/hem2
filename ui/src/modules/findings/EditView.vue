@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import {onMounted, ref} from 'vue';
 import { useFindings } from "@/modules/findings/useFindings.ts";
 import Message from "@/components/Message.vue";
 import {useRoute} from "vue-router";
 import Chip from "@/components/Chip.vue";
+import IconSave from "@/components/icons/IconSave.vue";
 
 const route = useRoute();
 
@@ -24,6 +25,7 @@ onMounted(() => {
 
 async function save() {
   await saveFinding();
+  edited.value = false;
 }
 
 const uploadImagesHandler = async (event: Event) => {
@@ -40,13 +42,21 @@ const uploadImagesHandler = async (event: Event) => {
   await uploadImages(formData);
   input.value = "";
 };
+
+const edited = ref<boolean>(false);
 </script>
 
 
 <template>
-  <RouterLink :to="{ path: '/project/' + route.params.pid}">Project: {{finding.project?.title}}</RouterLink>
-  <h1>Edit Finding: {{ finding.title }} <RouterLink :to="{ name: 'FindingsDetails', params: {pid: route.params.pid, id: route.params.id} }">Cancel Edit</RouterLink></h1>
-  <form @submit.prevent="save">
+  <form @submit.prevent="save" @input="edited = true">
+    <section class="sticky">
+      <div>
+        <RouterLink :to="{ path: '/project/' + route.params.pid}">Project: {{finding.project?.title}}</RouterLink>
+        <h1>Edit Finding: {{ finding.title }}</h1>
+      </div>
+      <RouterLink class="button" :to="{ name: 'FindingsDetails', params: {pid: route.params.pid, id: route.params.id} }">Cancel</RouterLink>
+      <button role="submit" :disabled="!edited"><IconSave class="icon"/> Save</button>
+    </section>
     <div>
       <label>Title</label>
       <input type="text" placeholder="Title" v-model="finding.title" />
@@ -83,7 +93,6 @@ const uploadImagesHandler = async (event: Event) => {
         <img v-for="i in images" :alt="i.title" :src="'http://localhost:3000/'+i.path" width="100"/>
       </div>
     </div>
-    <input type="submit" value="Save"/>
   </form>
   <Message :success="success" :error="error" />
 </template>

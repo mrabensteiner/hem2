@@ -22,10 +22,14 @@ onMounted(() => {
 
 
 <template>
-  <RouterLink :to="{ path: '/project/' + route.params.pid}">Project: {{finding.project?.title}}</RouterLink>
-  <h1>Finding: {{ finding.title }} <RouterLink :to="{ path: `${route.path}/edit`}">Edit</RouterLink></h1>
+  <section class="sticky">
+    <div>
+      <RouterLink :to="{ path: '/project/' + route.params.pid}">Project: {{finding.project?.title}}</RouterLink>
+      <h1>Finding: {{ finding.title }}</h1>
+    </div>
+    <RouterLink class="button" :to="{ path: `${route.path}/edit`}">Edit</RouterLink>
+  </section>
 
-  <hr/>
   <div class="row">
   <div class="col-3">
   <p><label>Reviewer(s):</label>

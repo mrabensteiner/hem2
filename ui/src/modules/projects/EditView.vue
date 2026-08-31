@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import {onMounted, ref} from 'vue';
 import Message from "@/components/Message.vue";
 import {useRoute, useRouter} from "vue-router";
 import {useProjectDetail} from "@/modules/projects/useProjectDetail.ts";
+import IconSave from "@/components/icons/IconSave.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -29,12 +30,19 @@ async function save() {
   await saveProject();
   router.push({ name: 'ProjectDetails', params: {id: route.params.id} });
 }
+
+const edited = ref<boolean>(false);
 </script>
 
 
 <template>
-  <h1>Edit Project <RouterLink :to="{ name: 'ProjectDetails', params: {pid: route.params.pid, id: route.params.id} }">Cancel Edit</RouterLink></h1>
-  <form @submit.prevent="save">
+  <form @submit.prevent="save" @input="edited = true">
+    <section class="sticky">
+      <h1>Edit Project</h1>
+      <RouterLink class="button" :to="{ name: 'ProjectDetails', params: {pid: route.params.pid, id: route.params.id} }">Cancel</RouterLink>
+      <button role="submit" :disabled="!edited"><IconSave class="icon"/> Save</button>
+    </section>
+
     <div>
       <label>Title</label>
       <input type="text" placeholder="Title" v-model="project.title" />
@@ -89,8 +97,6 @@ async function save() {
         {{ u.firstname }} {{ u.lastname }}
       </label>
     </div>
-
-    <input type="submit" value="Save"/>
   </form>
   <Message :success="success" :error="error" />
 </template>

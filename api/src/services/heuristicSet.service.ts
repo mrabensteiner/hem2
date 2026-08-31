@@ -7,7 +7,7 @@ async function getAll(): Promise<any> {
 async function getById(id: string) {
   return prisma.heuristicSet.findUnique({
     where: { id: id },
-    include: { heuristics: true }
+    include: { heuristics: { orderBy: { order: 'asc' } } }
   });
 }
 
@@ -66,7 +66,7 @@ async function update(data: any) {
       title: data.title,
       description: data.description
     },
-    include: { heuristics: true }
+    include: { heuristics: { orderBy: { order: 'asc' } } }
   });
 }
 

@@ -40,8 +40,10 @@ const view = useLocalStorage("view", viewType.TABLE)
 </script>
 
 <template>
-  <h1>Project: {{ project.title }} <RouterLink :to="{ path: `${route.path}/edit`}">Edit</RouterLink></h1>
-  <hr/>
+  <section class="sticky">
+    <h1>Project: {{ project.title }}</h1>
+    <RouterLink class="button" :to="{ path: `${route.path}/edit`}">Edit</RouterLink>
+  </section>
   <p>Status:
     <Chip :chip="project.status" />
   </p>
@@ -61,7 +63,7 @@ const view = useLocalStorage("view", viewType.TABLE)
     <abbr class="info" v-if="project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, Findings of other Reviewers are hidden.">i</abbr>
     <abbr class="info" v-if="!project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, all Findings are hidden.">i</abbr>
 
-    <div class="view-toggle animation">
+    <div class="view-toggle animation" v-if="project.status?.findingsViewOwn || project.status?.findingsViewAll">
       <label title="Table View"><input type="radio" id="view" v-model="view" :value="viewType.TABLE"/><IconTable/></label>
       <label title="Cards View"><input type="radio" id="aview" v-model="view" :value="viewType.CARDS"/><IconCards/></label>
     </div>

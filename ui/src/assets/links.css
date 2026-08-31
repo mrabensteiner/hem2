@@ -7,7 +7,7 @@ a {
   padding: 3px;
 }
 
-a, .animation, .animation * {
+a, button, .animation, .animation * {
   transition: 0.4s;
 }
 
@@ -24,10 +24,23 @@ button, a.button, input[type="submit"] {
   line-height: 1.6;
 }
 
+button:disabled, input[type="submit"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+a .icon, button .icon {
+  height: 1em;
+  vertical-align: center;
+  margin-right: 0.1em;
+}
+
 @media (hover: hover) {
   a:hover, button:hover, input[type="submit"]:hover {
-    cursor: pointer;
-    border-color: var(--app-primary);
-    background-color: rgba(var(--app-primary-rgb), 0.2);
+    &:not(:disabled) {
+      cursor: pointer;
+      border-color: var(--app-primary);
+      background-color: rgba(var(--app-primary-rgb), 0.2);
+    }
   }
 }

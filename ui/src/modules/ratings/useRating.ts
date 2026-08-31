@@ -72,11 +72,12 @@ export function useRating() {
     try {
       const payload = ratingSet.value;
       const newData = await ratingSetApi.createSingle(payload.id);
-      ratingSet.value.ratings.push(newData);
+      await ratingSet.value.ratings.push(newData);
     } catch (err: any) {
       error.value = err.message;
       throw err;
     }
+    window.scrollTo(0, document.body.scrollHeight);
   }
 
   async function removeRating(id: string) {
