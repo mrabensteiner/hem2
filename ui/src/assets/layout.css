@@ -27,3 +27,21 @@ footer {
   background-color: var(--app-secondary);
   color: var(--vt-c-white);
 }
+
+.row {
+  display: grid;
+  gap: 1rem;
+  grid: auto-flow / 1fr 1fr 1fr 1fr;
+
+  @media screen and (width <= 1200px) {
+    grid: auto-flow / 1fr 1fr 1fr;
+  }
+
+  @media screen and (width <= 768px) {
+    grid: auto-flow / 1fr 1fr;
+  }
+
+  @media screen and (width <= 490px) {
+    grid: auto-flow / 1fr;
+  }
+}

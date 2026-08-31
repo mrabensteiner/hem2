@@ -2,8 +2,12 @@
 import { onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useProjectDetail } from './useProjectDetail.ts';
+import {useLocalStorage} from "@vueuse/core";
 import Table from "@/components/Table.vue";
 import Chip from "@/components/Chip.vue";
+import FindingCard from "@/components/FindingCard.vue";
+import IconTable from "@/components/icons/IconTable.vue";
+import IconCards from "@/components/icons/IconCards.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -30,6 +34,9 @@ const findingsTableHead = [
   { "key": "updatedat", "title": "Last Change", "type": "time" },
   { "key": "link", "title": "Open", "type": "link", "locked": true },
 ];
+
+enum viewType {TABLE, CARDS};
+const view = useLocalStorage("view", viewType.TABLE)
 </script>
 
 <template>
@@ -40,26 +47,32 @@ const findingsTableHead = [
   </p>
 
   <p>Managers:
-    <template v-for="uip in project.UserInProject" :key="'manager-' + uip.userId">
-      <span v-if="uip.projectRole === 'MANAGER'">{{ uip.user?.firstname }} {{ uip.user?.lastname }}&nbsp;</span>
-    </template>
+    {{ project.UserInProject?.filter((uip: any) => uip.projectRole === 'MANAGER').map((uip: any) => `${uip.user.firstname} ${uip.user.lastname}`).join(", ") }}
   </p>
 
   <p>Reviewers:
-    <template v-for="uip in project.UserInProject" :key="'member-' + uip.userId">
-      <span v-if="uip.projectRole === 'MEMBER'">{{ uip.user?.firstname }} {{ uip.user?.lastname }}&nbsp;</span>
-    </template>
+    {{ project.UserInProject?.filter((uip: any) => uip.projectRole === 'MEMBER').map((uip: any) => `${uip.user.firstname} ${uip.user.lastname}`).join(", ") }}
   </p>
 
   <hr/>
   <p>{{ project.description }}</p>
   <hr/>
-
-  <h2>Findings
+  <h2>Findings ({{findings.length}})
     <abbr class="info" v-if="project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, Findings of other Reviewers are hidden.">i</abbr>
     <abbr class="info" v-if="!project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, all Findings are hidden.">i</abbr>
+
+    <div class="view-toggle animation">
+      <label title="Table View"><input type="radio" id="view" v-model="view" :value="viewType.TABLE"/><IconTable/></label>
+      <label title="Cards View"><input type="radio" id="aview" v-model="view" :value="viewType.CARDS"/><IconCards/></label>
+    </div>
   </h2>
-  <Table :head="findingsTableHead" :data="findings" sort="updatedat" dir="asc" />
+
+  <div v-if="view == viewType.CARDS" class="row">
+    <FindingCard v-for="f in findings" :finding="f" />
+  </div>
+
+  <Table v-else :head="findingsTableHead" :data="findings" sort="updatedat" dir="asc" />
+
   <RouterLink :to="`/project/${project.id}/findings/new`" class="button">New Finding</RouterLink>
 
   <h2>Findings per Reviewer</h2>
@@ -86,5 +99,31 @@ const findingsTableHead = [
   border: 2px solid var(--app-primary);
   text-align: center;
   border-radius: 50%;
+}
+
+.row {
+  margin-top: 2rem;
+}
+
+.view-toggle {
+  display: inline-block;
+
+  input {
+    position: absolute;
+    opacity: 0;
+  }
+
+  label {
+    border-radius: 100%;
+    height: 3rem;
+    width: 3rem;
+    padding: .75rem;
+    cursor: pointer;
+    display: inline-flex;
+
+    &:has(input:checked) {
+      background-color: rgba(var(--app-primary-rgb), .25);
+    }
+  }
 }
 </style>

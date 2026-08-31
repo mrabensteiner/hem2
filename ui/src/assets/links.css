@@ -4,8 +4,11 @@ a, .primary-text {
 
 a {
   text-decoration: none;
-  transition: 0.4s;
   padding: 3px;
+}
+
+a, .animation, .animation * {
+  transition: 0.4s;
 }
 
 button, a.button, input[type="submit"] {

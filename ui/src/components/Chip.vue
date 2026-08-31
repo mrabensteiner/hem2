@@ -27,6 +27,11 @@ const { chip } = defineProps<{
   white-space: pre;
   display: inline-block;
 
+  vertical-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   &[title]:not([title=""]) {
     cursor: help;
   }

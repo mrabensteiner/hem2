@@ -2,6 +2,8 @@
 import {ref, computed, watch} from "vue";
 import Chip from "@/components/Chip.vue";
 import TimeAgo from "@/components/TimeAgo.vue";
+import IconFilter from "@/components/icons/IconFilter.vue";
+import IconTableColumns from "@/components/icons/IconTableColumns.vue";
 
 interface HeaderColumn {
   key: string;
@@ -75,9 +77,9 @@ const sortedData = computed(() => {
 });
 
 function sortHelper(a: DataRow, b: DataRow, key: string) {
-  let valA = a[key];
-  let valB = b[key];
-
+  let valA = a[key] ?? -1;
+  let valB = b[key] ?? -1;
+  console.log(valA,valB, key, a,b)
   valA = valA.order ?? valA;
   valB = valB.order ?? valB;
 
@@ -194,7 +196,7 @@ watch(
 <template>
   <div class="col-toggle-container">
     <div class="col-toggle">
-      <div>Toggle Columns</div>
+      <div><abbr title="Toggle Columns"><IconTableColumns/></abbr></div>
       <div v-for="col in head">
         <label>
           <input type="checkbox" :value="col.key" v-model="visibleCols" :disabled="col.locked" />
@@ -222,7 +224,9 @@ watch(
             @click="sortCol(h.key)"
             :class="sortKey == h.key ? 'active' : ''"
             title="Sort"
-          ></span>
+          >
+            <span class="filter-icon"></span>
+          </span>
 
           <span
             v-if="!['link', 'time'].includes(h.type || '') || h.sortable"
@@ -230,6 +234,7 @@ watch(
             :class="activeFilter(h.key) ? 'active' : ''"
             title="Filter"
           >
+            <span class="filter-icon"><IconFilter/></span>
             <div>
               <div>
                 <label>
@@ -314,6 +319,8 @@ thead {
 
   th {
     white-space: nowrap;
+    text-align: left;
+    padding-left: .5rem;
   }
 }
 
@@ -334,7 +341,7 @@ tbody {
 .col-toggle-container {
   display: flex;
   justify-content: end;
-  margin-bottom: 2.6rem;
+  margin-bottom: 2.1rem;
 
   &:not(:has(input:enabled)) {
     display: none;
@@ -347,12 +354,16 @@ tbody {
   position: absolute;
   cursor: pointer;
 
+  svg {
+    height: 1em;
+  }
+
   > div {
     background-color: var(--color-background-mute);
   }
 
   > div:first-child {
-    padding: .5rem;
+    padding: .5rem .5rem 0;
     border-radius: .5rem .5rem 0 0;
     align-self: end;
   }
@@ -370,22 +381,27 @@ tbody {
 [data-dir], [data-filter] {
   cursor: pointer;
 
-  &::after {
-    display: inline-block;
+  .filter-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: center;
     margin-left: .25rem;
     font-size: 1rem;
     width: 1.5rem;
+    height: 1.5rem;
     background-color: #eee;
     border-radius: .25rem;
+
+    svg {
+      height: .9rem;
+    }
   }
 
-  &[data-dir]::after {
+  &[data-dir] .filter-icon::before {
     content: "⥮";
   }
-  &[data-filter]::after {
-    content: "V";
-  }
-  &.active::after {
+  &.active .filter-icon {
     background-color: var(--app-primary);
     color: var(--color-background);
   }
@@ -407,7 +423,7 @@ tbody {
   }
   > div:last-child {
     background-color: var(--color-background);
-    max-height: 20vh;
+    max-height: 50vh;
     overflow-y: scroll;
 
     > div {
@@ -416,11 +432,11 @@ tbody {
   }
 }
 
-[data-dir][data-dir="desc"]::after {
+[data-dir][data-dir="desc"] .filter-icon::before {
   content: "⥣";
 }
 
-[data-dir][data-dir="asc"]::after {
+[data-dir][data-dir="asc"] .filter-icon::before {
   content: "⥥";
 }
 </style>
