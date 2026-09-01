@@ -132,6 +132,12 @@ export function useProjectDetail() {
     }
   }
 
+  function checkProjectPrivilege(privilege: string) {
+    const status = project.value.status;
+    // TODO
+    // managers.value.includes(userId)
+    // members.value.includes(userId) && status[privilege]
+  }
   return {
     project,
     findings,
@@ -147,5 +153,7 @@ export function useProjectDetail() {
     error,
     loadProject,
     saveProject
+    saveProject,
+    checkProjectPrivilege
   };
 }

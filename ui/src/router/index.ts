@@ -64,8 +64,12 @@ router.beforeEach((to) => {
   } else if (to.meta.authView && isAuthenticated.value) {
     return { name: 'projects' };
   }
-  if (isAuthenticated.value && to.meta.requiredPrivilege && !hasPrivilege.value(to.meta.requiredPrivilege as string)) {
-    return { name: 'projects' };
+  if (isAuthenticated.value) {
+    if (to.meta.requiredPrivilege && !hasPrivilege.value(to.meta.requiredPrivilege as string)) {
+      return { name: 'ProjectsList' };
+    } else if (to.meta.requiredProjectPrivilege) {
+      // TODO
+    }
   }
 
   document.title = to.meta?.title ? to.meta?.title + ' - HEM2' : 'HEM2';

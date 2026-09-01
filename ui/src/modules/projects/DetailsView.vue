@@ -17,11 +17,14 @@ const isNewProject = computed(() => route.params.id === 'new');
 const {
   project,
   findings,
-  loadProject
+  loadProject,
+  checkProjectPrivilege
 } = useProjectDetail();
 
 onMounted(() => {
-  loadProject(route.params.id as string, isNewProject.value);
+  loadProject(route.params.id as string, isNewProject.value).then(() => {
+    checkProjectPrivilege(route.meta.requiredProjectPrivilege as string);
+  });
 });
 
 const findingsTableHead = [
@@ -63,7 +66,7 @@ const view = useLocalStorage("view", viewType.TABLE)
     <abbr class="info" v-if="project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, Findings of other Reviewers are hidden.">i</abbr>
     <abbr class="info" v-if="!project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, all Findings are hidden.">i</abbr>
 
-    <div class="view-toggle animation" v-if="project.status?.findingsViewOwn || project.status?.findingsViewAll">
+    <div class="view-toggle animation" v-if="findings || project.status?.findingsViewOwn || project.status?.findingsViewAll">
       <label title="Table View"><input type="radio" id="view" v-model="view" :value="viewType.TABLE"/><IconTable/></label>
       <label title="Cards View"><input type="radio" id="aview" v-model="view" :value="viewType.CARDS"/><IconCards/></label>
     </div>

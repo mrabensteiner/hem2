@@ -33,7 +33,7 @@ async function getById(id: string, user: any) {
 
   const uip = project?.UserInProject.find((u: any) => u.userId === user.id);
 
-  if (uip?.projectRole == "MANAGER" || project?.status.findingsViewAll) {
+  if (uip?.projectRole == "MANAGER" || project?.status.findingsViewAll || user.role.projectViewAll) {
     return project;
   }
 

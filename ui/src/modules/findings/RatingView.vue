@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import { useFindings } from "@/modules/findings/useFindings.ts";
 import Message from "@/components/Message.vue";
 import {useRoute, useRouter} from "vue-router";
 import Chip from "@/components/Chip.vue";
 import TimeAgo from "@/components/TimeAgo.vue";
+import IconSave from "@/components/icons/IconSave.vue";
+import IconOpen from "@/components/icons/IconOpen.vue";
 const route = useRoute();
 const router = useRouter();
 
@@ -18,12 +20,25 @@ const {
 } = useFindings();
 
 onMounted(() => {
-  loadFinding(route.params.id as string, false, route.params.pid as string)
+  loadFinding(route.params.id as string, false, route.params.pid as string).then(() =>
+    router.replace({params: {id: finding.value.id}})
+  );
 });
 
-function save() {
-  saveRating().then(() => {
-    router.replace({ path: '/project/cyxpKnk1/findings/rate/'+ finding.value.id});
+watch(
+  () => route.params.id,
+  (id) => {
+    if (id != finding.value.id) {
+      loadFinding(id as string, false, route.params.pid as string);
+    }
+  }
+);
+
+function save(event: SubmitEvent) {
+  const next = event.submitter?.dataset.next == "true";
+
+  saveRating(next).then(() => {
+    router.push({params: {id: finding.value.id}});
   });
 }
 </script>
@@ -62,11 +77,13 @@ function save() {
   <h3>Rate</h3>
   <div class="ratingbuttons">
     <label v-for="r in finding.project?.ratingset.ratings" :style="'--main-bg-color:'+ r.color + ';--main-text-color:'+ r.textcolor">
-      <input @click="console.log('submit')" type="radio" name="rating" :value="r.id" v-model="userRating">
+      <input type="radio" name="rating" :value="r.id" v-model="userRating" required>
       <span>{{r.title}}</span>
     </label>
   </div>
-  <input type="submit" value="Save"/>
+  <button type="submit"><IconSave class="icon"/> Save</button>
+  <button type="submit" data-next="true"><IconOpen class="icon"/> Save and Rate Next</button>
+
   </form>
     <Message :success="success" :error="error" />
   </div>
@@ -104,9 +121,8 @@ function save() {
     display: flex;
     align-items: center;
     border-radius: 5px;
-    border: 2px solid black;
+    border: 2px solid var(--main-bg-color);
     color: var(--main-bg-color);
-    border-color: var(--main-bg-color);
     display: flex;
     justify-content: center;
 

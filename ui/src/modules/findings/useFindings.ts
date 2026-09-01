@@ -137,7 +137,7 @@ export function useFindings() {
     }
   }
 
-  async function saveRating() {
+  async function saveRating(next: boolean) {
     error.value = null;
     success.value = null;
 
@@ -149,11 +149,12 @@ export function useFindings() {
       success.value = ratingResponse.success ?? "";
       error.value = ratingResponse.error ?? "";
 
-      const findingResponse = await findingApi.getRandom(finding.value.projectId);
-      finding.value = findingResponse.data;
-      images.value = findingResponse.data.images;
-      userRating.value = findingResponse.data.userRatings ?? "";
-
+      if (next) {
+        const findingResponse = await findingApi.getRandom(finding.value.projectId);
+        finding.value = findingResponse.data;
+        images.value = findingResponse.data.images;
+        userRating.value = findingResponse.data.userRatings ?? "";
+      }
     } catch (err: any) {
       error.value = err.message;
       throw err;
