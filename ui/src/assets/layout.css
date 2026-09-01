@@ -45,3 +45,7 @@ footer {
     grid: auto-flow / 1fr;
   }
 }
+
+hr {
+  margin: .5rem 0;
+}

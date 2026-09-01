@@ -29,7 +29,7 @@ export default [
     }
   },
   {
-    path: '/project/:pid/findings/:id/rate',
+    path: '/project/:pid/findings/rate/:id?',
     name: 'FindingsRate',
     component: RatingView,
     meta: {

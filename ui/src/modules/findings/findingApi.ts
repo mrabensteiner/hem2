@@ -11,6 +11,10 @@ export const findingApi = {
     return apiClient(`${endpoint}/${id}`);
   },
 
+  async getRandom(pid: string) {
+    return apiClient(`${endpoint}/random/${pid}`);
+  },
+
   async create(data: any) {
     return apiClient(endpoint, Method.POST, {
       body: data

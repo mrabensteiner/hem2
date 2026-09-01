@@ -13,12 +13,27 @@ nav {
   align-items: center;
 }
 
-nav a {
+nav > a, nav > details {
+  cursor: pointer;
   color: var(--vt-c-white);
   font-size: 1.25rem;
   margin: 0 .5rem;
   border-bottom: 2px solid transparent;
 
+  &:first-child {
+    margin-left: 1rem;
+  }
+}
+
+details {
+  padding: 0;
+
+  nav {
+    position: absolute;
+  }
+}
+
+nav a {
   &:hover {
     background-color: transparent;
     border-bottom: 3px solid var(--vt-c-white);
@@ -27,10 +42,6 @@ nav a {
   &.router-link-exact-active {
     color: var(--vt-c-white);
     border-bottom: 2px solid var(--vt-c-white);
-  }
-
-  &:first-of-type {
-    margin-left: 2rem;
   }
 }
 

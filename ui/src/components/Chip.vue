@@ -2,6 +2,7 @@
 const { chip } = defineProps<{
   chip?: {
     title: string;
+    description?: string;
     color?: string;
     textcolor?: string;
     icon?: string;

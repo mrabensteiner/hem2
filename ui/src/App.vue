@@ -14,11 +14,16 @@ const { isAuthenticated, hasPrivilege, user, logout } = useAuth();
     <nav>
       <RouterLink to="/">Home</RouterLink>
       <RouterLink v-if="isAuthenticated" to="/projects">Projects</RouterLink>
-      <RouterLink v-if="hasPrivilege('userEdit')" to="/users">Users</RouterLink>
-      <RouterLink v-if="hasPrivilege('roleEdit')" to="/roles">Roles</RouterLink>
-      <RouterLink v-if="hasPrivilege('statusEdit')" to="/statuses">Statuses</RouterLink>
-      <RouterLink v-if="hasPrivilege('heuristicSetEdit')" to="/heuristics">Heuristics</RouterLink>
-      <RouterLink v-if="hasPrivilege('ratingSetEdit')" to="/ratings">Ratings</RouterLink>
+      <details>
+        <summary>System Settings</summary>
+        <nav>
+          <RouterLink v-if="hasPrivilege('userEdit')" to="/users">Users</RouterLink>
+          <RouterLink v-if="hasPrivilege('roleEdit')" to="/roles">Roles</RouterLink>
+          <RouterLink v-if="hasPrivilege('statusEdit')" to="/statuses">Statuses</RouterLink>
+          <RouterLink v-if="hasPrivilege('heuristicSetEdit')" to="/heuristics">Heuristics</RouterLink>
+          <RouterLink v-if="hasPrivilege('ratingSetEdit')" to="/ratings">Ratings</RouterLink>
+        </nav>
+      </details>
     </nav>
     <nav class="user">
       <RouterLink v-if="!isAuthenticated" to="/login">Login</RouterLink>
@@ -34,3 +39,9 @@ const { isAuthenticated, hasPrivilege, user, logout } = useAuth();
   </main>
   <footer>Martin Rabensteiner 2026</footer>
 </template>
+
+<style scoped>
+details:not(:has(a)) {
+  display: none;
+}
+</style>

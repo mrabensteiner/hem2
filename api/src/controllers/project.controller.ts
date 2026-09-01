@@ -3,7 +3,7 @@ import {projectService} from "../services/project.service";
 
 async function getAll(req: Request, res: Response) {
   try {
-    const projects = await projectService.getAll(req.user?.id);
+    const projects = await projectService.getAll(req.user);
     res.json(projects);
   } catch (error: any) {
     res.status(500).json({error: error.message});

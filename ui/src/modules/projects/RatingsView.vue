@@ -20,21 +20,53 @@ onMounted(() => {
 </script>
 
 <template>
-  <RouterLink :to="{ path: '/project/' + route.params.pid}">Project: {{project?.title}}</RouterLink>
+  <RouterLink :to="{ name: 'ProjectDetails' }">Project: {{project?.title}}</RouterLink>
   <h1>Ratings Overview: {{ project.title }}</h1>
   <hr/>
   <table>
-    <tr>
-      <th>Title</th>
-      <th v-for="m in members">{{users.find(u => u.id == m).lastname}}</th>
-      <th>Calculated (AVG)</th>
-      <th>Aggregated</th>
-    </tr>
-    <tr v-for="f in findings">
-      <td><RouterLink :to="'./findings/' + f.id" >{{f.title}}</RouterLink></td>
-      <td v-for="r in f.rpu" :title="r.title">{{r.value}}</td>
-      <td>{{f.totalRating}}</td>
-      <td>{{f.rating.title}}</td>
-    </tr>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th class="right" v-for="m in members">{{users.find(u => u.id == m).lastname}}</th>
+        <th class="right">Calculated (AVG)</th>
+        <th>Aggregated</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="f in findings">
+        <td><RouterLink :to="'./findings/' + f.id" >{{f.title}}</RouterLink></td>
+        <td class="right" v-for="r in f.rpu" :title="r.title">{{r.value}}</td>
+        <td class="right">{{f.totalRating}}</td>
+        <td>
+          <select disabled>
+            <option>{{f.rating?.title}}</option>
+          </select>
+        </td>
+      </tr>
+    </tbody>
   </table>
 </template>
+
+<style scoped>
+table {
+  border-collapse: collapse;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+th, td {
+  text-align: left;
+  padding: .2rem;
+  border-width: .1rem;
+  border-style: solid;
+  border-color: var(--color-border);
+}
+
+th.right, td.right {
+  text-align: right;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: var(--color-background-soft);
+}
+</style>

@@ -75,7 +75,22 @@ const view = useLocalStorage("view", viewType.TABLE)
 
   <Table v-else :head="findingsTableHead" :data="findings" sort="updatedat" dir="asc" />
 
+  <div v-if="project.status">
+    <h3>Current Project Status ({{project.status?.title}})</h3>
+    <ul class="project-status">
+      <li :data-allowed="project.status?.projectViewDetails">View project details</li>
+      <li :data-allowed="project.status?.findingsAdd">Add new findings</li>
+      <li :data-allowed="project.status?.findingsViewOwn">View own findings</li>
+      <li :data-allowed="project.status?.findingsViewAll">View all findings</li>
+      <li :data-allowed="project.status?.findingsEditOwn">Edit own findings</li>
+      <li :data-allowed="project.status?.findingsEditAll">Edit all findings</li>
+      <li :data-allowed="project.status?.ratingEdit">Rate findings</li>
+    </ul>
+  </div>
+
   <RouterLink :to="`/project/${project.id}/findings/new`" class="button">New Finding</RouterLink>
+  <RouterLink :to="`/project/${project.id}/findings/rate`" class="button">Rate</RouterLink>
+  <RouterLink :to="`/project/${project.id}/ratings`" class="button">Rating Overview</RouterLink>
 
   <h2>Findings per Reviewer</h2>
   <div>
@@ -125,6 +140,26 @@ const view = useLocalStorage("view", viewType.TABLE)
 
     &:has(input:checked) {
       background-color: rgba(var(--app-primary-rgb), .25);
+    }
+  }
+}
+
+ul.project-status {
+  list-style-type: none;
+  padding-inline-start: 1em;
+
+  li {
+    &::before {
+      display: inline-block;
+      width: 1rem;
+    }
+    &[data-allowed="true"]::before {
+      color: green;
+      content: '✓';
+    }
+    &[data-allowed="false"]::before {
+      color: red;
+      content: '🗙';
     }
   }
 }

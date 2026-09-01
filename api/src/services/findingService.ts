@@ -20,7 +20,7 @@ async function getAll(projectId: string, userId = ""): Promise<any> {
   });
 }
 
-async function getById(id: string) {
+async function getById(id: string, user: any) {
   return prisma.finding.findUnique({
     where: { id: id },
     include: {
@@ -32,7 +32,10 @@ async function getById(id: string) {
       heuristics: true,
       rating: true,
       images: true,
-      userRatings: true
+      userRatings: {
+        where: { userId: user.Id },
+        include: { rating: true }
+      }
     },
   });
 }

@@ -49,6 +49,11 @@ input, textarea, select {
   &:hover:not(:disabled), &:focus {
     border-color: var(--app-primary);
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: .75;
+  }
 }
 
 select[multiple] {

@@ -1,7 +1,10 @@
 import {Router} from "express";
+import {requireAuth} from "../middlewares/auth.middleware";
 import {heuristicSetController} from "../controllers/heuristicSet.controller";
 
 const router: Router = Router();
+
+router.use(requireAuth);
 
 router.get('/', heuristicSetController.getAll);
 router.post('/', heuristicSetController.create);

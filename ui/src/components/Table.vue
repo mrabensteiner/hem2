@@ -4,6 +4,7 @@ import Chip from "@/components/Chip.vue";
 import TimeAgo from "@/components/TimeAgo.vue";
 import IconFilter from "@/components/icons/IconFilter.vue";
 import IconTableColumns from "@/components/icons/IconTableColumns.vue";
+import IconOpen from "@/components/icons/IconOpen.vue";
 
 interface HeaderColumn {
   key: string;
@@ -257,7 +258,7 @@ watch(
       </thead>
       <tbody>
       <tr v-if="data.length === 0">
-        <td :colspan="head.length">Empty - create new entries</td>
+        <td :colspan="head.length"><em>Empty Table</em></td>
       </tr>
       <tr v-for="(r, rIdx) in sortedData" :key="rIdx" :class="r.deactivated ? 'deactivated' : 'notdea'">
         <td
@@ -269,7 +270,7 @@ watch(
         >
           <template v-if="h.type === 'link'">
             <RouterLink :to="{ path: r.link }" v-if="!r.deactivated">
-              <template v-if="h.key === 'link'">Open</template>
+              <template v-if="h.key === 'link'">Open <IconOpen class="icon"/></template>
               <template v-else>{{ r[h.key] }}</template>
             </RouterLink>
             <span v-else>
@@ -305,7 +306,7 @@ watch(
 }
 
 table {
-  width: 100%;
+  min-width: 100%;
   overflow: hidden;
   border-collapse: collapse;
   table-layout: fixed;
@@ -438,5 +439,9 @@ tbody {
 
 [data-dir][data-dir="asc"] .filter-icon::before {
   content: "⥥";
+}
+
+[data-key="link"] {
+  width: 6rem;
 }
 </style>

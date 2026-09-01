@@ -14,18 +14,18 @@ export function useFindings() {
   const success = ref<string | null>(null);
   const error = ref<string | null>(null);
 
-  async function loadFinding(id: string, edit = false) {
+  async function loadFinding(id: string, edit = false, pid = "") {
     isLoading.value = true;
     error.value = null;
     success.value = null;
 
     try {
-      const response = await findingApi.getById(id);
+      const response = id != undefined ? await findingApi.getById(id) : await findingApi.getRandom(pid);
       success.value = response.success ?? "";
       error.value = response.error ?? "";
       finding.value = response.data;
       images.value = response.data.images;
-      userRating.value = response.data.userRatings ?? "";
+      userRating.value = response.data.userRatingId ?? "";
 
       if (edit) {
         mapSelectValues();
@@ -145,9 +145,15 @@ export function useFindings() {
       const findingId = finding.value.id;
       const rating = userRating.value;
 
-      const response = await findingApi.saveRating(findingId, rating);
-      success.value = response.success ?? "";
-      error.value = response.error ?? "";
+      const ratingResponse = await findingApi.saveRating(findingId, rating);
+      success.value = ratingResponse.success ?? "";
+      error.value = ratingResponse.error ?? "";
+
+      const findingResponse = await findingApi.getRandom(finding.value.projectId);
+      finding.value = findingResponse.data;
+      images.value = findingResponse.data.images;
+      userRating.value = findingResponse.data.userRatings ?? "";
+
     } catch (err: any) {
       error.value = err.message;
       throw err;

@@ -1,6 +1,10 @@
 import {prisma} from "../../lib/prisma";
 
-async function getAll(userId: string): Promise<any> {
+async function getAll(user: any): Promise<any> {
+  const where = user.role.projectViewAll ? {} : {
+    UserInProject: { some: { userId: user.id } }
+  };
+
   return prisma.project.findMany({
     include: {
       UserInProject: { include: { user: true } },
@@ -9,9 +13,7 @@ async function getAll(userId: string): Promise<any> {
       status: true,
       _count: { select: { Findings: true } }
     },
-    where: {
-      UserInProject: { some: { userId: userId } }
-    }
+    where: where
   });
 }
 
@@ -23,7 +25,7 @@ async function getById(id: string, user: any) {
       heuristicset: { include: { heuristics: true }},
       ratingset: { include: { ratings: true }},
       status: true,
-      Findings: { include: { user: true, heuristics: true , rating: true, userRatings: true }}
+      Findings: { include: { user: true, heuristics: true , rating: true, userRatings: true, images: true }}
     }
   });
 
@@ -124,8 +126,10 @@ async function changes(id: string) {
 }
 
 function checkProjectPrivileges(project: any, user: any, projectPrivilege: string, privilege: string) {
+  if (user.role[privilege]) return;
+
   const uip = project?.UserInProject.find((u: any) => u.userId === user.id);
-  if (uip == undefined || (!user.role[privilege] && uip.projectRole == "MEMBER" && !project?.status[projectPrivilege])) {
+  if (uip == undefined || (uip.projectRole == "MEMBER" && !project?.status[projectPrivilege])) {
     throw new Error("Not possible in this project status.");
   }
 }

@@ -43,6 +43,11 @@ onMounted(() => {
     <p><label>Last Update:</label>
       <span><TimeAgo :date="finding.updatedat"/></span>
     </p>
+    <p>
+      <label>Personal Rating:</label>
+      <span v-if="finding.userRating?.rating"><Chip :chip="finding.userRating.rating"/></span>
+      <span v-else>Not rated</span>
+    </p>
   </div>
   <div class="col-9">
   <label>Description:</label>
@@ -54,7 +59,8 @@ onMounted(() => {
   </div>
   </div>
   </div>
-  <RouterLink :to="{ path: `${route.path}/rate` }">Rate</RouterLink>
+
+  <RouterLink class="button" :to="{ name: 'FindingsRate', params: {id: route.params.id} }">Rate</RouterLink>
 
   <Message :success="success" :error="error" />
 </template>

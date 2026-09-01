@@ -2,10 +2,11 @@
 import { onMounted } from 'vue';
 import { useFindings } from "@/modules/findings/useFindings.ts";
 import Message from "@/components/Message.vue";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import Chip from "@/components/Chip.vue";
 import TimeAgo from "@/components/TimeAgo.vue";
 const route = useRoute();
+const router = useRouter();
 
 const {
   finding,
@@ -17,8 +18,14 @@ const {
 } = useFindings();
 
 onMounted(() => {
-  loadFinding(route.params.id as string);
+  loadFinding(route.params.id as string, false, route.params.pid as string)
 });
+
+function save() {
+  saveRating().then(() => {
+    router.replace({ path: '/project/cyxpKnk1/findings/rate/'+ finding.value.id});
+  });
+}
 </script>
 
 
@@ -26,6 +33,7 @@ onMounted(() => {
   <RouterLink :to="{ path: '/project/' + route.params.pid}">Project: {{finding.project?.title}}</RouterLink>
   <h1>Rate: {{ finding.title }}</h1>
   <hr/>
+  <div v-if="finding.id">
   <div class="row">
   <div class="col-3">
   <p><label>Reviewer(s):</label>
@@ -50,7 +58,7 @@ onMounted(() => {
   </div>
   </div>
   </div>
-  <form @submit.prevent="saveRating">
+  <form @submit.prevent="save">
   <h3>Rate</h3>
   <div class="ratingbuttons">
     <label v-for="r in finding.project?.ratingset.ratings" :style="'--main-bg-color:'+ r.color + ';--main-text-color:'+ r.textcolor">
@@ -60,8 +68,10 @@ onMounted(() => {
   </div>
   <input type="submit" value="Save"/>
   </form>
+    <Message :success="success" :error="error" />
+  </div>
 
-  <Message :success="success" :error="error" />
+  <Message v-if="!finding.id" success="No more findings to rate." />
 </template>
 
 <style scoped>

@@ -14,11 +14,12 @@ async function getAll(req: Request, res: Response) {
 
 async function getById(req: Request, res: Response) {
   try {
-    const finding = await findingService.getById(req.params.id as string);
+    const finding = await findingService.getById(req.params.id as string, req.user);
     res.json({
       data: {
         ...finding,
-        userRatings: finding?.userRatings.find(ur => ur.userId == req.user?.id)?.ratingId
+        userRating: finding?.userRatings.find(ur => ur.userId == req.user?.id),
+        userRatingId: finding?.userRatings.find(ur => ur.userId == req.user?.id)?.ratingId
       }
     });
   } catch (error: any) {
