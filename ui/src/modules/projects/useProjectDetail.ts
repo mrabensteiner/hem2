@@ -152,7 +152,6 @@ export function useProjectDetail() {
     success,
     error,
     loadProject,
-    saveProject
     saveProject,
     checkProjectPrivilege
   };
