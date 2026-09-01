@@ -21,7 +21,6 @@ onMounted(() => {
 });
 
 if (!newUser) {
-  console.log("get", route.params.id)
   try {
     fetch("http://localhost:3000/users/" + route.params.id)
       .then(response => response.json())
@@ -42,6 +41,7 @@ if (!newUser) {
 }
 
 async function save() {
+  delete user.value.role;
   const requestOptions = {
     method: 'PUT',
     headers: {'Content-Type': 'application/json'},
@@ -59,14 +59,11 @@ async function save() {
         user.value = json ?? {};
         success.value = json.success ?? "";
         error.value = json.error ?? "";
-      })
-      .then(
-        () => {
-          if (newUser) {
-            router.push(`/users`)
-          }
+
+        if (newUser) {
+          router.push(`/users`)
         }
-      );
+      });
   } catch (e) {
     error.value = e.error;
   }
@@ -74,15 +71,12 @@ async function save() {
 </script>
 
 <template>
-  <h1>User: {{user?.firstname}} {{user?.lastname}} ({{user?.username}})</h1>
+  <h1 v-if="user.id">User: {{user?.firstname}} {{user?.lastname}} ({{user?.username}})</h1>
+  <h1 v-else>New User</h1>
   <form @submit.prevent="save" v-if="user.id || !error">
     <div>
-      <label>Email</label>
-      <input type="text" placeholder="Email" v-model="user.email" />
-    </div>
-    <div>
       <label>Username</label>
-      <input type="text" placeholder="Username" v-model="user.username" />
+      <input type="text" placeholder="Username" v-model="user.username" required />
     </div>
     <div>
       <label>Password</label>
@@ -96,9 +90,13 @@ async function save() {
       <label>Lastname</label>
       <input type="text" placeholder="Lastname" v-model="user.lastname" />
     </div>
-    <div v-if="user.role">
+    <div>
+      <label>Email</label>
+      <input type="text" placeholder="Email" v-model="user.email" required />
+    </div>
+    <div>
       <label>Role</label>
-      <select v-model="user.role.id">
+      <select v-model="user.roleId" required>
         <option v-for="r in roles" :value="r.id">{{ r.title }}</option>
       </select>
     </div>

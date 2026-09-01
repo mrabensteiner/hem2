@@ -2,6 +2,8 @@
 import { onMounted } from 'vue';
 import { useRoles } from "@/modules/roles/useRoles.ts";
 import Message from "@/components/Message.vue";
+import IconSave from "@/components/icons/IconSave.vue";
+import IconAdd from "@/components/icons/IconAdd.vue";
 
 const {
   roles,
@@ -25,6 +27,12 @@ async function save() {
 
 <template>
   <h1>Roles</h1>
+
+  <p>
+    The role defines a user's system wide privileges. For privileges of members within in project,
+    see <RouterLink :to="{name: 'StatusList'}">statuses</RouterLink>.
+  </p>
+
   <form @submit.prevent="save">
     <table class="table">
       <thead>
@@ -67,8 +75,8 @@ async function save() {
         </tr>
       </tbody>
     </table>
-    <button type="button" @click="addRole">Add Role</button>
-    <input type="submit" value="Save"/>
+    <button type="button" @click="addRole"><IconAdd class="icon"/> Add Role</button>
+    <button type="submit"><IconSave class="icon"/> Save</button>
     <Message :success="success" :error="error" />
   </form>
 </template>
@@ -78,12 +86,19 @@ async function save() {
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 2rem;
+
+  thead tr, tbody {
+    border-width: 1px 0;
+    border-style: solid;
+    border-color: var(--color-border);
+  }
 
   td {
     padding: .2rem;
     border-width: 0 1px;
     border-style: solid;
-    border-color: var(--color-text);
+    border-color: var(--color-border);
   }
 
   thead, tbody tr:nth-child(even) {

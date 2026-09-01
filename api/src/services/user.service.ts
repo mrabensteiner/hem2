@@ -1,31 +1,18 @@
 import {prisma} from "../../lib/prisma";
 
-const userSelect = {
-  id: true,
-  username: true,
-  email: true,
-  firstname: true,
-  lastname: true,
-  role: true
-};
-
 async function getAll(): Promise<any> {
-  return prisma.user.findMany({
-    select: userSelect
-  });
+  return prisma.user.findMany();
 }
 
 async function getById(id: string) {
   return prisma.user.findUnique({
-    where: { id },
-    select: userSelect
+    where: { id }
   });
 }
 
 async function create(data: any) {
   return prisma.user.create({
-    data: data,
-    select: userSelect
+    data: data
   })
 }
 
@@ -37,10 +24,9 @@ async function update(data: any) {
       username: data.username,
       firstname: data.firstname,
       lastname: data.lastname,
-      roleId: data.role,
+      roleId: data.roleId,
       password: data.password,
-    },
-    select : userSelect
+    }
   });
 }
 

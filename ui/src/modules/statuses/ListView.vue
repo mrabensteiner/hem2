@@ -3,6 +3,8 @@ import { onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStatuses } from "@/modules/statuses/useStatuses.ts";
 import Message from "@/components/Message.vue";
+import IconSave from "@/components/icons/IconSave.vue";
+import IconAdd from "@/components/icons/IconAdd.vue";
 
 const route = useRoute();
 
@@ -28,6 +30,13 @@ async function save() {
 
 <template>
   <h1>Statuses</h1>
+
+  <p>The status defines the privileges of project members during a project state.
+    Disabled privileges or not shown or blocked for project members. This restrictions do not apply
+    to project managers and system administrators, as defined in their user
+    <RouterLink :to="{name: 'RolesList'}">roles</RouterLink>.
+  </p>
+
   <form @submit.prevent="save">
     <table class="table">
       <thead>
@@ -63,8 +72,8 @@ async function save() {
         </tr>
       </tbody>
     </table>
-    <button type="button" @click="addStatus">Add Status</button>
-    <input type="submit" value="Save"/>
+    <button type="button" @click="addStatus"><IconAdd class="icon"/> Add Status</button>
+    <button type="submit"><IconSave class="icon"/> Save</button>
     <Message :success="success" :error="error" />
   </form>
 </template>
@@ -74,12 +83,19 @@ async function save() {
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 2rem;
+
+  thead tr, tbody {
+    border-width: 1px 0;
+    border-style: solid;
+    border-color: var(--color-border);
+  }
 
   td {
     padding: .2rem;
     border-width: 0 1px;
     border-style: solid;
-    border-color: var(--color-text);
+    border-color: var(--color-border);
   }
 
   thead, tbody tr:nth-child(even) {
@@ -87,7 +103,6 @@ table {
   }
 
   thead {
-    border-bottom: 1px solid var(--color-text);
     text-align: center;
 
     tr:first-child td {
