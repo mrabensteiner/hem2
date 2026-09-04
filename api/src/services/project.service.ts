@@ -11,6 +11,7 @@ async function getAll(user: any): Promise<any> {
       heuristicset: true,
       ratingset: true,
       status: true,
+      logo: true,
       _count: { select: { Findings: true } }
     },
     where: where
@@ -25,6 +26,7 @@ async function getById(id: string, user: any) {
       heuristicset: { include: { heuristics: true }},
       ratingset: { include: { ratings: true }},
       status: true,
+      logo: true,
       Findings: { include: { user: true, heuristics: true , rating: true, userRatings: true, images: true }}
     }
   });
@@ -113,6 +115,7 @@ async function update(data: any) {
       heuristicset: true,
       ratingset: true,
       status: true,
+      logo: true,
       Findings: { include: { user: true, heuristics: true , rating: true }}
     }
   });

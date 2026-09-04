@@ -60,7 +60,7 @@ model Project {
   status         Status          @relation(fields: [statusId], references: [id])
   title          String          @default("")
   description    String          @default("")
-  logo           Image?          @relation(fields: [imageId], references: [id])
+  logo           Image?
   updatedat      DateTime?       @default(now()) @updatedAt
   createdat      DateTime?       @default(now())
   heuristicset   HeuristicSet?   @relation(fields: [heuristicsetId], references: [id])
@@ -70,7 +70,6 @@ model Project {
   ratingsetId    String?
   UserInProject  UserInProject[]
   Findings       Finding[]
-  imageId        String?
 }
 
 model Finding {
@@ -158,11 +157,12 @@ model Rating {
 }
 
 model Image {
-  id        String    @id @unique @default(nanoid(8))
+  id        String   @id @unique @default(nanoid(8))
   filename  String
   path      String
   users     User[]
-  projects  Project[]
-  finding   Finding?  @relation(fields: [findingId], references: [id])
+  project   Project? @relation(fields: [projectId], references: [id])
+  projectId String?  @unique
+  finding   Finding? @relation(fields: [findingId], references: [id])
   findingId String?
 }

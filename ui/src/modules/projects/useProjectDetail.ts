@@ -4,6 +4,7 @@ import {heuristicSetApi} from "@/modules/heuristics/heuristicSetApi.ts";
 import {ratingSetApi} from "@/modules/ratings/ratingSetApi.ts";
 import {statusApi} from "@/modules/statuses/statusApi.ts";
 import {userApi} from "@/api/user.api.ts";
+import {imageApi} from "@/api/images.ts";
 
 export function useProjectDetail() {
   const project = ref<any>({ title: '', description: '', statusId: '', heuristicsetId: '', ratingsetId: '' });
@@ -138,6 +139,22 @@ export function useProjectDetail() {
     // managers.value.includes(userId)
     // members.value.includes(userId) && status[privilege]
   }
+
+  async function uploadImage(data: any) {
+    error.value = null;
+    success.value = null;
+
+    try {
+      const response = await imageApi.uploadProjectImage(project.value.id, data);
+      success.value = response.success ?? "";
+      error.value = response.error ?? "";
+      project.value.logo = response;
+    } catch (err: any) {
+      error.value = err.message;
+      throw err;
+    }
+  }
+
   return {
     project,
     findings,
@@ -153,6 +170,7 @@ export function useProjectDetail() {
     error,
     loadProject,
     saveProject,
+    uploadImage,
     checkProjectPrivilege
   };
 }

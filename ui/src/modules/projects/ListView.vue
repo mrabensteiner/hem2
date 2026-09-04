@@ -11,6 +11,7 @@ onMounted(() => {
 
 const tablehead = [
   { "key": "id", "title": "ID", "hidden": true },
+  { "key": "logo", "title": "Logo", "type": "image" },
   { "key": "title", "title": "Title", "type": "link", "locked": true, sortable: true },
   { "key": "description", "title": "Description", "hidden": true },
   { "key": "status", "title": "Status", "type": "chip" },

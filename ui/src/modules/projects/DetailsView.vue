@@ -44,7 +44,10 @@ const view = useLocalStorage("view", viewType.TABLE)
 
 <template>
   <section class="sticky">
-    <h1>Project: {{ project.title }}</h1>
+    <h1>
+      <img v-if="project.logo" :src="'http://localhost:3000/' + project.logo.path" />
+      Project: {{ project.title }}
+    </h1>
     <RouterLink class="button" :to="{ path: `${route.path}/edit`}">Edit</RouterLink>
   </section>
   <p>Status:
@@ -111,6 +114,11 @@ const view = useLocalStorage("view", viewType.TABLE)
 </template>
 
 <style scoped>
+h1 img {
+  height: 1em;
+  margin-right: 0.2em;
+}
+
 .info {
   color: var(--app-primary);
   cursor: help;

@@ -220,7 +220,7 @@ watch(
           {{ h.title }}
 
           <span
-            v-if="!['link', 'multi', 'multichip'].includes(h.type || '') || h.sortable"
+            v-if="!['link', 'multi', 'multichip', 'image'].includes(h.type || '') || h.sortable"
             :data-dir="sortKey === h.key ? sortDir : ''"
             @click="sortCol(h.key)"
             :class="sortKey == h.key ? 'active' : ''"
@@ -230,7 +230,7 @@ watch(
           </span>
 
           <span
-            v-if="!['link', 'time'].includes(h.type || '') || h.sortable"
+            v-if="!['link', 'time', 'image'].includes(h.type || '') || h.sortable"
             :data-filter="h.key"
             :class="activeFilter(h.key) ? 'active' : ''"
             title="Filter"
@@ -290,6 +290,9 @@ watch(
           <template v-else-if="h.type === 'time'">
             <TimeAgo :date="r[h.key]"/>
           </template>
+          <template v-else-if="h.type === 'image'">
+            <img :src="'http://localhost:3000/' + r[h.key].path" />
+          </template>
           <template v-else>{{ r[h.key] }}</template>
         </td>
       </tr>
@@ -310,6 +313,14 @@ table {
   overflow: hidden;
   border-collapse: collapse;
   table-layout: fixed;
+
+  td:has(img) {
+    text-align: center;
+  }
+
+  img {
+    height: 3em;
+  }
 }
 
 thead {

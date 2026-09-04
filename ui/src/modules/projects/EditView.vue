@@ -20,7 +20,8 @@ const {
   success,
   error,
   loadProject,
-  saveProject
+  saveProject,
+  uploadImage
 } = useProjectDetail();
 
 onMounted(() => {
@@ -31,6 +32,21 @@ async function save() {
   await saveProject();
   router.push({ name: 'ProjectDetails', params: {id: route.params.id} });
 }
+
+const uploadImageHandler = async (event: Event) => {
+  const input = event.target as HTMLInputElement;
+
+  if (!input.files) return;
+
+  const formData = new FormData();
+
+  for (const file of input.files) {
+    formData.append("image", file);
+  }
+
+  await uploadImage(formData);
+  input.value = "";
+};
 
 const edited = ref<boolean>(false);
 </script>
@@ -64,6 +80,14 @@ const edited = ref<boolean>(false);
     </div>
 
     <div>
+      <label>Image</label>
+      <div>
+        <img class="inline-logo" v-if="project.logo" :alt="project.logo.title" :src="'http://localhost:3000/'+project.logo.path"/>
+        <input type="file" @change="uploadImageHandler" accept="image/png, image/jpeg, image/gif, image/svg+xml">
+      </div>
+    </div>
+
+    <div>
       <label for="heuristic">Heuristic Set</label>
       <select id="heuristic" v-model="project.heuristicsetId" required>
         <option v-for="h in heuristicSets" :key="h.id" :value="h.id">
@@ -93,3 +117,12 @@ const edited = ref<boolean>(false);
   </form>
   <Message :success="success" :error="error" />
 </template>
+
+
+<style scoped>
+.inline-logo {
+  height: 2em;
+  vertical-align: center;
+  margin-right: .5em;
+}
+</style>
