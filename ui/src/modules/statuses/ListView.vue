@@ -5,6 +5,7 @@ import { useStatuses } from "@/modules/statuses/useStatuses.ts";
 import Message from "@/components/Message.vue";
 import IconSave from "@/components/icons/IconSave.vue";
 import IconAdd from "@/components/icons/IconAdd.vue";
+import IconRemove from "@/components/icons/IconRemove.vue";
 
 const route = useRoute();
 
@@ -68,7 +69,7 @@ async function save() {
           <td><input type="checkbox" v-model="status.findingsEditAll"></td>
           <td><input type="checkbox" v-model="status.ratingEdit"></td>
           <td>
-            <button type="button" @click="removeStatus(status.id)">Remove</button></td>
+            <button type="button" @click="removeStatus(status.id)"><IconRemove class="icon"/> Remove</button></td>
         </tr>
       </tbody>
     </table>

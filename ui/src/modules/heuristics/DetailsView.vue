@@ -7,6 +7,7 @@ import Chip from "@/components/Chip.vue";
 import Message from "@/components/Message.vue";
 import IconSave from "@/components/icons/IconSave.vue";
 import IconAdd from "@/components/icons/IconAdd.vue";
+import IconRemove from "@/components/icons/IconRemove.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -117,7 +118,7 @@ input[type="text"], input[type="password"], select, textarea {
               <Chip :chip="element"/>
             </label>
           </div>
-          <button type="button" @click="removeHeuristic(element.id)">Remove</button>
+          <button type="button" @click="removeHeuristic(element.id)"><IconRemove class="icon"/> Remove</button>
         </div>
       </template>
     </draggable>

@@ -4,6 +4,7 @@ import { useRoles } from "@/modules/roles/useRoles.ts";
 import Message from "@/components/Message.vue";
 import IconSave from "@/components/icons/IconSave.vue";
 import IconAdd from "@/components/icons/IconAdd.vue";
+import IconRemove from "@/components/icons/IconRemove.vue";
 
 const {
   roles,
@@ -71,7 +72,7 @@ async function save() {
           <td><input type="checkbox" v-model="role.statusEdit"></td>
           <td><input type="checkbox" v-model="role.roleEdit"></td>
           <td>
-            <button type="button" @click="removeRole(role.id)">Remove</button></td>
+            <button type="button" @click="removeRole(role.id)"><IconRemove class="icon"/> Remove</button></td>
         </tr>
       </tbody>
     </table>

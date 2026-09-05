@@ -22,6 +22,7 @@ button, a.button, input[type="submit"] {
   margin: 1rem 1rem 1rem 0;
   display: inline-block;
   line-height: 1.6;
+  flex-shrink: 0;
 }
 
 button:disabled, input[type="submit"]:disabled {
