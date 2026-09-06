@@ -8,6 +8,7 @@ import Chip from "@/components/Chip.vue";
 import FindingCard from "@/components/FindingCard.vue";
 import IconTable from "@/components/icons/IconTable.vue";
 import IconCards from "@/components/icons/IconCards.vue";
+import SvgPieChart from "@/components/SvgPieChart.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -37,6 +38,22 @@ const findingsTableHead = [
   { "key": "updatedat", "title": "Last Change", "type": "time" },
   { "key": "link", "title": "Open", "type": "link", "locked": true },
 ];
+
+const ratingStatistic = computed(() => {
+  let total = 0;
+  let f = Object.values(findings.value.reduce((acc, {id, rating}) =>
+  {
+    total += 1;
+    acc[rating.id] = acc[rating.id] ?? {...rating, count: 0};
+    acc[rating.id]['count'] += 1;
+    return acc;
+  }, {}));
+  f = f.map((r: any) => ({
+    ...r,
+    percentage: r.count / total * 100
+  })).sort((a, b) => a.order - b.order);
+  return f;
+})
 
 enum viewType {TABLE, CARDS};
 const view = useLocalStorage("view", viewType.TABLE)
@@ -97,6 +114,11 @@ const view = useLocalStorage("view", viewType.TABLE)
   <RouterLink :to="`/project/${project.id}/findings/new`" class="button">New Finding</RouterLink>
   <RouterLink :to="`/project/${project.id}/findings/rate`" class="button">Rate</RouterLink>
   <RouterLink :to="`/project/${project.id}/ratings`" class="button">Rating Overview</RouterLink>
+
+  <h2 style="margin-bottom:1rem">Rating Statistic</h2>
+  <div>
+    <SvgPieChart style="max-height: 12rem;" :data="ratingStatistic"/>
+  </div>
 
   <h2>Findings per Reviewer</h2>
   <div>
