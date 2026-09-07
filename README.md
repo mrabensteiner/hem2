@@ -11,7 +11,7 @@ Master's Thesis, Graz University of Technology
 
 ## Software Installation
 
-Install [Docker](https://www.docker.com/)
+Prerequisites: Install [Docker](https://www.docker.com/) and [PNPM](https://pnpm.io/installation)
 
 Clone the repository to a local folder:
 ```
