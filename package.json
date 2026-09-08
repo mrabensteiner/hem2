@@ -15,7 +15,6 @@
   "license": "MIT",
   "packageManager": "pnpm@12.1.0",
   "scripts": {
-    "install:all": "pnpm install",
     "db:dev": "pnpm --filter hem2-api db:reset -f && pnpm --filter hem2-api db:setup && pnpm --filter hem2-api db:seed",
     "db:setup": "pnpm --filter hem2-api db:setup",
     "db:seed": "pnpm --filter hem2-api db:seed",

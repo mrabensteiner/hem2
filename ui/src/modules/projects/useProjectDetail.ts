@@ -103,6 +103,7 @@ export function useProjectDetail() {
 
         extractRoles(data.UserInProject);
         prepareFindingsForTable(data);
+        return data;
       }
     } catch (err: any) {
       error.value = err.message;

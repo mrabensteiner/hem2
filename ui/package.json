@@ -27,6 +27,7 @@
   "packageManager": "pnpm@12.1.0",
   "dependencies": {
     "@vueuse/core": "^14.4.0",
+    "listmerger": "github:mrabensteiner/listmerger",
     "vue": "^3.5.40",
     "vue-router": "^5.2.0",
     "vuedraggable": "^4.1.0"

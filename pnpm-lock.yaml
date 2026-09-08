@@ -176,6 +176,9 @@ importers:
       '@vueuse/core':
         specifier: ^14.4.0
         version: 14.4.0(vue@3.5.42(typescript@6.0.3))
+      listmerger:
+        specifier: github:mrabensteiner/listmerger
+        version: https://codeload.github.com/mrabensteiner/listmerger/tar.gz/277eaeb4ee1c7ec9236c1d486476d899eea3c077
       vue:
         specifier: ^3.5.40
         version: 3.5.42(typescript@6.0.3)
@@ -2250,6 +2253,10 @@ packages:
     resolution: {integrity: sha512-WkUDrojuJs0xkgGf2udWxa3yGBRxPtxUkB79i6aCZLRgc7PM8fZe9TosfPDcvEpQZbuFASnHYmRLBLUbmLOIIA==}
     engines: {node: '>= 12.0.0'}
 
+  listmerger@https://codeload.github.com/mrabensteiner/listmerger/tar.gz/277eaeb4ee1c7ec9236c1d486476d899eea3c077:
+    resolution: {gitHosted: true, integrity: sha512-feAJmcrxRWIQLndpanurOEiozVWQFh3F/q8V1iQ9F9nvul+iREq41z54ZdfVmqq2qD2kKGMyBr4lKDtS/5AXbA==, tarball: https://codeload.github.com/mrabensteiner/listmerger/tar.gz/277eaeb4ee1c7ec9236c1d486476d899eea3c077}
+    version: '1.0'
+
   local-pkg@1.2.1:
     resolution: {integrity: sha512-++gUqRDEvcnN6Zhqrr+y/CkVEHhlrR96vZn3nZZPYzMcBUyBtTKzB9NadClFIsIVSsu+3i9tfk/erqy9kAmt7Q==}
     engines: {node: '>=14'}
@@ -2363,6 +2370,10 @@ packages:
   multer@2.3.0:
     resolution: {integrity: sha512-cjNbm3sttszgZeGfJR124D+jFEfkXCVAsoPBmFn9X7UxmDSFHWqE2CoEj0vrmSpuAFnqWR1Szcm9QTsiHr60Xw==}
     engines: {node: '>= 10.16.0'}
+
+  mustache@4.2.0:
+    resolution: {integrity: sha512-71ippSywq5Yb7/tVYyGbkBggbU8H3u5Rz56fH60jGFgr8uHwxs+aSKeqmluIVzM0m0kB7xQjKS6qPfd0b2ZoqQ==}
+    hasBin: true
 
   mysql2@3.15.3:
     resolution: {integrity: sha512-FBrGau0IXmuqg4haEZRBfHNWB5mUARw6hNwPDXXGg0XzVJ50mr/9hb267lvpVMnhZ1FON3qNd4Xfcez1rbFwSg==}
@@ -5075,6 +5086,10 @@ snapshots:
       lightningcss-win32-arm64-msvc: 1.33.0
       lightningcss-win32-x64-msvc: 1.33.0
 
+  listmerger@https://codeload.github.com/mrabensteiner/listmerger/tar.gz/277eaeb4ee1c7ec9236c1d486476d899eea3c077:
+    dependencies:
+      mustache: 4.2.0
+
   local-pkg@1.2.1:
     dependencies:
       mlly: 1.8.2
@@ -5169,6 +5184,8 @@ snapshots:
       busboy: 1.6.0
       concat-stream: 2.0.0
       type-is: 1.6.18
+
+  mustache@4.2.0: {}
 
   mysql2@3.15.3:
     dependencies:

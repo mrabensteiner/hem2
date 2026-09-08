@@ -114,6 +114,7 @@ const view = useLocalStorage("view", viewType.TABLE)
   <RouterLink :to="`/project/${project.id}/findings/new`" class="button">New Finding</RouterLink>
   <RouterLink :to="`/project/${project.id}/findings/rate`" class="button">Rate</RouterLink>
   <RouterLink :to="`/project/${project.id}/ratings`" class="button">Rating Overview</RouterLink>
+  <RouterLink :to="`/project/${project.id}/findings/merge`" class="button">Merge Findings</RouterLink>
 
   <h2 style="margin-bottom:1rem">Rating Statistic</h2>
   <div>
