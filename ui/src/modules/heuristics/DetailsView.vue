@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {onMounted, computed, ref, watch} from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import {onMounted, onUnmounted, computed, ref, watch} from 'vue';
+import {useRoute, useRouter, onBeforeRouteLeave} from 'vue-router';
 import { useHeuristic } from "./useHeuristic.ts";
 import draggable from 'vuedraggable';
 import Chip from "@/components/Chip.vue";
@@ -53,6 +53,30 @@ async function save() {
 }
 
 const edited = ref<boolean>(false);
+
+const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+  if (edited.value) {
+    event.preventDefault();
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('beforeunload', handleBeforeUnload)
+});
+
+onUnmounted(() => {
+  window.removeEventListener('beforeunload', handleBeforeUnload);
+});
+
+onBeforeRouteLeave(() => {
+  if (edited.value) {
+    // firefox default text
+    const answer = window.confirm('This page is asking you to confirm that you want to leave — information you’ve entered may not be saved.');
+    if (!answer) {
+      return false;
+    }
+  }
+});
 </script>
 
 <style>
