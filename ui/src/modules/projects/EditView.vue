@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
+import {onMounted} from 'vue';
 import Message from "@/components/Message.vue";
 import {useRoute, useRouter} from "vue-router";
 import {useProjectDetail} from "@/modules/projects/useProjectDetail.ts";
 import IconSave from "@/components/icons/IconSave.vue";
 import ChipSearch from "@/components/ChipSearch.vue";
+import {useEdit} from "@/composables/useEdit.ts";
 
 const route = useRoute();
 const router = useRouter();
@@ -48,7 +49,7 @@ const uploadImageHandler = async (event: Event) => {
   input.value = "";
 };
 
-const edited = ref<boolean>(false);
+const { edited } = useEdit();
 </script>
 
 
@@ -57,7 +58,7 @@ const edited = ref<boolean>(false);
     <section class="sticky">
       <h1>Edit Project</h1>
       <RouterLink class="button" :to="{ name: 'ProjectDetails', params: {pid: route.params.pid, id: route.params.id} }">Cancel</RouterLink>
-      <button role="submit" :disabled="!edited"><IconSave class="icon"/> Save</button>
+      <button :disabled="!edited"><IconSave class="icon"/> Save</button>
     </section>
 
     <div>

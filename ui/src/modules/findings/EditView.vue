@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
+import {onMounted} from 'vue';
 import { useFindings } from "@/modules/findings/useFindings.ts";
 import Message from "@/components/Message.vue";
 import {useRoute} from "vue-router";
 import Chip from "@/components/Chip.vue";
 import IconSave from "@/components/icons/IconSave.vue";
+import {useEdit} from "@/composables/useEdit.ts";
 
 const route = useRoute();
 
@@ -43,7 +44,7 @@ const uploadImagesHandler = async (event: Event) => {
   input.value = "";
 };
 
-const edited = ref<boolean>(false);
+const { edited } = useEdit();
 </script>
 
 
@@ -55,7 +56,7 @@ const edited = ref<boolean>(false);
         <h1>Edit Finding: {{ finding.title }}</h1>
       </div>
       <RouterLink class="button" :to="{ name: 'FindingsDetails', params: {pid: route.params.pid, id: route.params.id} }">Cancel</RouterLink>
-      <button role="submit" :disabled="!edited"><IconSave class="icon"/> Save</button>
+      <button :disabled="!edited"><IconSave class="icon"/> Save</button>
     </section>
     <div>
       <label>Title</label>

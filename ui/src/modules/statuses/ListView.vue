@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import { useRoute } from 'vue-router';
 import { useStatuses } from "@/modules/statuses/useStatuses.ts";
 import Message from "@/components/Message.vue";
 import IconSave from "@/components/icons/IconSave.vue";
 import IconAdd from "@/components/icons/IconAdd.vue";
 import IconRemove from "@/components/icons/IconRemove.vue";
-
-const route = useRoute();
+import {useEdit} from "@/composables/useEdit.ts";
 
 const {
   statuses,
@@ -25,7 +23,10 @@ onMounted(() => {
 
 async function save() {
   await saveStatuses();
+  edited.value = false;
 }
+
+const { edited } = useEdit();
 </script>
 
 
@@ -38,7 +39,7 @@ async function save() {
     <RouterLink :to="{name: 'RolesList'}">roles</RouterLink>.
   </p>
 
-  <form @submit.prevent="save">
+  <form @submit.prevent="save" @input="edited = true">
     <table class="table">
       <thead>
         <tr>
@@ -74,7 +75,7 @@ async function save() {
       </tbody>
     </table>
     <button type="button" @click="addStatus"><IconAdd class="icon"/> Add Status</button>
-    <button type="submit"><IconSave class="icon"/> Save</button>
+    <button :disabled="!edited"><IconSave class="icon"/> Save</button>
     <Message :success="success" :error="error" />
   </form>
 </template>

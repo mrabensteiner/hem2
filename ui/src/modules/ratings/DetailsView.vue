@@ -8,6 +8,7 @@ import Message from "@/components/Message.vue";
 import IconSave from "@/components/icons/IconSave.vue";
 import IconAdd from "@/components/icons/IconAdd.vue";
 import IconRemove from "@/components/icons/IconRemove.vue";
+import {useEdit} from "@/composables/useEdit.ts";
 
 const route = useRoute();
 const router = useRouter();
@@ -52,7 +53,7 @@ async function save() {
   edited.value = false;
 }
 
-const edited = ref<boolean>(false);
+const { edited } = useEdit();
 </script>
 
 <style>
@@ -69,7 +70,7 @@ input[type="text"], input[type="password"], select, textarea {
         <h1>Rating Set: {{ratingSet.title}}</h1>
       </div>
       <button type="button" @click="addRating"><IconAdd class="icon"/> Add Rating</button>
-      <button role="submit" :disabled="!edited"><IconSave class="icon"/> Save</button>    </section>
+      <button :disabled="!edited"><IconSave class="icon"/> Save</button>    </section>
     <label>
       Title
       <input type="text" v-model="ratingSet.title"/>

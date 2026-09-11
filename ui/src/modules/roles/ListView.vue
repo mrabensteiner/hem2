@@ -5,6 +5,7 @@ import Message from "@/components/Message.vue";
 import IconSave from "@/components/icons/IconSave.vue";
 import IconAdd from "@/components/icons/IconAdd.vue";
 import IconRemove from "@/components/icons/IconRemove.vue";
+import {useEdit} from "@/composables/useEdit.ts";
 
 const {
   roles,
@@ -22,7 +23,10 @@ onMounted(() => {
 
 async function save() {
   await saveRoles();
+  edited.value = false;
 }
+
+const { edited } = useEdit();
 </script>
 
 
@@ -34,7 +38,7 @@ async function save() {
     see <RouterLink :to="{name: 'StatusList'}">statuses</RouterLink>.
   </p>
 
-  <form @submit.prevent="save">
+  <form @submit.prevent="save" @input="edited = true">
     <table class="table">
       <thead>
         <tr>
@@ -77,7 +81,7 @@ async function save() {
       </tbody>
     </table>
     <button type="button" @click="addRole"><IconAdd class="icon"/> Add Role</button>
-    <button type="submit"><IconSave class="icon"/> Save</button>
+    <button :disabled="!edited"><IconSave class="icon"/> Save</button>
     <Message :success="success" :error="error" />
   </form>
 </template>

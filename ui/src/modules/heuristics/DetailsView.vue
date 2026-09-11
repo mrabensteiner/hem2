@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, computed, ref, watch} from 'vue';
-import {useRoute, useRouter, onBeforeRouteLeave} from 'vue-router';
+import {onMounted, computed, ref, watch} from 'vue';
+import {useRoute, useRouter} from 'vue-router';
 import { useHeuristic } from "./useHeuristic.ts";
 import draggable from 'vuedraggable';
 import Chip from "@/components/Chip.vue";
@@ -8,6 +8,7 @@ import Message from "@/components/Message.vue";
 import IconSave from "@/components/icons/IconSave.vue";
 import IconAdd from "@/components/icons/IconAdd.vue";
 import IconRemove from "@/components/icons/IconRemove.vue";
+import {useEdit} from "@/composables/useEdit.ts";
 
 const route = useRoute();
 const router = useRouter();
@@ -51,32 +52,7 @@ async function save() {
   }
   edited.value = false;
 }
-
-const edited = ref<boolean>(false);
-
-const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-  if (edited.value) {
-    event.preventDefault();
-  }
-}
-
-onMounted(() => {
-  window.addEventListener('beforeunload', handleBeforeUnload)
-});
-
-onUnmounted(() => {
-  window.removeEventListener('beforeunload', handleBeforeUnload);
-});
-
-onBeforeRouteLeave(() => {
-  if (edited.value) {
-    // firefox default text
-    const answer = window.confirm('This page is asking you to confirm that you want to leave — information you’ve entered may not be saved.');
-    if (!answer) {
-      return false;
-    }
-  }
-});
+const { edited } = useEdit();
 </script>
 
 <style>
@@ -93,7 +69,7 @@ input[type="text"], input[type="password"], select, textarea {
         <h1>Heuristic Set: {{heuristicSet.title}}</h1>
       </div>
       <button type="button" @click="addHeuristic"><IconAdd class="icon"/> Add Heuristic</button>
-      <button role="submit" :disabled="!edited"><IconSave class="icon"/> Save</button>
+      <button :disabled="!edited"><IconSave class="icon"/> Save</button>
     </section>
     <label>
       Title
