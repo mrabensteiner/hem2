@@ -9,6 +9,10 @@ import FindingCard from "@/components/FindingCard.vue";
 import IconTable from "@/components/icons/IconTable.vue";
 import IconCards from "@/components/icons/IconCards.vue";
 import SvgPieChart from "@/components/SvgPieChart.vue";
+import IconEdit from "@/components/icons/IconEdit.vue";
+import IconAdd from "@/components/icons/IconAdd.vue";
+import IconRate from "@/components/icons/IconRate.vue";
+import IconMerge from "@/components/icons/IconMerge.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -65,7 +69,7 @@ const view = useLocalStorage("view", viewType.TABLE)
       <img v-if="project.logo" :src="'http://localhost:3000/' + project.logo.path" />
       Project: {{ project.title }}
     </h1>
-    <RouterLink class="button" :to="{ path: `${route.path}/edit`}">Edit</RouterLink>
+    <RouterLink class="button" :to="{ path: `${route.path}/edit`}"><IconEdit class="icon"/> Edit</RouterLink>
   </section>
   <p>Status:
     <Chip :chip="project.status" />
@@ -111,12 +115,12 @@ const view = useLocalStorage("view", viewType.TABLE)
     </ul>
   </div>
 
-  <RouterLink :to="`/project/${project.id}/findings/new`" class="button">New Finding</RouterLink>
-  <RouterLink :to="`/project/${project.id}/findings/rate`" class="button">Rate</RouterLink>
-  <RouterLink :to="`/project/${project.id}/ratings`" class="button">Rating Overview</RouterLink>
-  <RouterLink :to="`/project/${project.id}/findings/merge`" class="button">Merge Findings</RouterLink>
+  <RouterLink :to="`/project/${project.id}/findings/new`" class="button"><IconAdd class="icon"/> New Finding</RouterLink>
+  <RouterLink :to="`/project/${project.id}/findings/rate`" class="button"><IconRate class="icon"/> Rate</RouterLink>
+  <RouterLink :to="`/project/${project.id}/ratings`" class="button"><IconTable class="icon"/> Rating Overview</RouterLink>
+  <RouterLink :to="`/project/${project.id}/findings/merge`" class="button"><IconMerge class="icon"/> Merge Findings</RouterLink>
 
-  <h2 style="margin-bottom:1rem">Rating Statistic</h2>
+  <h2>Rating Statistic</h2>
   <div>
     <SvgPieChart style="max-height: 12rem;" :data="ratingStatistic"/>
   </div>
@@ -145,11 +149,13 @@ h1 img {
 .info {
   color: var(--app-primary);
   cursor: help;
-  width: 1.5em;
+  height: 2.5rem;
+  width: 2.5rem;
   display: inline-block;
   border: 2px solid var(--app-primary);
   text-align: center;
   border-radius: 50%;
+  margin-right: 0.25em;
 }
 
 .row {

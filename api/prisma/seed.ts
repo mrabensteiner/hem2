@@ -116,18 +116,36 @@ async function main() {
     data: {
       title: "Evaluation of tugraz.at",
       description: "This is an evaluation example of the website tugraz.at",
-      status: { connect: { id: status.id } },
+      status: { connect: { id: status?.id } },
+      logo: {
+        create: {
+          filename: "tugraz.svg",
+          path: "uploads/examples/tugraz.svg"
+        }
+      },
       Findings: {
           create: [
             {
               user: { connect: { id: user3.id } },
               title: "Video on the Start Page",
-              description: "The start page has a muted video that starts automatically."
+              description: "The start page has a muted video that starts automatically.",
+              images: {
+                create: {
+                  filename: "tugraz.png",
+                  path: "uploads/examples/tugraz.png"
+                }
+              }
             },
             {
               user: { connect: { id: user3.id } },
               title: "Study Programs",
-              description: "This is the second item in the list."
+              description: "This is the second item in the list.",
+              images: {
+                create: {
+                  filename: "studydata.png",
+                  path: "uploads/examples/studydata.png"
+                }
+              }
             },
             {
               user: { connect: { id: user3.id } },
@@ -306,7 +324,7 @@ async function main() {
   await prisma.heuristicSet.create({
     data: {
       // https://www.nngroup.com/articles/ten-usability-heuristics/
-      title: "Nielsen's 10 Usability Heuristics (coloured)",
+      title: "Nielsen's 10 Usability Heuristics (colour-coded)",
       description: " Jakob Nielsen's 10 general principles for interaction design. They are called \"heuristics\" because they are broad rules of thumb and not specific usability guidelines.",
       heuristics: {
         create: [

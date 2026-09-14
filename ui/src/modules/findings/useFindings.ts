@@ -25,6 +25,7 @@ export function useFindings() {
       error.value = response.error ?? "";
       finding.value = response.data;
       images.value = response.data.images;
+      finding.value.personalRating = response.data.userRatingId ?? "";
       userRating.value = response.data.userRatingId ?? "";
 
       if (edit) {
@@ -100,6 +101,7 @@ export function useFindings() {
       success.value = response.success ?? "";
       error.value = response.error ?? "";
       finding.value = response.data ?? [];
+      finding.value.personalRating = response.data.userRatings[0]?.ratingId ?? "5";
       mapSelectValues();
     } catch (err: any) {
       error.value = err.message;

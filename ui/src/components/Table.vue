@@ -291,7 +291,7 @@ watch(
             <TimeAgo :date="r[h.key]"/>
           </template>
           <template v-else-if="h.type === 'image'">
-            <img :src="'http://localhost:3000/' + r[h.key].path" />
+            <img v-if="r[h.key]" :src="'http://localhost:3000/' + r[h.key].path" />
           </template>
           <template v-else>{{ r[h.key] }}</template>
         </td>

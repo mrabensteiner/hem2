@@ -67,7 +67,14 @@ const { edited } = useEdit();
       <textarea type="text" placeholder="Description" v-model="finding.description"></textarea>
     </div>
     <div>
-      <label>Rating</label>
+      <label>Personal Rating</label>
+      <select v-model="finding.personalRating">
+        <option value="">-</option>
+        <option v-for="h in finding.project?.ratingset.ratings" :value="h.id"><Chip :chip="h"/></option>
+      </select>
+    </div>
+    <div>
+      <label>Final Rating</label>
       <select v-model="finding.ratingId" name="ratingId">
         <option>-</option>
         <option v-for="h in finding.project?.ratingset.ratings" :value="h.id"><Chip :chip="h"/></option>

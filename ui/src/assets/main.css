@@ -3,6 +3,7 @@
 @import './links.css';
 @import './forms.css';
 @import './layout.css';
+@import './title.css';
 
 body {
   background-color: var(--color-background-soft);

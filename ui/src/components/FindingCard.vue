@@ -50,6 +50,7 @@ const { finding } = defineProps<{
 
   h3 {
     font-weight: bold;
+    margin: 0;
   }
 
   p {

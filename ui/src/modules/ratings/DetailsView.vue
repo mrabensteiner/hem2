@@ -85,7 +85,7 @@ input[type="text"], input[type="password"], select, textarea {
         <input v-model="colorOverride" type="color"/>
       </label>
       <label>
-        Override Textcolour
+        Override Text Colour
         <input v-model="textcolorOverride" type="color"/>
       </label>
     </div>

@@ -5,6 +5,8 @@ import Message from "@/components/Message.vue";
 import {useRoute} from "vue-router";
 import Chip from "@/components/Chip.vue";
 import TimeAgo from "@/components/TimeAgo.vue";
+import IconEdit from "@/components/icons/IconEdit.vue";
+import IconRate from "@/components/icons/IconRate.vue";
 
 const route = useRoute();
 
@@ -27,7 +29,7 @@ onMounted(() => {
       <RouterLink :to="{ path: '/project/' + route.params.pid}">Project: {{finding.project?.title}}</RouterLink>
       <h1>Finding: {{ finding.title }}</h1>
     </div>
-    <RouterLink class="button" :to="{ path: `${route.path}/edit`}">Edit</RouterLink>
+    <RouterLink class="button" :to="{ path: `${route.path}/edit`}"><IconEdit class="icon"/> Edit</RouterLink>
   </section>
 
   <div class="row">
@@ -44,9 +46,9 @@ onMounted(() => {
       <span><TimeAgo :date="finding.updatedat"/></span>
     </p>
     <p>
-      <label>Personal Rating:</label>
+      <label>My Rating:</label>
       <span v-if="finding.userRating?.rating"><Chip :chip="finding.userRating.rating"/></span>
-      <span v-else>Not rated</span>
+      <span v-else>Not yet rated</span>
     </p>
   </div>
   <div class="col-9">
@@ -60,7 +62,7 @@ onMounted(() => {
   </div>
   </div>
 
-  <RouterLink class="button" :to="{ name: 'FindingsRate', params: {id: route.params.id} }">Rate</RouterLink>
+  <RouterLink class="button" :to="{ name: 'FindingsRate', params: {id: route.params.id} }"><IconRate class="icon"/> Rate</RouterLink>
 
   <Message :success="success" :error="error" />
 </template>

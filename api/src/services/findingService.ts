@@ -102,14 +102,21 @@ async function update(data: any, user: any) {
 
   delete data.authors;
   delete data.heuristics;
+  delete data.userRatings;
 
-  projectService.changes(data.project.id);
+  await projectService.changes(data.project.id);
+
+  if (data.personalRating) await rate(data.id, {id: data.personalRating}, user);
 
   delete data.project;
   delete data.rating;
   delete data.user;
   delete data.images;
   delete data.updatedat;
+  delete data.userRating;
+  delete data.userRatingId;
+  delete data.userRatings;
+  delete data.personalRating;
 
   return prisma.finding.update({
     where: { id: data.id },
@@ -126,6 +133,10 @@ async function update(data: any, user: any) {
         }},
       heuristics: true,
       rating: true,
+      userRatings: {
+        where: { userId: user.Id },
+        include: { rating: true }
+      },
       images: true
     }
   });
