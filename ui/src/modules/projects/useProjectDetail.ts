@@ -156,6 +156,17 @@ export function useProjectDetail() {
     }
   }
 
+  function useCalculatedRating(finding: any) {
+    const calculated = finding.totalRating;
+    const rounded = Math.round(calculated);
+    const rating = project.value.ratingset.ratings.find((r: any) => r.order == rounded);
+
+    if (rating) {
+      finding.rating = rating;
+      finding.ratingId = rating.id ?? undefined;
+    }
+  }
+
   return {
     project,
     findings,
@@ -172,6 +183,7 @@ export function useProjectDetail() {
     loadProject,
     saveProject,
     uploadImage,
-    checkProjectPrivilege
+    checkProjectPrivilege,
+    useCalculatedRating
   };
 }

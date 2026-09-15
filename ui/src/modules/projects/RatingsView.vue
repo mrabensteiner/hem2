@@ -2,6 +2,7 @@
 import { onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useProjectDetail } from './useProjectDetail.ts';
+import IconTable from "@/components/icons/IconTable.vue";
 
 const route = useRoute();
 
@@ -11,7 +12,8 @@ const {
   members,
   users,
   prepareRatingsForTable,
-  loadProject
+  loadProject,
+  useCalculatedRating
 } = useProjectDetail();
 
 onMounted(() => {
@@ -38,9 +40,17 @@ onMounted(() => {
         <td class="right" v-for="r in f.rpu" :title="r.title">{{r.value}}</td>
         <td class="right">{{f.totalRating}}</td>
         <td>
-          <select disabled>
-            <option>{{f.rating?.title}}</option>
-          </select>
+          <div class="flex">
+            <button
+              @click="useCalculatedRating(f)"
+              :disabled="f.totalRating == '-' || f.totalRating == f.rating.order"
+              :title="f.totalRating == '-' ? 'No calculated value' : f.totalRating == f.rating.order ? 'Aggregated rating is the same as calculated.' : 'Take the caluclated value.'">
+                <IconTable class="icon"/> >>
+            </button>
+            <select disabled class="flex-1">
+              <option>{{f.rating?.title}}</option>
+            </select>
+          </div>
         </td>
       </tr>
     </tbody>
