@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import {onMounted, ref} from 'vue';
 import { useRoute } from 'vue-router';
 import { useProjectDetail } from '../projects/useProjectDetail.ts';
 import IconSave from "@/components/icons/IconSave.vue";
@@ -7,16 +7,11 @@ import * as listmerger from 'listmerger/src/lib/index.ts';
 
 const route = useRoute();
 
-const items = {
+let itemsbase = {
   "merged": [],
-  "originlists": [
-    {
-      "id": "list1",
-      "name": "John Doe",
-      "items": []
-    },
-  ]
-}
+  "originlists": []
+};
+const items = ref<any>({itemsbase});
 
 const severity_template = `
 <div class='formgroup'>
@@ -211,25 +206,6 @@ ${severity_template}
 
 
 // TODO rewrite for vue
-
-function open() {
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = ".json";
-
-  input.onchange = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-    try {
-      const text = await file.text();
-      const items = JSON.parse(text);
-      listmerger.init("listmerger", "undo", "redo", items, item_template, dialog_template, merge_template);
-    } catch (err) {
-      console.error("Error parsing JSON:", err);
-    }
-  };
-  input.click();
-}
 
 function image_edit(editContainer) {
   let active = editContainer.dataset.active == "true";
@@ -461,12 +437,24 @@ const {
   loadProject,
 } = useProjectDetail();
 
+function setItems() {
+  items.value = listmerger.getAllItems();
+}
+
 onMounted(() => {
   loadProject(route.params.pid as string).then((data) => {
-    // TODO split per reviewer
-    items['originlists'][0]['items'] = data.Findings;
+    const findings = data.Findings;
+
+    const reviewerIds = Map.groupBy(findings, (item: any) => item.user[0].id);
+    const lists = Array.from(reviewerIds, ([userId, items]) => ({
+      id: userId,
+      name: `${items[0].user[0].firstname} ${items[0].user[0].lastname}`,
+      items
+    }));
+    itemsbase['originlists'] = lists;
+
     init_select_edit();
-    listmerger.init(items, templates, selectors);
+    listmerger.init(itemsbase, templates, selectors, setItems);
   });
 });
 </script>
@@ -481,7 +469,6 @@ onMounted(() => {
     <button id="redo" disabled>Redo</button>
     <button disabled><IconSave class="icon"/> Save</button>
   </section>
-
   <div class="container" id="listmerger">
 
     <div class="mergelist-container">
@@ -495,7 +482,19 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped>
-@import 'listmerger/src/example/listmerger.css';
-@import 'listmerger/src/example/style.css';
+<style>
+@import "listmerger/src/example/listmerger.css" layer(listmerger);
+@import "listmerger/src/example/style.css" layer(listmerger);
+
+#listmerger {
+  .tabbar > details > section {
+    margin-top: -1px;
+  }
+  .list:not(#mergelist) .item summary .summary-move {
+    margin: -1rem 1rem -1rem -1rem !important;
+  }
+  .list#mergelist .item summary .summary-moveback {
+    margin: -1rem -1rem -1rem 1rem !important;
+  }
+}
 </style>
