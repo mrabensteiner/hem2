@@ -1,10 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import UserView from "@/views/UserView.vue";
-import UsersView from "@/views/UsersView.vue";
 import LoginView from "@/views/LoginView.vue";
 import {useAuth} from "@/composables/useAuth.ts";
 
+import userRoutes from '@/modules/users/routes';
 import projectRoutes from '@/modules/projects/routes';
 import statusRoutes from '@/modules/statuses/routes';
 import roleRoutes from '@/modules/roles/routes';
@@ -27,24 +26,13 @@ const router = createRouter({
       component: LoginView,
       meta: { title: 'Login', authView: true }
     },
-    {
-      path: '/users',
-      name: 'users',
-      component: UsersView,
-      meta: { title: 'Users', requiresAuth: true }
-    },
+    ...userRoutes,
     ...projectRoutes,
     ...statusRoutes,
     ...roleRoutes,
     ...heuristicRoutes,
     ...ratingRoutes,
     ...findingRoutes,
-    {
-      path: '/user/:id',
-      name: 'User',
-      component: UserView,
-      meta: { title: 'User', requiresAuth: true }
-    },
     {
       path: '/about',
       name: 'about',
