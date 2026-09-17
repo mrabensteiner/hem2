@@ -2,7 +2,6 @@
 import {onMounted, computed} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
 import {useUser} from "@/modules/users/useUser.ts";
-import Message from "@/components/Message.vue";
 import IconSave from "@/components/icons/IconSave.vue";
 import {useEdit} from "@/composables/useEdit.ts";
 import {useRoles} from "@/modules/roles/useRoles.ts";
@@ -21,8 +20,6 @@ const {
   user,
   loadUser,
   saveUser,
-  success,
-  error
 } = useUser();
 
 onMounted(() => {
@@ -79,5 +76,4 @@ const { edited } = useEdit();
       </select>
     </div>
   </form>
-  <Message :success="success" :error="error"/>
 </template>

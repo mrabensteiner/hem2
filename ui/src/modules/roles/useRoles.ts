@@ -1,73 +1,62 @@
 import { ref } from 'vue';
 import { roleApi } from "@/modules/roles/roleApi.ts";
+import {useToast} from "@/composables/useToast.ts";
 
 export function useRoles() {
   const roles = ref<any>([]);
 
   const isLoading = ref(false);
-  const success = ref<string | null>(null);
-  const error = ref<string | null>(null);
+  const { pushToast } = useToast();
 
   async function loadRoles() {
     isLoading.value = true;
-    error.value = null;
-    success.value = null;
 
     try {
       const response = await roleApi.getAll();
-      success.value = response.success ?? "";
-      error.value = response.error ?? "";
+      if (response.success) pushToast(response.success, "success");
+      if (response.error) pushToast(response.error, "error");
       roles.value = response.data;
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
     } finally {
       isLoading.value = false;
     }
   }
 
   async function saveRoles() {
-    error.value = null;
-    success.value = null;
-
     try {
       const payload = roles.value;
 
       const response = await roleApi.save(payload);
-      success.value = response.success ?? "";
-      error.value = response.error ?? "";
+      if (response.success) pushToast(response.success, "success");
+      if (response.error) pushToast(response.error, "error");
       roles.value = response.data ?? [];
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
       throw err;
     }
   }
 
   async function addRole() {
-    error.value = null;
-    success.value = null;
-
     try {
       const response = await roleApi.create();
-      success.value = response.success ?? "";
-      error.value = response.error ?? "";
+      if (response.success) pushToast(response.success, "success");
+      if (response.error) pushToast(response.error, "error");
       roles.value.push(response.data);
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
       throw err;
     }
   }
 
   async function removeRole(id: string) {
-    error.value = null;
-    success.value = null;
-
     try {
       const response = await roleApi.remove(id);
-      success.value = response.success ?? "";
-      error.value = response.error ?? "";
+      if (response.success) pushToast(response.success, "success");
+      if (response.error) pushToast(response.error, "error");
       roles.value = response.data;
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
       throw err;
     }
   }
@@ -78,7 +67,5 @@ export function useRoles() {
     saveRoles,
     addRole,
     removeRole,
-    success,
-    error
   };
 }

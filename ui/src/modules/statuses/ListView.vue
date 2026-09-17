@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useStatuses } from "@/modules/statuses/useStatuses.ts";
-import Message from "@/components/Message.vue";
 import IconSave from "@/components/icons/IconSave.vue";
 import IconAdd from "@/components/icons/IconAdd.vue";
 import IconRemove from "@/components/icons/IconRemove.vue";
@@ -13,8 +12,6 @@ const {
   saveStatuses,
   addStatus,
   removeStatus,
-  success,
-  error
 } = useStatuses();
 
 onMounted(() => {
@@ -76,7 +73,6 @@ const { edited } = useEdit();
     </table>
     <button type="button" @click="addStatus"><IconAdd class="icon"/> Add Status</button>
     <button :disabled="!edited"><IconSave class="icon"/> Save</button>
-    <Message :success="success" :error="error" />
   </form>
 </template>
 

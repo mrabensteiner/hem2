@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import Message from "@/components/Message.vue";
 import {useRoute, useRouter} from "vue-router";
 import {useProjectDetail} from "@/modules/projects/useProjectDetail.ts";
 
@@ -15,8 +14,6 @@ const {
   heuristicSets,
   ratingSets,
   users,
-  success,
-  error,
   loadProject,
   saveProject
 } = useProjectDetail();
@@ -92,5 +89,4 @@ async function save() {
 
     <input type="submit" value="Save"/>
   </form>
-  <Message :success="success" :error="error" />
 </template>

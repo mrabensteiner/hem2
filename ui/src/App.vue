@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import { useAuth } from "@/composables/useAuth.ts";
+import Toast from "@/components/Toast.vue";
 
 const { isAuthenticated, hasPrivilege, user, logout } = useAuth();
 </script>
@@ -36,6 +37,7 @@ const { isAuthenticated, hasPrivilege, user, logout } = useAuth();
 
   <main>
     <RouterView />
+    <Toast/>
   </main>
   <footer>Martin Rabensteiner 2026</footer>
 </template>

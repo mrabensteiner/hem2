@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted, watch } from 'vue';
 import { useFindings } from "@/modules/findings/useFindings.ts";
-import Message from "@/components/Message.vue";
 import {useRoute, useRouter} from "vue-router";
 import Chip from "@/components/Chip.vue";
 import TimeAgo from "@/components/TimeAgo.vue";
@@ -15,8 +14,6 @@ const {
   userRating,
   loadFinding,
   saveRating,
-  success,
-  error
 } = useFindings();
 
 onMounted(() => {
@@ -85,10 +82,9 @@ function save(event: SubmitEvent) {
   <button type="submit" data-next="true"><IconOpen class="icon"/> Save and Rate Next</button>
 
   </form>
-    <Message :success="success" :error="error" />
   </div>
 
-  <Message v-if="!finding.id" success="No more findings to rate." />
+  <p v-if="!finding.id">No more findings to rate.</p>
 </template>
 
 <style scoped>

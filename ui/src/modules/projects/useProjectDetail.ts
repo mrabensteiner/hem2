@@ -5,6 +5,7 @@ import {ratingSetApi} from "@/modules/ratings/ratingSetApi.ts";
 import {statusApi} from "@/modules/statuses/statusApi.ts";
 import {userApi} from "@/api/user.api.ts";
 import {imageApi} from "@/api/images.ts";
+import {useToast} from "@/composables/useToast.ts";
 
 export function useProjectDetail() {
   const project = ref<any>({ title: '', description: '', statusId: '', heuristicsetId: '', ratingsetId: '' });
@@ -13,8 +14,7 @@ export function useProjectDetail() {
   const members = ref<string[]>([]);
 
   const isLoading = ref(false);
-  const success = ref<string | null>(null);
-  const error = ref<string | null>(null);
+  const { pushToast } = useToast();
 
   const statuses = ref<any>([]);
   const heuristicSets = ref<any>([]);
@@ -81,8 +81,6 @@ export function useProjectDetail() {
 
   async function loadProject(projectId: string, isNew: boolean = false) {
     isLoading.value = true;
-    error.value = null;
-    success.value = null;
 
     try {
       [statuses.value, heuristicSets.value, ratingSets.value, users.value] = await Promise.all([
@@ -98,7 +96,7 @@ export function useProjectDetail() {
 
       if (!isNew) {
         const data = await projectApi.getById(projectId);
-        success.value = data.success;
+        if (data.success) pushToast(data.success, "success");
         project.value = data;
 
         extractRoles(data.UserInProject);
@@ -106,16 +104,13 @@ export function useProjectDetail() {
         return data;
       }
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
     } finally {
       isLoading.value = false;
     }
   }
 
   async function saveProject(isNew: boolean = false) {
-    error.value = null;
-    success.value = null;
-
     try {
       const payload = {
         ...project.value,
@@ -125,11 +120,11 @@ export function useProjectDetail() {
 
       const savedData = await projectApi.save(payload, isNew);
       project.value = savedData;
-      success.value = savedData.success;
+      pushToast(savedData.success, "success");
 
       return savedData;
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
       throw err;
     }
   }
@@ -142,16 +137,13 @@ export function useProjectDetail() {
   }
 
   async function uploadImage(data: any) {
-    error.value = null;
-    success.value = null;
-
     try {
       const response = await imageApi.uploadProjectImage(project.value.id, data);
-      success.value = response.success ?? "";
-      error.value = response.error ?? "";
+      if (response.success) pushToast(response.success, "success");
+      if (response.error) pushToast(response.error, "error");
       project.value.logo = response;
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
       throw err;
     }
   }
@@ -178,8 +170,6 @@ export function useProjectDetail() {
     users,
     isLoading,
     prepareRatingsForTable,
-    success,
-    error,
     loadProject,
     saveProject,
     uploadImage,

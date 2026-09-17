@@ -1,13 +1,13 @@
 import { ref } from 'vue';
 import { userApi } from "./userApi.ts";
+import {useToast} from "@/composables/useToast.ts";
 
 export function useUser() {
   const users = ref<any[]>([]);
   const user = ref<any>({});
 
   const isLoading = ref(false);
-  const success = ref<string | null>(null);
-  const error = ref<string | null>(null);
+  const { pushToast } = useToast();
 
   function prepareForTable(data: any[]) {
     return data.map((user: any) => ({
@@ -19,12 +19,12 @@ export function useUser() {
 
   async function loadUsers() {
     isLoading.value = true;
-    error.value = null;
+
     try {
       const rawData = await userApi.getAll();
       users.value = prepareForTable(rawData);
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
     } finally {
       isLoading.value = false;
     }
@@ -32,7 +32,6 @@ export function useUser() {
 
   async function loadUser(id: string, isNew: boolean) {
     isLoading.value = true;
-    error.value = null;
 
     try {
       if (!isNew) {
@@ -40,26 +39,23 @@ export function useUser() {
         user.value = data;
       }
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
     } finally {
       isLoading.value = false;
     }
   }
 
   async function saveUser(isNew: boolean) {
-    error.value = null;
-    success.value = null;
-
     try {
       const payload = user.value;
 
       const savedData = await userApi.save(payload, isNew);
       user.value = savedData;
-      success.value = savedData.success;
+      pushToast(savedData.success, "success");
 
       return savedData;
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message);
       throw err;
     }
   }
@@ -70,7 +66,5 @@ export function useUser() {
     loadUsers,
     loadUser,
     saveUser,
-    success,
-    error
   };
 }

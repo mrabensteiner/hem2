@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {onMounted} from 'vue';
 import { useFindings } from "@/modules/findings/useFindings.ts";
-import Message from "@/components/Message.vue";
 import {useRoute} from "vue-router";
 import Chip from "@/components/Chip.vue";
 import IconSave from "@/components/icons/IconSave.vue";
@@ -16,8 +15,6 @@ const {
   loadFinding,
   saveFinding,
   uploadImages,
-  success,
-  error
 } = useFindings();
 
 onMounted(() => {
@@ -102,5 +99,4 @@ const { edited } = useEdit();
       </div>
     </div>
   </form>
-  <Message :success="success" :error="error" />
 </template>

@@ -3,6 +3,7 @@ import { findingApi } from "@/modules/findings/findingApi.ts";
 import {projectApi} from "@/api/project.api.ts";
 import { imageApi } from "@/api/images.ts";
 import {useAuth} from "@/composables/useAuth.ts";
+import {useToast} from "@/composables/useToast.ts";
 
 export function useFindings() {
   const finding = ref<any>([]);
@@ -11,18 +12,15 @@ export function useFindings() {
   const projectUsers = ref<any>([]);
 
   const isLoading = ref(false);
-  const success = ref<string | null>(null);
-  const error = ref<string | null>(null);
+  const { pushToast } = useToast();
 
   async function loadFinding(id: string, edit = false, pid = "") {
     isLoading.value = true;
-    error.value = null;
-    success.value = null;
 
     try {
       const response = id != undefined ? await findingApi.getById(id) : await findingApi.getRandom(pid);
-      success.value = response.success ?? "";
-      error.value = response.error ?? "";
+      if (response.success) pushToast(response.success, "success");
+      if (response.error) pushToast(response.error, "error");
       finding.value = response.data;
       images.value = response.data.images;
       finding.value.personalRating = response.data.userRatingId ?? "";
@@ -35,22 +33,18 @@ export function useFindings() {
       const project = await projectApi.getById(response.data.projectId);
       projectUsers.value = project.UserInProject.map((u: any) => u.user);
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
     } finally {
       isLoading.value = false;
     }
   }
 
   async function loadNewFinding(projectId: string) {
-    isLoading.value = true;
-    error.value = null;
-    success.value = null;
-
-    try {
+    isLoading.value = true;    try {
       const response = await projectApi.getById(projectId);
       console.log(response);
-      success.value = response.success ?? "";
-      error.value = response.error ?? "";
+      if (response.success) pushToast(response.success, "success");
+      if (response.error) pushToast(response.error, "error");
       projectUsers.value = response.UserInProject.map((u: any) => u.user);
 
       finding.value = {
@@ -58,7 +52,7 @@ export function useFindings() {
         project: response, projectId: response.projectId
       };
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
     } finally {
       isLoading.value = false;
     }
@@ -70,86 +64,71 @@ export function useFindings() {
   }
 
   async function createFinding() {
-    error.value = null;
-    success.value = null;
-
     try {
       const payload = finding.value;
       payload.projectId = payload.project.id;
       delete payload.project;
 
       const response = await findingApi.create(payload);
-      success.value = response.success ?? "";
-      error.value = response.error ?? "";
+      if (response.success) pushToast(response.success, "success");
+      if (response.error) pushToast(response.error, "error");
       finding.value = response.data ?? [];
 
       return finding.value.id;
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
       throw err;
     }
   }
 
   async function saveFinding() {
-    error.value = null;
-    success.value = null;
-
     try {
       const payload = finding.value;
 
       const response = await findingApi.save(payload);
-      success.value = response.success ?? "";
-      error.value = response.error ?? "";
+      if (response.success) pushToast(response.success, "success");
+      if (response.error) pushToast(response.error, "error");
       finding.value = response.data ?? [];
       finding.value.personalRating = response.data.userRatings[0]?.ratingId ?? "5";
       mapSelectValues();
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
       throw err;
     }
   }
 
   async function removeFinding(id: string) {
-    error.value = null;
-    success.value = null;
-
     try {
       const response = await findingApi.remove(id);
-      success.value = response.success ?? "";
-      error.value = response.error ?? "";
+      if (response.success) pushToast(response.success, "success");
+      if (response.error) pushToast(response.error, "error");
       finding.value = response.data;
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
       throw err;
     }
   }
 
   async function uploadImages(data: any) {
-    error.value = null;
-    success.value = null;
-
     try {
       const response = await imageApi.uploadFindingImages(finding.value.project.id, finding.value.id, data);
-      success.value = response.success ?? "";
-      error.value = response.error ?? "";
+      if (response.success) pushToast(response.success, "success");
+      if (response.error) pushToast(response.error, "error");
       images.value = response;
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
       throw err;
     }
   }
 
   async function saveRating(next: boolean) {
-    error.value = null;
-    success.value = null;
-
     try {
       const findingId = finding.value.id;
       const rating = userRating.value;
 
       const ratingResponse = await findingApi.saveRating(findingId, rating);
-      success.value = ratingResponse.success ?? "";
-      error.value = ratingResponse.error ?? "";
+      if (ratingResponse.success) pushToast(ratingResponse.success, "success");
+      if (ratingResponse.error) pushToast(ratingResponse.error, "error");
 
       if (next) {
         const findingResponse = await findingApi.getRandom(finding.value.projectId);
@@ -158,7 +137,7 @@ export function useFindings() {
         userRating.value = findingResponse.data.userRatings ?? "";
       }
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
       throw err;
     }
   }
@@ -175,7 +154,5 @@ export function useFindings() {
     removeFinding,
     saveRating,
     uploadImages,
-    success,
-    error
   };
 }

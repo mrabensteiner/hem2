@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {onMounted} from 'vue';
-import Message from "@/components/Message.vue";
 import {useRoute, useRouter} from "vue-router";
 import {useProjectDetail} from "@/modules/projects/useProjectDetail.ts";
 import IconSave from "@/components/icons/IconSave.vue";
@@ -18,8 +17,6 @@ const {
   heuristicSets,
   ratingSets,
   users,
-  success,
-  error,
   loadProject,
   saveProject,
   uploadImage
@@ -116,7 +113,6 @@ const { edited } = useEdit();
       <ChipSearch prefix="members" v-model="members" :users="users" />
     </div>
   </form>
-  <Message :success="success" :error="error" />
 </template>
 
 

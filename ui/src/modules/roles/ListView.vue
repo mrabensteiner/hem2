@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useRoles } from "@/modules/roles/useRoles.ts";
-import Message from "@/components/Message.vue";
 import IconSave from "@/components/icons/IconSave.vue";
 import IconAdd from "@/components/icons/IconAdd.vue";
 import IconRemove from "@/components/icons/IconRemove.vue";
@@ -13,8 +12,6 @@ const {
   saveRoles,
   addRole,
   removeRole,
-  success,
-  error
 } = useRoles();
 
 onMounted(() => {
@@ -82,7 +79,6 @@ const { edited } = useEdit();
     </table>
     <button type="button" @click="addRole"><IconAdd class="icon"/> Add Role</button>
     <button :disabled="!edited"><IconSave class="icon"/> Save</button>
-    <Message :success="success" :error="error" />
   </form>
 </template>
 

@@ -4,7 +4,6 @@ import {useRoute, useRouter} from 'vue-router';
 import { useHeuristic } from "./useHeuristic.ts";
 import draggable from 'vuedraggable';
 import Chip from "@/components/Chip.vue";
-import Message from "@/components/Message.vue";
 import IconSave from "@/components/icons/IconSave.vue";
 import IconAdd from "@/components/icons/IconAdd.vue";
 import IconRemove from "@/components/icons/IconRemove.vue";
@@ -21,8 +20,6 @@ const {
   saveHeuristicSet,
   addHeuristic,
   removeHeuristic,
-  success,
-  error
 } = useHeuristic();
 
 const colorOverride = ref("#777");
@@ -123,7 +120,6 @@ input[type="text"], input[type="password"], select, textarea {
       </template>
     </draggable>
     <button type="button" @click="addHeuristic">Add Heuristic</button>
-    <Message :success="success" :error="error" />
   </form>
 </template>
 

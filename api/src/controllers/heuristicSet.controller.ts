@@ -22,7 +22,10 @@ async function getById(req: Request, res: Response) {
 async function create(req: Request, res: Response) {
   try {
     const heuristicSet = await heuristicSetService.create(req.body);
-    res.status(201).json(heuristicSet);
+    res.status(201).json({
+      ...heuristicSet,
+      success: "Created heuristic set successfully."
+    });
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }
@@ -40,7 +43,10 @@ async function createSingle(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const heuristicSet = await heuristicSetService.remove(req.body);
-    res.status(201).json(heuristicSet);
+    res.status(201).json({
+      ...heuristicSet,
+      success: "Removed heuristic set."
+    });
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }
@@ -49,7 +55,10 @@ async function remove(req: Request, res: Response) {
 async function removeSingle(req: Request, res: Response) {
   try {
     const heuristicSet = await heuristicSetService.removeSingle(req.params.id as string, req.body.id as string);
-    res.status(201).json(heuristicSet);
+    res.status(201).json({
+      ...heuristicSet,
+      success: "Removed heuristic."
+    });
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }
@@ -58,7 +67,10 @@ async function removeSingle(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const heuristicSet = await heuristicSetService.update(req.body);
-    res.json(heuristicSet);
+    res.json({
+      ...heuristicSet,
+      success: "Updated heuristic set successfully."
+    });
   } catch (error: any) {
     res.status(500).json({error: error.message});
   }

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useFindings } from "@/modules/findings/useFindings.ts";
-import Message from "@/components/Message.vue";
 import {useRoute} from "vue-router";
 import Chip from "@/components/Chip.vue";
 import TimeAgo from "@/components/TimeAgo.vue";
@@ -13,8 +12,6 @@ const route = useRoute();
 const {
   finding,
   loadFinding,
-  success,
-  error
 } = useFindings();
 
 onMounted(() => {
@@ -63,8 +60,6 @@ onMounted(() => {
   </div>
 
   <RouterLink class="button" :to="{ name: 'FindingsRate', params: {id: route.params.id} }"><IconRate class="icon"/> Rate</RouterLink>
-
-  <Message :success="success" :error="error" />
 </template>
 
 <style scoped>

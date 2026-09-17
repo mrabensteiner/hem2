@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useFindings } from "@/modules/findings/useFindings.ts";
-import Message from "@/components/Message.vue";
 import {useRoute, useRouter} from "vue-router";
 import Chip from "@/components/Chip.vue";
 
@@ -13,8 +12,6 @@ const {
   projectUsers,
   loadNewFinding,
   createFinding,
-  success,
-  error
 } = useFindings();
 
 onMounted(() => {
@@ -69,5 +66,4 @@ async function save(reload: boolean = false) {
     <input type="submit" value="Save"/>
     <a class="button" @click="save(true)">New Finding</a>
   </form>
-  <Message :success="success" :error="error" />
 </template>
