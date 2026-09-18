@@ -5,6 +5,8 @@ import {useUser} from "@/modules/users/useUser.ts";
 import IconSave from "@/components/icons/IconSave.vue";
 import {useEdit} from "@/composables/useEdit.ts";
 import {useRoles} from "@/modules/roles/useRoles.ts";
+import PasswordInput from "@/components/PasswordInput.vue";
+import IconWarningYellow from "@/components/icons/IconWarningYellow.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -40,22 +42,22 @@ const { edited } = useEdit();
 </script>
 
 <template>
-  <form @submit.prevent="save" v-if="user.id || !error">
+  <form @submit.prevent="save" @input="edited = true" v-if="user.id || isNew">
     <section class="sticky">
       <div>
         <RouterLink to="/users">Users</RouterLink> >
         <h1 v-if="user.id">User: {{user?.firstname}} {{user?.lastname}} ({{user?.username}})</h1>
         <h1 v-else>New User</h1>
       </div>
-      <button><IconSave class="icon"/> Save</button>
+      <button :disabled="!edited"><IconSave class="icon"/> Save</button>
     </section>
     <div>
       <label>Username</label>
       <input type="text" placeholder="Username" v-model="user.username" required />
     </div>
     <div>
-      <label>Password</label>
-      <input type="password" placeholder="Password" v-model="user.password" />
+      <label>Password <abbr title="The password is already set. Entering a new one will override it."><IconWarningYellow class="icon"/></abbr></label>
+      <PasswordInput v-model="user.password" />
     </div>
     <div>
       <label>Firstname</label>

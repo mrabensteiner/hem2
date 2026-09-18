@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import {useAuth} from "@/composables/useAuth.ts";
+import PasswordInput from "@/components/PasswordInput.vue";
 
 const router = useRouter();
 const { login, isLoading, error } = useAuth();
@@ -24,7 +25,7 @@ async function handleLogin() {
     </div>
     <div>
       <label>Password</label>
-      <input type="password" v-model="password" required />
+      <PasswordInput v-model="password" required />
     </div>
     <button type="submit" :disabled="isLoading">Login</button>
   </form>

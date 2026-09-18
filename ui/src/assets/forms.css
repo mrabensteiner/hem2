@@ -13,6 +13,10 @@ label:not(:has(input[type="checkbox"])) {
   }
 }
 
+label .icon {
+  height: 1.5em;
+}
+
 label:has(input[type="checkbox"]) {
   display: block;
 }
