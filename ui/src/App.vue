@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import {ref} from "vue";
+import {RouterLink, RouterView} from 'vue-router'
 import { useAuth } from "@/composables/useAuth.ts";
 import Toast from "@/components/Toast.vue";
+import Sidebar from "@/components/Sidebar.vue";
+import IconSidebar from "@/components/icons/IconSidebar.vue";
 
-const { isAuthenticated, hasPrivilege, user, logout } = useAuth();
+const { isAuthenticated, user } = useAuth();
+const sidebar = ref<boolean>(true);
 </script>
 
 <template>
@@ -11,39 +15,44 @@ const { isAuthenticated, hasPrivilege, user, logout } = useAuth();
     <a class="logo" href="/">
       HEM2
     </a>
-
     <nav>
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink v-if="isAuthenticated" to="/projects">Projects</RouterLink>
-      <details>
-        <summary>System Settings</summary>
-        <nav>
-          <RouterLink v-if="hasPrivilege('userEdit')" to="/users">Users</RouterLink>
-          <RouterLink v-if="hasPrivilege('roleEdit')" to="/roles">Roles</RouterLink>
-          <RouterLink v-if="hasPrivilege('statusEdit')" to="/statuses">Statuses</RouterLink>
-          <RouterLink v-if="hasPrivilege('heuristicSetEdit')" to="/heuristics">Heuristics</RouterLink>
-          <RouterLink v-if="hasPrivilege('ratingSetEdit')" to="/ratings">Ratings</RouterLink>
-        </nav>
-      </details>
+      <label class="sidebar-toggle" title="Toggle Sidebar">
+        <IconSidebar class="icon"/>
+        <input type="checkbox" v-model="sidebar"/>
+      </label>
     </nav>
     <nav class="user">
       <RouterLink v-if="!isAuthenticated" to="/login">Login</RouterLink>
       <div v-if="user" class="hello">
         Hello, {{user.firstname}} {{user.lastname}}!
       </div>
-      <a v-if="isAuthenticated" @click="logout">Logout</a>
     </nav>
   </header>
-
-  <main>
-    <RouterView />
-    <Toast/>
-  </main>
+  <div class="container">
+    <Sidebar v-if="isAuthenticated" :active="sidebar"/>
+    <main>
+      <RouterView />
+      <Toast/>
+    </main>
+  </div>
   <footer>Martin Rabensteiner 2026</footer>
 </template>
 
 <style scoped>
-details:not(:has(a)) {
-  display: none;
+.sidebar-toggle {
+  transition: .2s all ease;
+  cursor: pointer;
+
+  .icon {
+    display: block;
+  }
+
+  &:has(input:checked) {
+    transform: rotate(180deg);
+  }
+
+  input {
+    display: none;
+  }
 }
 </style>

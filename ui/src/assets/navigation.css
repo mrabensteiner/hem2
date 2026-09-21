@@ -1,7 +1,7 @@
 header {
   background-color: var(--app-secondary);
   color: var(--vt-c-white);
-  padding: 2rem;
+  padding: .5rem 1rem;
   display: flex;
   gap: 1rem;
   align-items: center;
@@ -75,7 +75,7 @@ section.sticky {
   margin: -2rem -2rem 1rem -2rem;
   padding: 1rem 2rem;
   position: sticky;
-  top: 0;
+  top: -2rem;
   display: flex;
   align-items: center;
 

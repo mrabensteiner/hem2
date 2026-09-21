@@ -20,6 +20,7 @@ export default [
     component: DetailsView,
     meta: {
       title: 'Project',
+      context: 'project',
       requiresAuth: true,
       requiredProjectPrivilege: 'projectViewDetails'
     }
@@ -30,6 +31,7 @@ export default [
     component: RatingsView,
     meta: {
       title: 'Project Ratings',
+      context: 'project',
       requiresAuth: true
     }
   },
@@ -46,6 +48,7 @@ export default [
     name: 'ProjectEdit',
     component: EditView,
     meta: {
+      context: 'project',
       requiresAuth: true
     }
   }

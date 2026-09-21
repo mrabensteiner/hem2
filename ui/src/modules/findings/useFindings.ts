@@ -4,6 +4,7 @@ import {projectApi} from "@/api/project.api.ts";
 import { imageApi } from "@/api/images.ts";
 import {useAuth} from "@/composables/useAuth.ts";
 import {useToast} from "@/composables/useToast.ts";
+import {useProjects} from "@/modules/projects/useProjects.ts";
 
 export function useFindings() {
   const finding = ref<any>([]);
@@ -13,6 +14,7 @@ export function useFindings() {
 
   const isLoading = ref(false);
   const { pushToast } = useToast();
+  const { setProject } = useProjects();
 
   async function loadFinding(id: string, edit = false, pid = "") {
     isLoading.value = true;
@@ -22,7 +24,9 @@ export function useFindings() {
       if (response.success) pushToast(response.success, "success");
       if (response.error) pushToast(response.error, "error");
       finding.value = response.data;
-      images.value = response.data.images;
+      finding.value = response.data;
+      setProject(response.data.project);
+
       finding.value.personalRating = response.data.userRatingId ?? "";
       userRating.value = response.data.userRatingId ?? "";
 
@@ -42,10 +46,10 @@ export function useFindings() {
   async function loadNewFinding(projectId: string) {
     isLoading.value = true;    try {
       const response = await projectApi.getById(projectId);
-      console.log(response);
       if (response.success) pushToast(response.success, "success");
       if (response.error) pushToast(response.error, "error");
       projectUsers.value = response.UserInProject.map((u: any) => u.user);
+      setProject(response);
 
       finding.value = {
         title: "", description: "", user: [], heuristics: [], ratingId: undefined,

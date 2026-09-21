@@ -28,6 +28,7 @@ async function getById(id: string, user: any) {
       project: { include: {
           ratingset: { include: { ratings: true } },
           heuristicset: { include: { heuristics: true } },
+          logo: true
         }},
       heuristics: true,
       rating: true,

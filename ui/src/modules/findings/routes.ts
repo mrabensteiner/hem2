@@ -10,6 +10,7 @@ export default [
     name: 'FindingsDetails',
     component: DetailsView,
     meta: {
+      context: 'project',
       requiresAuth: true
     }
   },
@@ -18,6 +19,7 @@ export default [
     name: 'FindingsNew',
     component: NewView,
     meta: {
+      context: 'project',
       requiresAuth: true
     }
   },
@@ -26,6 +28,7 @@ export default [
     name: 'FindingsEdit',
     component: EditView,
     meta: {
+      context: 'project',
       requiresAuth: true
     }
   },
@@ -34,6 +37,7 @@ export default [
     name: 'FindingsRate',
     component: RatingView,
     meta: {
+      context: 'project',
       requiresAuth: true
     }
   },
@@ -42,6 +46,7 @@ export default [
     name: 'FindingsMerge',
     component: MergingView,
     meta: {
+      context: 'project',
       requiresAuth: true
     }
   },

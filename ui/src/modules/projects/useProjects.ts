@@ -138,6 +138,10 @@ export function useProjects() {
     }
   }
 
+  function setProject(value: any) {
+    project.value = value;
+  }
+
   async function saveProject(isNew: boolean = false) {
     try {
       const payload = {
@@ -201,6 +205,7 @@ export function useProjects() {
     prepareRatingsForTable,
     loadProjects,
     loadProject,
+    setProject,
     saveProject,
     uploadImage,
     checkProjectPrivilege,
