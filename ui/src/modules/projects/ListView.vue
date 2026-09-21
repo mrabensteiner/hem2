@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import { useProjectsList } from './useProjectList.ts';
+import { useProjects } from './useProjects.ts';
 import Table from "@/components/Table.vue";
 
-const { projects, loadProjects } = useProjectsList();
+const { projects, loadProjects } = useProjects();
 
 onMounted(() => {
   loadProjects();

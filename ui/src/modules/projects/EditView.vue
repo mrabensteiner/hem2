@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {onMounted} from 'vue';
 import {useRoute, useRouter} from "vue-router";
-import {useProjectDetail} from "@/modules/projects/useProjectDetail.ts";
+import {useProjects} from "@/modules/projects/useProjects.ts";
 import IconSave from "@/components/icons/IconSave.vue";
 import ChipSearch from "@/components/ChipSearch.vue";
 import {useEdit} from "@/composables/useEdit.ts";
@@ -20,7 +20,7 @@ const {
   loadProject,
   saveProject,
   uploadImage
-} = useProjectDetail();
+} = useProjects();
 
 onMounted(() => {
   loadProject(route.params.id as string);

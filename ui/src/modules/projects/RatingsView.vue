@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { useProjectDetail } from './useProjectDetail.ts';
+import { useProjects } from './useProjects.ts';
 import IconTable from "@/components/icons/IconTable.vue";
 
 const route = useRoute();
@@ -14,7 +14,7 @@ const {
   prepareRatingsForTable,
   loadProject,
   useCalculatedRating
-} = useProjectDetail();
+} = useProjects();
 
 onMounted(() => {
   loadProject(route.params.id as string).then(() => prepareRatingsForTable());

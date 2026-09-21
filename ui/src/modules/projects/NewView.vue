@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import {useRoute, useRouter} from "vue-router";
-import {useProjectDetail} from "@/modules/projects/useProjectDetail.ts";
+import {useProjects} from "@/modules/projects/useProjects.ts";
 
 const route = useRoute();
 const router = useRouter();
@@ -16,7 +16,7 @@ const {
   users,
   loadProject,
   saveProject
-} = useProjectDetail();
+} = useProjects();
 
 onMounted(() => {
   loadProject(route.params.id as string, true);

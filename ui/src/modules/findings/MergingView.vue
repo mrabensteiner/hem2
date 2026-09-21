@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {onMounted, ref} from 'vue';
 import { useRoute } from 'vue-router';
-import { useProjectDetail } from '../projects/useProjectDetail.ts';
+import { useProjects } from '../projects/useProjects.ts';
 import IconSave from "@/components/icons/IconSave.vue";
 import * as listmerger from 'listmerger/src/lib/index.ts';
 
@@ -435,7 +435,7 @@ const templates = {
 const {
   project,
   loadProject,
-} = useProjectDetail();
+} = useProjects();
 
 function setItems() {
   items.value = listmerger.getAllItems();

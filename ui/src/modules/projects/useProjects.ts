@@ -6,9 +6,14 @@ import {statusApi} from "@/modules/statuses/statusApi.ts";
 import {userApi} from "@/api/user.api.ts";
 import {imageApi} from "@/api/images.ts";
 import {useToast} from "@/composables/useToast.ts";
+import {useAuth} from "@/composables/useAuth.ts";
 
-export function useProjectDetail() {
-  const project = ref<any>({ title: '', description: '', statusId: '', heuristicsetId: '', ratingsetId: '' });
+const {hasPrivilege} = useAuth();
+
+const project = ref<any>({ title: '', description: '', statusId: '', heuristicsetId: '', ratingsetId: '' });
+
+export function useProjects() {
+  const projects = ref<any[]>([]);
   const findings = ref<any[]>([]);
   const managers = ref<string[]>([]);
   const members = ref<string[]>([]);
@@ -20,6 +25,29 @@ export function useProjectDetail() {
   const heuristicSets = ref<any>([]);
   const ratingSets = ref<any>([]);
   const users = ref<any[]>([]);
+
+  function prepareProjectsForTable(data: any[]) {
+    return data.map((project: any) => ({
+      ...project,
+      deactivated: !project.status.projectViewDetails && !hasPrivilege.value("projectViewAll"),
+      link: `/project/${project.id}`,
+      manager: project.UserInProject
+        ? project.UserInProject.filter((uip: any) => uip.projectRole === "MANAGER").map((uip: any) => `${uip.user.firstname} ${uip.user.lastname}`)
+        : []
+    }));
+  }
+
+  async function loadProjects() {
+    isLoading.value = true;
+    try {
+      const rawData = await projectApi.getAll();
+      projects.value = prepareProjectsForTable(rawData);
+    } catch (err: any) {
+      pushToast(err.message, "error");
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
   function extractRoles(userInProjectList: any[]) {
     managers.value = [];
@@ -160,6 +188,7 @@ export function useProjectDetail() {
   }
 
   return {
+    projects,
     project,
     findings,
     managers,
@@ -170,6 +199,7 @@ export function useProjectDetail() {
     users,
     isLoading,
     prepareRatingsForTable,
+    loadProjects,
     loadProject,
     saveProject,
     uploadImage,

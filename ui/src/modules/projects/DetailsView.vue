@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useProjectDetail } from './useProjectDetail.ts';
+import { useProjects } from './useProjects.ts';
 import {useLocalStorage} from "@vueuse/core";
 import Table from "@/components/Table.vue";
 import Chip from "@/components/Chip.vue";
@@ -24,7 +24,7 @@ const {
   findings,
   loadProject,
   checkProjectPrivilege
-} = useProjectDetail();
+} = useProjects();
 
 onMounted(() => {
   loadProject(route.params.id as string, isNewProject.value).then(() => {
