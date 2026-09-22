@@ -5,8 +5,7 @@ import {useUser} from "@/modules/users/useUser.ts";
 import IconSave from "@/components/icons/IconSave.vue";
 import {useEdit} from "@/composables/useEdit.ts";
 import {useRoles} from "@/modules/roles/useRoles.ts";
-import PasswordInput from "@/components/PasswordInput.vue";
-import IconWarningYellow from "@/components/icons/IconWarningYellow.vue";
+import FormControl from "@/components/FormControl.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -39,6 +38,13 @@ async function save() {
 }
 
 const { edited } = useEdit();
+
+const colorSchemes = [
+  {id: "", title: "None"},
+  {id: "system", title: "System"},
+  {id: "light", title: "Light"},
+  {id: "dark", title: "Dark"},
+];
 </script>
 
 <template>
@@ -51,39 +57,13 @@ const { edited } = useEdit();
       </div>
       <button :disabled="!edited"><IconSave class="icon"/> Save</button>
     </section>
-    <div>
-      <label>Username</label>
-      <input type="text" placeholder="Username" v-model="user.username" required />
-    </div>
-    <div>
-      <label>Password <abbr title="The password is already set. Entering a new one will override it."><IconWarningYellow class="icon"/></abbr></label>
-      <PasswordInput v-model="user.password" />
-    </div>
-    <div>
-      <label>Firstname</label>
-      <input type="text" placeholder="Firstname" v-model="user.firstname" />
-    </div>
-    <div>
-      <label data-test="red">Lastname</label>
-      <input type="text" placeholder="Lastname" v-model="user.lastname" />
-    </div>
-    <div>
-      <label>Email</label>
-      <input type="text" placeholder="Email" v-model="user.email" required />
-    </div>
-    <div>
-      <label>Role</label>
-      <select v-model="user.roleId" required>
-        <option v-for="r in roles" :value="r.id">{{ r.title }}</option>
-      </select>
-    </div>
-    <div>
-      <label>Colour Scheme</label>
-      <select v-model="user.colorScheme">
-        <option value="system">System</option>
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-      </select>
-    </div>
+
+    <FormControl type="text" label="Username" v-model="user.username" required/>
+    <FormControl type="password" label="Password" v-model="user.password"/>
+    <FormControl type="text" label="Firstname" v-model="user.firstname"/>
+    <FormControl type="text" label="Lastname" v-model="user.lastname"/>
+    <FormControl type="text" label="Email" v-model="user.email" required/>
+    <FormControl type="select" label="Role" v-model="user.roleId" :options="roles" required/>
+    <FormControl type="select" label="Colour Scheme" v-model="user.colorScheme" :options="colorSchemes"/>
   </form>
 </template>
