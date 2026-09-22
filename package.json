@@ -1,6 +1,6 @@
 {
   "name": "hem2",
-  "version": "1.0.0",
+  "version": "0.0.1dev",
   "repository": "git+https://github.com/mrabensteiner/hem2",
   "keywords": [
     "heuristic evaluation",
@@ -21,8 +21,8 @@
     "db:studio": "pnpm --filter hem2-api db:studio",
     "dev:api": "pnpm --filter hem2-api dev",
     "dev:ui": "pnpm --filter hem2-ui dev",
-    "dev:all": "concurrently -n 'HEM2--DB,HEM2-API,HEM2--UI' -c 'red,blue,green' 'pnpm docker' 'pnpm run dev:api' 'pnpm run dev:ui'",
-    "dev": "concurrently -n 'HEM2-API,HEM2--UI' -c 'blue,green' 'pnpm run dev:api' 'pnpm run dev:ui'",
+    "dev:all": "concurrently -n \"HEM2--DB,HEM2-API,HEM2--UI\" -c \"red,blue,green\" \"pnpm docker\" \"pnpm run dev:api\" \"pnpm run dev:ui\"",
+    "dev": "concurrently -n \"HEM2-API,HEM2--UI\" -c \"blue,green\" \"pnpm run dev:api\" \"pnpm run dev:ui\"",
     "docker": "docker compose up -d",
     "docker:stop": "docker compose down"
   },

@@ -12,7 +12,7 @@ const dateObj = computed(() => {
 </script>
 
 <template>
-  <abbr :title="dateObj.toLocaleDateString('en-UK') + ' ' + dateObj.toLocaleTimeString('en-UK')">
+  <time :title="dateObj.toLocaleDateString('en-UK') + ' ' + dateObj.toLocaleTimeString('en-UK')">
     {{ formatTimeAgo(dateObj) }}
-  </abbr>
+  </time>
 </template>

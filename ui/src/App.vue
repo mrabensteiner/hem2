@@ -5,6 +5,7 @@ import { useAuth } from "@/composables/useAuth.ts";
 import Toast from "@/components/Toast.vue";
 import Sidebar from "@/components/Sidebar.vue";
 import IconSidebar from "@/components/icons/IconSidebar.vue";
+import Version from "@/components/Version.vue";
 
 const { isAuthenticated, user } = useAuth();
 const sidebar = ref<boolean>(true);
@@ -35,7 +36,7 @@ const sidebar = ref<boolean>(true);
       <Toast/>
     </main>
   </div>
-  <footer>Martin Rabensteiner 2026</footer>
+  <footer>Martin Rabensteiner 2026 <Version/></footer>
 </template>
 
 <style scoped>
