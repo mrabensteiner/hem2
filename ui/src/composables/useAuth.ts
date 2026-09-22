@@ -1,5 +1,6 @@
 import {computed, ref} from 'vue';
 import {apiClient, Method} from "@/api/client.ts";
+import {useToast} from "@/composables/useToast.ts";
 
 const user = ref<any>(null);
 const privileges = ref<string[]>([]);
@@ -9,11 +10,15 @@ export function useAuth() {
   const isLoading = ref(false);
   const error = ref<string | null>(null);
 
+  const { pushToast } = useToast();
+
   const isAuthenticated = computed(() => {
     if (!token.value) {
       return false;
     } else if (user.value == null) {
-      fetchCurrentUser();
+      fetchCurrentUser().then(() => {
+        return true;
+      });
     }
     return true;
   });
@@ -39,10 +44,11 @@ export function useAuth() {
 
       const role = data.user.role;
       privileges.value = Object.keys(role).filter(key => role[key] === true);
+      setTheme();
 
       return data;
     } catch (err: any) {
-      error.value = err.message;
+      pushToast(err.message, "error");
       throw err;
     } finally {
       isLoading.value = false;
@@ -58,6 +64,7 @@ export function useAuth() {
 
       const role = data.user.role;
       privileges.value = Object.keys(role).filter(key => role[key] === true);
+      setTheme();
     } catch (err) {
       logout();
     }
@@ -68,6 +75,10 @@ export function useAuth() {
     token.value = null;
     user.value = null;
     window.location.href = '/login';
+  }
+
+  function setTheme() {
+    document.body.dataset.theme = user.value.colorScheme;
   }
 
   return { user, token, isAuthenticated, hasPrivilege, isLoading, error, login, logout };

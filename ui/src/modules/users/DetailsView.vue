@@ -77,5 +77,13 @@ const { edited } = useEdit();
         <option v-for="r in roles" :value="r.id">{{ r.title }}</option>
       </select>
     </div>
+    <div>
+      <label>Colour Scheme</label>
+      <select v-model="user.colorScheme">
+        <option value="system">System</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </div>
   </form>
 </template>

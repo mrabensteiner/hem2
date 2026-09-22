@@ -26,6 +26,7 @@ async function update(data: any) {
       lastname: data.lastname,
       roleId: data.roleId,
       password: data.password,
+      colorScheme: data.colorScheme
     }
   });
 }
