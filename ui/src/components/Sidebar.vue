@@ -48,7 +48,7 @@ const { project } = useProjects();
       <summary>{{ user.firstname }} {{ user.lastname }}</summary>
       <section>
         <ul>
-          <li><RouterLink :to="'/users/' + user.id">My Acount</RouterLink></li>
+          <li><RouterLink :to="'/users/' + user.id">My Account</RouterLink></li>
           <li><RouterLink to="/projects">My Projects</RouterLink></li>
           <li><a @click="logout">Logout</a></li>
         </ul>
@@ -61,16 +61,6 @@ const { project } = useProjects();
 <style scoped>
 a.router-link-active {
   text-decoration: underline;
-}
-
-aside {
-  transition: all .3s ease;
-
-  &.hidden {
-    padding: 1rem 0;
-    flex: 0;
-    translate: -100%;
-  }
 }
 
 details {

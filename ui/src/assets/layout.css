@@ -25,8 +25,9 @@ div.container {
 }
 
 aside {
-  flex: 1;
-  max-width: 20rem;
+  --sidebar-width: 20rem;
+
+  width: var(--sidebar-width);
   background-color: var(--color-background-soft);
   padding: 1rem;
 
@@ -37,9 +38,22 @@ aside {
   display: flex;
   flex-direction: column;
   gap: .5rem;
+  transition: all .3s ease;
+
+  @media (max-width: 768px) {
+    position: absolute;
+    z-index: 2;
+    height: anchor-size(--main height);
+  }
+
+  &.hidden {
+    translate: -100%;
+    margin-right: calc(-1 * var(--sidebar-width));
+  }
 }
 
 main {
+  anchor-name: --main;
   max-width: 1280px;
   align-self: stretch;
   flex: 1;
