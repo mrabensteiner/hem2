@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {ref} from "vue";
+import IconAdd from "@/components/icons/IconAdd.vue";
 
 const selected = defineModel<string[]>();
 const search = ref<string>("");
@@ -18,8 +19,9 @@ const { prefix, users } = defineProps<{
         {{ u.firstname }} {{ u.lastname }}
       </div>
     </template>
-    <div>
+    <div style="anchor-name: --input;">
       <input type="search" :id="prefix" v-model="search" autocomplete="off"/>
+      <IconAdd class="floating-icon"/>
       <div class="suggestions" v-if="search != ''">
         <label v-for="u in users.filter((uf:any) => !selected?.includes(uf.id) && (uf.firstname + ' ' + uf.lastname).toLowerCase().search(search.toLowerCase()) != -1)"
          :for="prefix + '-' + u.id"
@@ -31,16 +33,17 @@ const { prefix, users } = defineProps<{
   </label>
 </template>
 
+
 <style scoped>
 .inlinesearchbox {
+  anchor-scope: --search;
   display: flex;
   flex-wrap: wrap;
   cursor: text;
-  border: 2px solid var(--color-border);
-  background-color: var(--color-background-soft);
   gap: .5rem;
 
   input[type=search] {
+    anchor-name: --search;
     border: none;
     height: 100%;
   }
@@ -49,9 +52,6 @@ const { prefix, users } = defineProps<{
     outline: none;
   }
 
-  &:has(:focus) {
-    border-color: var(--app-primary);
-  }
 
   &:not(:has(:focus)) .suggestions {
     display: none;
@@ -63,7 +63,9 @@ const { prefix, users } = defineProps<{
     display: flex;
     flex-direction: column;
     position: absolute;
-    margin-top: .5rem;
+    position-anchor: --search;
+    top: anchor(bottom);
+    margin-left: 1rem;
 
     label {
       border: 1px solid var(--color-border);
@@ -77,12 +79,40 @@ const { prefix, users } = defineProps<{
     }
   }
 
-  .searchchip {
+
+  &:not(:has(:focus)) {
+    input[type=search], .floating-icon {
+      cursor: pointer;
+    }
+
+    input[type=search] {
+      width: 2.5rem;
+      background-color: var(--color-text);
+    }
+
+    .floating-icon {
+      height: 1.5rem;
+      margin: -.45rem -2rem;
+      color: var(--color-background);
+    }
+  }
+
+
+  &:has(:focus) .floating-icon {
+    display: none;
+  }
+
+  input[type=search] {
+    transition: width .2s ease-in-out;
+    padding-left: 1rem;
+    width: fit-content;
+  }
+
+  input[type=search], .searchchip {
     background-color: var(--color-border);
     height: 2.5rem;
     border-radius: 1.25rem;
     padding-right: 1rem;
-    width: fit-content;
 
     &:has(input:not(:checked)) {
       display: none;
@@ -95,7 +125,7 @@ const { prefix, users } = defineProps<{
       height: 2.5rem;
       width: 2.5rem;
 
-      &:hover, input:hover {
+      &:hover, &:focus, input:hover {
         background-color: var(--color-border);
         cursor: pointer;
       }
