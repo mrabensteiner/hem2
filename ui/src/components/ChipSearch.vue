@@ -124,6 +124,7 @@ const { prefix, users } = defineProps<{
       border-radius: 1.25rem;
       height: 2.5rem;
       width: 2.5rem;
+      padding: .5rem;
 
       &:hover, &:focus, input:hover {
         background-color: var(--color-border);

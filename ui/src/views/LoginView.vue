@@ -30,3 +30,10 @@ async function handleLogin() {
     <button type="submit" :disabled="isLoading">Login</button>
   </form>
 </template>
+
+
+<style scoped>
+form {
+  max-width: 540px;
+}
+</style>

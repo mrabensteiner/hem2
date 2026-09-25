@@ -71,21 +71,34 @@ const view = useLocalStorage("view", viewType.TABLE)
     </h1>
     <RouterLink class="button" :to="{ path: `${route.path}/edit`}"><IconEdit class="icon"/> Edit</RouterLink>
   </section>
-  <p>Status:
-    <Chip :chip="project.status" />
-  </p>
 
-  <p>Managers:
-    {{ project.UserInProject?.filter((uip: any) => uip.projectRole === 'MANAGER').map((uip: any) => `${uip.user.firstname} ${uip.user.lastname}`).join(", ") }}
-  </p>
+  <div class="flex meta">
+    <div>
+      <label>Status</label><br/>
+      <Chip :chip="project.status" /><br/>
 
-  <p>Reviewers:
-    {{ project.UserInProject?.filter((uip: any) => uip.projectRole === 'MEMBER').map((uip: any) => `${uip.user.firstname} ${uip.user.lastname}`).join(", ") }}
-  </p>
+      <label>Manager(s)</label>
+      <ul class="userlist">
+        <li v-for="uip in project.UserInProject?.filter((uip: any) => uip.projectRole === 'MANAGER')">
+          <RouterLink :to="`/users/${uip.user.id}`">{{uip.user.firstname}} {{uip.user.lastname}}</RouterLink>
+        </li>
+      </ul>
 
-  <hr/>
-  <p>{{ project.description }}</p>
-  <hr/>
+      <label>Reviewers</label>
+      <ul class="userlist">
+        <li v-for="uip in project.UserInProject?.filter((uip: any) => uip.projectRole === 'MEMBER')">
+          <RouterLink :to="`/users/${uip.user.id}`">{{uip.user.firstname}} {{uip.user.lastname}}</RouterLink>
+        </li>
+      </ul>
+    </div>
+
+    <div class="flex-1">
+      <label>Description</label>
+      <p>{{ project.description }}</p>
+    </div>
+  </div>
+
+
   <h2>Findings ({{findings.length}})
     <abbr class="info" v-if="project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, Findings of other Reviewers are hidden.">i</abbr>
     <abbr class="info" v-if="!project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, all Findings are hidden.">i</abbr>
@@ -146,6 +159,10 @@ h1 img {
   margin-right: 0.2em;
 }
 
+.meta {
+  gap: 1rem;
+}
+
 .info {
   color: var(--app-primary);
   cursor: help;
@@ -181,6 +198,20 @@ h1 img {
     &:has(input:checked) {
       background-color: rgba(var(--app-primary-rgb), .25);
     }
+  }
+}
+
+ul.userlist {
+  list-style-type: none;
+  padding: 0;
+
+  li {
+    margin-bottom: .25rem;
+  }
+
+  a {
+    border: 1px solid var(--app-primary);
+    border-radius: .25rem;
   }
 }
 

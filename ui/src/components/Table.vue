@@ -388,6 +388,10 @@ tbody {
     display: block;
     padding: 0 .25rem;
   }
+
+  label {
+    padding: .5rem;
+  }
 }
 
 [data-dir], [data-filter] {

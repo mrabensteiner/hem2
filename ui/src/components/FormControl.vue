@@ -42,7 +42,8 @@ defineProps<{
 
 
 <style scoped>
-label:has(input, select) {
+label:has(input, select, textarea) {
+  padding: .5rem;
   background-color: var(--color-background);
   font-size: 1rem;
   cursor: text;

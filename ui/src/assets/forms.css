@@ -1,4 +1,4 @@
-label, input:not([type="submit"]), select, textarea {
+input:not([type="submit"]), select, textarea {
   padding: .5rem;
 }
 

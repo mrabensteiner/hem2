@@ -14,7 +14,8 @@ a, button, .animation, .animation * {
 button, a.button, input[type="submit"] {
   color: var(--color-text);
   background-color: rgba(var(--app-primary-rgb), .05);
-  border: 2px solid var(--color-border);
+  border: 2px solid rgba(var(--app-primary-rgb), .5);
+  border-radius: .5rem;
   padding: .5rem;
   font-size: 1.1rem;
   font-family: inherit;
