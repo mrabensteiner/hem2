@@ -4,6 +4,7 @@ import { useFindings } from "@/modules/findings/useFindings.ts";
 import {useRoute} from "vue-router";
 import Chip from "@/components/Chip.vue";
 import TimeAgo from "@/components/TimeAgo.vue";
+import Thumbnails from "@/components/Thumbnails.vue";
 import IconEdit from "@/components/icons/IconEdit.vue";
 import IconRate from "@/components/icons/IconRate.vue";
 
@@ -52,10 +53,8 @@ onMounted(() => {
   <label>Description:</label>
   <p>{{ finding.description }}</p>
 
-  <label>Images</label>
-  <div class="thumbnails">
-    <img v-for="i in finding.images" :src="'http://localhost:3000/'+i.path" width="100"/>
-  </div>
+  <label>Images and Videos</label>
+  <Thumbnails :images="finding.images"/>
   </div>
   </div>
 
