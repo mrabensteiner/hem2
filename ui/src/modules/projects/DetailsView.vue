@@ -23,7 +23,8 @@ const {
   project,
   findings,
   loadProject,
-  checkProjectPrivilege
+  checkProjectPrivilege,
+  exportJson
 } = useProjects();
 
 onMounted(() => {
@@ -132,6 +133,7 @@ const view = useLocalStorage("view", viewType.TABLE)
   <RouterLink :to="`/project/${project.id}/findings/rate`" class="button"><IconRate class="icon"/> Rate</RouterLink>
   <RouterLink :to="`/project/${project.id}/ratings`" class="button"><IconTable class="icon"/> Rating Overview</RouterLink>
   <RouterLink :to="`/project/${project.id}/findings/merge`" class="button"><IconMerge class="icon"/> Merge Findings</RouterLink>
+  <button role="button" @click="exportJson">Export JSON</button>
 
   <h2>Rating Statistic</h2>
   <div>

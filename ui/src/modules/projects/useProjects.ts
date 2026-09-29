@@ -191,6 +191,23 @@ export function useProjects() {
     }
   }
 
+  async function exportJson() {
+    const blob = await projectApi.exportJson(project.value.id);
+
+    const filename = "project.json";
+
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+
+    link.click();
+    link.remove();
+
+    window.URL.revokeObjectURL(downloadUrl);
+  }
+
   return {
     projects,
     project,
@@ -209,6 +226,7 @@ export function useProjects() {
     saveProject,
     uploadImage,
     checkProjectPrivilege,
-    useCalculatedRating
+    useCalculatedRating,
+    exportJson
   };
 }
