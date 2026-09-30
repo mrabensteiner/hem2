@@ -10,6 +10,7 @@ import ratingSetRoutes from "./routes/ratingSet.routes";
 import roleRoutes from "./routes/role.routes";
 import findingsRoutes from "./routes/finding.routes";
 import imageRoutes from "./routes/image.routes";
+import exportRoute from "./routes/export.route";
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use('/users', userRoutes);
 app.use('/ratingsets', ratingSetRoutes);
 app.use('/findings', findingsRoutes);
 app.use('/images', imageRoutes);
+app.use('/export', exportRoute);
 
 app.listen(3000, () => console.log('API server port 3000'));
 

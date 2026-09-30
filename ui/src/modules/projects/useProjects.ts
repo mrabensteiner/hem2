@@ -208,6 +208,23 @@ export function useProjects() {
     window.URL.revokeObjectURL(downloadUrl);
   }
 
+  async function exportReportLatex() {
+    const blob = await projectApi.exportReportLatex(project.value.id);
+
+    const filename = "project.tex";
+
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+
+    link.click();
+    link.remove();
+
+    window.URL.revokeObjectURL(downloadUrl);
+  }
+
   return {
     projects,
     project,
@@ -227,6 +244,7 @@ export function useProjects() {
     uploadImage,
     checkProjectPrivilege,
     useCalculatedRating,
-    exportJson
+    exportJson,
+    exportReportLatex
   };
 }

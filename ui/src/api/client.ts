@@ -52,11 +52,14 @@ export async function apiClient(endpoint: string, method = Method.GET, options: 
         case 500:
           throw new Error('A server error has occurred.');
         default:
-          const errorData = await response.json().catch(() => ({}));
+          const errorData = responseJson.catch(() => ({}));
           throw new Error(errorData.error || `An error has occurred (Status ${response.status}).`);
       }
     }
 
+    if (endpoint.startsWith("export")) {
+      return await response.blob();
+    }
     return await response.json();
   } catch (error: any) {
     if (error.message.includes('Failed to fetch')) {
