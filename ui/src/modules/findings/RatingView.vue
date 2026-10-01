@@ -35,7 +35,11 @@ function save(event: SubmitEvent) {
   const next = event.submitter?.dataset.next == "true";
 
   saveRating(next).then(() => {
-    router.push({params: {id: finding.value.id}});
+    if (route.params.id && !next) {
+      router.push({name: 'FindingsDetails'})
+    } else {
+      router.push({params: {id: finding.value.id}});
+    }
   });
 }
 </script>
