@@ -30,11 +30,8 @@ onMounted(() => {
 
 async function save() {
   await saveUser(isNew.value);
-
-  if (isNew.value) {
-    router.push('/ratings');
-  }
   edited.value = false;
+  router.push({name: 'userdetails'});
 }
 
 const { edited } = useEdit();

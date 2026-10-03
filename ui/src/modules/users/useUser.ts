@@ -30,7 +30,7 @@ export function useUser() {
     }
   }
 
-  async function loadUser(id: string, isNew: boolean) {
+  async function loadUser(id: string, isNew: boolean = false) {
     isLoading.value = true;
 
     try {

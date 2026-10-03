@@ -1,5 +1,6 @@
 import ListView from "./ListView.vue";
-import DetailsView from "./EditView.vue";
+import DetailsView from "./DetailsView.vue";
+import EditView from "./EditView.vue";
 
 export default [
 
@@ -14,11 +15,21 @@ export default [
   },
   {
     path: '/users/:id',
+    name: 'userdetails',
+    component: DetailsView,
+    meta: {
+      title: 'User',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/users/:id/edit',
     name: 'useredit',
     component: EditView,
     meta: {
       title: 'User',
-      requiresAuth: true
+      requiresAuth: true,
+      requiredPrivilege: 'userEdit'
     }
   }
 ];
