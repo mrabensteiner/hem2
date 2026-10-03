@@ -25,5 +25,5 @@ const tablehead = [
 <template>
   <h1>Users</h1>
   <Table :head="tablehead" :data="users" sort="username" dir="asc"/>
-  <RouterLink :to="{ path: '/user/new' }" class="button">New User</RouterLink>
+  <RouterLink :to="{ path: '/users/new' }" class="button">New User</RouterLink>
 </template>

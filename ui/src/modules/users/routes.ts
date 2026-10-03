@@ -1,5 +1,5 @@
 import ListView from "./ListView.vue";
-import DetailsView from "./DetailsView.vue";
+import DetailsView from "./EditView.vue";
 
 export default [
 
@@ -14,8 +14,8 @@ export default [
   },
   {
     path: '/users/:id',
-    name: 'userdetails',
-    component: DetailsView,
+    name: 'useredit',
+    component: EditView,
     meta: {
       title: 'User',
       requiresAuth: true
