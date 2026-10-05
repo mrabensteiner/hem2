@@ -28,6 +28,7 @@ onMounted(() => {
 
 async function save() {
   await saveProject();
+  edited.value = false;
   router.push({ name: 'ProjectDetails', params: {id: route.params.id} });
 }
 
