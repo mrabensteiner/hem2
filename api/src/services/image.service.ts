@@ -32,5 +32,6 @@ async function uploadFindingImages(files: Express.Multer.File[], projectId: stri
 }
 
 export const imageService = {
+  uploadProjectImage,
   uploadFindingImages,
 };

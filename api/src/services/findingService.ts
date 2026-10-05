@@ -52,6 +52,7 @@ async function getRandom(pid: string, user: any) {
       project: { include: {
           ratingset: { include: { ratings: true } },
           heuristicset: { include: { heuristics: true } },
+          logo: true
         }},
       heuristics: true,
       rating: true,
@@ -131,6 +132,7 @@ async function update(data: any, user: any) {
       project: { include: {
           ratingset: { include: { ratings: true } },
           heuristicset: { include: { heuristics: true } },
+          logo: true
         }},
       heuristics: true,
       rating: true,

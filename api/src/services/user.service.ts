@@ -1,12 +1,23 @@
 import {prisma} from "../../lib/prisma";
 
 async function getAll(): Promise<any> {
-  return prisma.user.findMany();
+  return prisma.user.findMany({
+    include: {
+      role: {
+        select: {title: true}
+      }
+    }
+  });
 }
 
 async function getById(id: string) {
   return prisma.user.findUnique({
-    where: { id }
+    where: { id },
+    include: {
+      role: {
+        select: {title: true}
+      }
+    }
   });
 }
 

@@ -114,7 +114,7 @@ const { project } = useProjects();
         </ul>
       </section>
     </details>
-    <details v-if="isAuthenticated && user">
+    <details v-if="isAuthenticated && user" :open="route.meta.context == undefined">
       <summary>{{ user.firstname }} {{ user.lastname }}</summary>
       <section>
         <ul>

@@ -78,10 +78,10 @@ const { edited } = useEdit();
     </div>
 
     <div>
-      <label>Image</label>
+      <label>Logo</label>
       <div>
         <img class="inline-logo" v-if="project.logo" :alt="project.logo.title" :src="'http://localhost:3000/'+project.logo.path"/>
-        <input type="file" @change="uploadImageHandler" accept="image/png, image/jpeg, image/gif, image/svg+xml">
+        <input type="file" @change="uploadImageHandler" accept="image/png, image/jpeg, image/jpg, image/gif, image/svg+xml">
       </div>
     </div>
 

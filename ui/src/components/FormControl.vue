@@ -25,6 +25,14 @@ defineProps<{
     </label>
   </template>
 
+  <template v-else-if="type == 'textarea'">
+    <label>
+      <div>{{ label }} <span v-if="!required">- (optional)</span></div>
+      <textarea v-model="value">
+      </textarea>
+    </label>
+  </template>
+
   <template v-else-if="type == 'password'">
     <label>
       <div>{{ label }} <abbr title="Entering a new password will override the old one."><IconWarningYellow class="icon"/></abbr></div>

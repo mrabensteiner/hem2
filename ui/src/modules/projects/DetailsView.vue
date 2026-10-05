@@ -102,8 +102,8 @@ const view = useLocalStorage("view", viewType.TABLE)
 
 
   <h2>Findings ({{findings.length}})
-    <abbr class="info" v-if="project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, Findings of other Reviewers are hidden.">i</abbr>
-    <abbr class="info" v-if="!project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, all Findings are hidden.">i</abbr>
+    <abbr class="info" v-if="project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, Findings of other Reviewers are hidden for reviewers.">i</abbr>
+    <abbr class="info" v-if="!project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, all Findings are hidden for reviewers.">i</abbr>
 
     <div class="view-toggle animation" v-if="findings || project.status?.findingsViewOwn || project.status?.findingsViewAll">
       <label title="Table View"><input type="radio" id="view" v-model="view" :value="viewType.TABLE"/><IconTable/></label>

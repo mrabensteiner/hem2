@@ -21,9 +21,7 @@ onMounted(() => {
 async function save(reload: boolean = false) {
   await createFinding();
   if (reload) {
-    const tmpSuccess = success.value;
     await loadNewFinding(route.params.pid as string);
-    success.value = tmpSuccess;
   } else {
     router.push(`/project/${finding.value.projectId}/findings/${finding.value.id}`);
   }
@@ -32,12 +30,17 @@ async function save(reload: boolean = false) {
 
 
 <template>
-  <RouterLink :to="{ path: '/project/' + route.params.pid}">Project: {{finding.project?.title}}</RouterLink>
-  <h1>New Finding</h1>
   <form @submit.prevent="save(false)">
+  <section class="sticky">
     <div>
-      <label>Title</label>
-      <input type="text" placeholder="Title" v-model="finding.title" />
+      <RouterLink :to="{ path: '/project/' + route.params.pid}">Project: {{finding.project?.title}}</RouterLink>
+      <h1>New Finding</h1>
+    </div>
+    <button>Save</button>
+    <button role="button" @click="save(true)">New Finding</button>
+  </section>
+    <div>
+      <input style="font-size: 2rem" type="text" placeholder="Title" v-model="finding.title" />
     </div>
     <div>
       <label>Description</label>
@@ -63,7 +66,5 @@ async function save(reload: boolean = false) {
           {{h.title}}</option>
       </select>
     </div>
-    <input type="submit" value="Save"/>
-    <a class="button" @click="save(true)">New Finding</a>
   </form>
 </template>

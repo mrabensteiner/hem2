@@ -80,7 +80,7 @@ const sortedData = computed(() => {
 function sortHelper(a: DataRow, b: DataRow, key: string) {
   let valA = a[key] ?? -1;
   let valB = b[key] ?? -1;
-  console.log(valA,valB, key, a,b)
+
   valA = valA.order ?? valA;
   valB = valB.order ?? valB;
 
@@ -293,6 +293,11 @@ watch(
           <template v-else-if="h.type === 'image'">
             <img v-if="r[h.key]" :src="'http://localhost:3000/' + r[h.key].path" />
           </template>
+          <template v-else-if="h.type === 'imagelink'">
+            <RouterLink :to="{ path: r.link }" v-if="!r.deactivated">
+              <img v-if="r[h.key]" :src="'http://localhost:3000/' + r[h.key].path" />
+            </RouterLink>
+            </template>
           <template v-else>{{ r[h.key] }}</template>
         </td>
       </tr>

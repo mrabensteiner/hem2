@@ -75,6 +75,7 @@ section.sticky {
   margin: -2rem -2rem 1rem -2rem;
   padding: 1rem 2rem;
   position: sticky;
+  z-index: 1;
   top: -2rem;
   display: flex;
   align-items: center;
