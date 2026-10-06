@@ -34,14 +34,8 @@ details {
 }
 
 nav a {
-  &:hover {
-    background-color: transparent;
-    border-bottom: 3px solid var(--vt-c-white);
-  }
-
   &.router-link-exact-active {
-    color: var(--vt-c-white);
-    border-bottom: 2px solid var(--vt-c-white);
+    display: none;
   }
 }
 

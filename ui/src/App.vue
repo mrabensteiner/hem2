@@ -6,6 +6,7 @@ import Toast from "@/components/Toast.vue";
 import Sidebar from "@/components/Sidebar.vue";
 import IconSidebar from "@/components/icons/IconSidebar.vue";
 import Version from "@/components/Version.vue";
+import UserMenu from "@/components/UserMenu.vue";
 
 const { isAuthenticated, user } = useAuth();
 const sidebar = ref<boolean>(true);
@@ -25,9 +26,7 @@ const sidebar = ref<boolean>(true);
     <nav class="user">
       <!-- TODO: user menu -->
       <RouterLink v-if="!isAuthenticated" to="/login">Login</RouterLink>
-      <div v-if="user" class="hello">
-        Hello, {{user.firstname}} {{user.lastname}}!
-      </div>
+      <UserMenu v-if="user"/>
     </nav>
   </header>
   <div class="container">
