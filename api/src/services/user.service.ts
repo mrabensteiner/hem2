@@ -5,7 +5,8 @@ async function getAll(): Promise<any> {
     include: {
       role: {
         select: {title: true}
-      }
+      },
+      image: true
     }
   });
 }
@@ -16,7 +17,8 @@ async function getById(id: string) {
     include: {
       role: {
         select: {title: true}
-      }
+      },
+      image: true
     }
   });
 }

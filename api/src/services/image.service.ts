@@ -1,5 +1,22 @@
 import {prisma} from "../../lib/prisma";
 
+async function uploadUserImage(file: Express.Multer.File, userId: string) {
+  return await prisma.image.upsert({
+    where: {
+      userId: userId,
+    },
+    update: {
+      filename: file.filename,
+      path: `uploads/users/${file.filename}`,
+    },
+    create: {
+      userId: userId,
+      filename: file.filename,
+      path: `uploads/users/${file.filename}`,
+    }
+  });
+}
+
 async function uploadProjectImage(file: Express.Multer.File, projectId: string) {
   return await prisma.image.upsert({
     where: {
@@ -32,6 +49,7 @@ async function uploadFindingImages(files: Express.Multer.File[], projectId: stri
 }
 
 export const imageService = {
+  uploadUserImage,
   uploadProjectImage,
   uploadFindingImages,
 };

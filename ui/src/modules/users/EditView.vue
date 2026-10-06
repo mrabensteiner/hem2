@@ -19,6 +19,7 @@ const {
 
 const {
   user,
+  newImage,
   loadUser,
   saveUser,
 } = useUser();
@@ -33,6 +34,22 @@ async function save() {
   edited.value = false;
   router.push({name: 'userdetails', params: {id: user.value.id}});
 }
+
+const uploadImageHandler = (event: Event) => {
+  const target = (event.target as HTMLInputElement);
+  const image = (target.previousElementSibling as HTMLImageElement);
+  const file = target ? (target.files ? target.files[0] : null) : null;
+
+  if (!file || !image) return;
+
+  newImage.value = file;
+  console.log("do", newImage.value, file, image);
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    image.src = (e.target?.result as string);
+  }
+  reader.readAsDataURL(file);
+};
 
 const { edited } = useEdit();
 
@@ -59,9 +76,26 @@ const colorSchemes = [
     <FormControl type="text" label="Lastname" v-model="user.lastname"/>
     <FormControl type="text" label="Email" v-model="user.email" required/>
     <br/>
+
+    <div>
+      <label>Image</label>
+      <div>
+        <img class="inline-logo" v-if="user.image" :alt="user.image.title" :src="'http://localhost:3000/'+user.image.path"/>
+        <img class="inline-logo" v-else alt="No User Image" src="http://localhost:3000/examples/"/>
+        <input type="file" @change="uploadImageHandler" accept="image/png, image/jpeg, image/gif, image/svg+xml">
+      </div>
+    </div>
+
     <FormControl type="select" label="Role" v-model="user.roleId" :options="roles" required/>
     <FormControl type="select" label="Colour Scheme" v-model="user.colorScheme" :options="colorSchemes" required/>
     <br/>
     <FormControl type="password" label="Password" v-model="user.password" confirm="true"/>
   </form>
 </template>
+
+
+<style scoped>
+img {
+  height: 2rem;
+}
+</style>

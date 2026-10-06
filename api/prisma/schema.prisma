@@ -37,11 +37,10 @@ model User {
   firstname     String          @default("")
   lastname      String          @default("")
   colorScheme   String          @default("system")
-  image         Image?          @relation(fields: [imageId], references: [id])
+  image         Image?
   role          Role            @relation(fields: [roleId], references: [id])
   UserInProject UserInProject[]
   Findings      Finding[]
-  imageId       String?
   roleId        String
   userRatings   UserRating[]
 }
@@ -161,7 +160,8 @@ model Image {
   id        String   @id @unique @default(nanoid(8))
   filename  String
   path      String
-  users     User[]
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?  @unique
   project   Project? @relation(fields: [projectId], references: [id])
   projectId String?  @unique
   finding   Finding? @relation(fields: [findingId], references: [id])

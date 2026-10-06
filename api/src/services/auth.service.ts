@@ -14,7 +14,8 @@ async function login(username: string, password: string) {
       firstname: true,
       lastname: true,
       role: true,
-      colorScheme: true
+      colorScheme: true,
+      image: true
     },
   });
   if (!user) {
@@ -36,7 +37,8 @@ async function login(username: string, password: string) {
       lastname: user.lastname,
       username: user.username,
       role: user.role,
-      colorScheme: user.colorScheme
+      colorScheme: user.colorScheme,
+      image: user.image
     }
   }
 }

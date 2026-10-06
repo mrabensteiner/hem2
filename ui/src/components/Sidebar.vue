@@ -115,7 +115,10 @@ const { project } = useProjects();
       </section>
     </details>
     <details v-if="isAuthenticated && user" :open="route.meta.context == undefined">
-      <summary>{{ user.firstname }} {{ user.lastname }}</summary>
+      <summary>
+        <img v-if="user.image" :alt="user.image.title" :src="'http://localhost:3000/'+user.image.path"/>
+        {{ user.firstname }} {{ user.lastname }}
+      </summary>
       <section>
         <ul>
           <li>
@@ -191,6 +194,15 @@ details {
     border-radius: 1rem;
     outline: 1px solid var(--color-border);
     cursor: pointer;
+
+    img {
+      display: inline-block;
+      height: 2rem;
+      width: 2rem;
+      margin-bottom: -.5rem;
+      border-radius: 50%;
+      border: 2px solid currentColor;
+    }
   }
 
   &[open] summary {

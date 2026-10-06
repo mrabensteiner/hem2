@@ -30,7 +30,8 @@ onMounted(() => {
   <div class="flex">
     <div>
       <div class="user-image">
-        <IconUser/>
+        <img v-if="user.image" :alt="user.image.title" :src="'http://localhost:3000/'+user.image.path"/>
+        <IconUser v-else/>
       </div>
     </div>
     <div>
@@ -61,11 +62,21 @@ onMounted(() => {
   flex: 1 0 400px;
 }
 
-.user-image svg {
-  max-height: 300px;
-  background-color: var(--color-background-mute);
-  border-radius: 50%;
-  overflow: hidden;
-  padding: 1rem 0 0;
+.user-image {
+  img, svg {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    overflow: hidden;
+    border-radius: 50%;
+
+    &:is(svg) {
+      min-width: auto;
+      min-height: auto;
+      background-color: var(--color-background-mute);
+      overflow: hidden;
+      padding: 1rem 0 0;
+    }
+  }
 }
 </style>

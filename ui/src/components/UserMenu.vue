@@ -14,7 +14,10 @@ const open = ref<boolean>(false);
 
 <template>
   <details :open="open" @mouseenter="open = true" @mouseleave="open = false">
-    <summary>{{ user.firstname }} {{user.lastname}}</summary>
+    <summary>
+      <img v-if="user.image" :alt="user.image.title" :src="'http://localhost:3000/'+user.image.path"/>
+      {{ user.firstname }} {{user.lastname}}
+    </summary>
 
     <section>
       <ul>
@@ -45,6 +48,14 @@ const open = ref<boolean>(false);
 <style scoped>
 summary {
   anchor-name: --user-menu-button;
+
+  img {
+    height: 2rem;
+    width: 2rem;
+    margin-bottom: -.5rem;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+  }
 }
 
 section {
