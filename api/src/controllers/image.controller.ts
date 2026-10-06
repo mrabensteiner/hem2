@@ -26,7 +26,7 @@ async function uploadProjectImage(req: Request, res: Response) {
 
     let extension = filenameSplitted[filenameSplitted.length - 1];
     extension = extension == "jpg" ? "jpeg" : extension ?? "";
-    mimetypeSplitted[1] = "svg+xml" ? "svg" : mimetypeSplitted[1] ?? "";
+    mimetypeSplitted[1] = mimetypeSplitted[1] == "svg+xml" ? "svg" : mimetypeSplitted[1] ?? "";
 
     if (mimetypeSplitted[0] != "image" || !["jpeg", "png", "gif", "svg"].includes(extension) || mimetypeSplitted[1] != extension) {
       throw new Error("Invalid file format.");

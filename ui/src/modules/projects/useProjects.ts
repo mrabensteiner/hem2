@@ -17,6 +17,7 @@ export function useProjects() {
   const findings = ref<any[]>([]);
   const managers = ref<string[]>([]);
   const members = ref<string[]>([]);
+  const newLogo = ref<File | null>(null);
 
   const isLoading = ref(false);
   const { pushToast } = useToast();
@@ -152,6 +153,13 @@ export function useProjects() {
 
       const savedData = await projectApi.save(payload, isNew);
       project.value = savedData;
+
+      if (newLogo.value) {
+        const formData = new FormData();
+        formData.append("image", newLogo.value);
+        await uploadImage(formData);
+      }
+
       pushToast(savedData.success, "success");
 
       return savedData;
@@ -231,6 +239,7 @@ export function useProjects() {
     findings,
     managers,
     members,
+    newLogo,
     statuses,
     heuristicSets,
     ratingSets,

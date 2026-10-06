@@ -13,6 +13,7 @@ const {
   project,
   managers,
   members,
+  newLogo,
   statuses,
   heuristicSets,
   ratingSets,
@@ -32,19 +33,20 @@ async function save() {
   router.push({ name: 'ProjectDetails', params: {id: route.params.id} });
 }
 
-const uploadImageHandler = async (event: Event) => {
-  const input = event.target as HTMLInputElement;
+const uploadImageHandler = (event: Event) => {
+  const target = (event.target as HTMLInputElement);
+  const image = (target.previousElementSibling as HTMLImageElement);
+  const file = target ? (target.files ? target.files[0] : null) : null;
 
-  if (!input.files) return;
+  if (!file || !image) return;
 
-  const formData = new FormData();
+  newLogo.value = file;
 
-  for (const file of input.files) {
-    formData.append("image", file);
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    image.src = (e.target?.result as string);
   }
-
-  await uploadImage(formData);
-  input.value = "";
+  reader.readAsDataURL(file);
 };
 
 const { edited } = useEdit();
@@ -82,7 +84,7 @@ const { edited } = useEdit();
       <label>Logo</label>
       <div>
         <img class="inline-logo" v-if="project.logo" :alt="project.logo.title" :src="'http://localhost:3000/'+project.logo.path"/>
-        <input type="file" @change="uploadImageHandler" accept="image/png, image/jpeg, image/jpg, image/gif, image/svg+xml">
+        <input type="file" @change="uploadImageHandler" accept="image/png, image/jpeg, image/gif, image/svg+xml">
       </div>
     </div>
 
