@@ -12,7 +12,6 @@ const { finding } = defineProps<{
 
 <template>
   <a class="card" :href="finding.link">
-    <img v-if="finding.images?.length" :src="'http://localhost:3000/' + finding.images[0].path" />
     <div>
       <h3>{{ finding.title }}</h3>
       <p>
@@ -29,6 +28,7 @@ const { finding } = defineProps<{
       </p>
       <p>{{finding.description}}</p>
     </div>
+    <img v-if="finding.images?.length" :src="'http://localhost:3000/' + finding.images[0].path" />
   </a>
 </template>
 
@@ -62,7 +62,8 @@ img {
   width: 100%;
   height: 5rem;
   object-fit: cover;
-  border-radius: .5rem .5rem 0 0;
+  border-radius: 0 0 .5rem .5rem;
+  margin-bottom: -.5rem;
 }
 
 .icon {

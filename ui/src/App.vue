@@ -17,12 +17,13 @@ const sidebar = ref<boolean>(true);
       HEM2
     </a>
     <nav>
-      <label class="sidebar-toggle" title="Toggle Sidebar">
+      <label class="sidebar-toggle" title="Toggle Sidebar" v-if="isAuthenticated" >
         <IconSidebar class="icon"/>
         <input type="checkbox" v-model="sidebar"/>
       </label>
     </nav>
     <nav class="user">
+      <!-- TODO: user menu -->
       <RouterLink v-if="!isAuthenticated" to="/login">Login</RouterLink>
       <div v-if="user" class="hello">
         Hello, {{user.firstname}} {{user.lastname}}!

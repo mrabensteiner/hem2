@@ -40,7 +40,7 @@ const findingsTableHead = [
   { "key": "description", "title": "Description", "hidden": true },
   { "key": "heuristics", "title": "Heuristic(s)", "type": "multichip" },
   { "key": "rating", "title": "Rating", "type": "chip" },
-  { "key": "user", "title": "Reviewer(s)", "type": "multi" },
+  { "key": "user", "title": "Found by", "type": "multi" },
   { "key": "updatedat", "title": "Last Change", "type": "time" },
   { "key": "link", "title": "Open", "type": "link", "locked": true },
 ];
@@ -137,7 +137,7 @@ const view = useLocalStorage("view", viewType.TABLE)
   <button role="button" @click="exportJson">Export JSON</button>
   <button role="button" @click="exportReportLatex">Export TEX</button>
 
-  <h2>Rating Statistic</h2>
+  <h2>Rating Statistics</h2>
   <div>
     <SvgPieChart style="max-height: 12rem;" :data="ratingStatistic"/>
   </div>

@@ -14,7 +14,7 @@ defineProps<{
 <template>
   <div class="password">
     <input placeholder="" :type="showPassword ? 'text' : 'password'" v-model="value" @mousedown="" />
-    <button type="button" @mousedown="showPassword = true" @mouseup="showPassword = false"><IconEye class="icon"/></button>
+    <button type="button" @click="showPassword = !showPassword"><IconEye class="icon"/></button>
   </div>
 </template>
 
@@ -39,6 +39,12 @@ defineProps<{
     margin: 0;
     .icon {
       margin-right: 0;
+    }
+  }
+
+  &:has(input[type="text"]) {
+    .icon {
+      opacity: .5;
     }
   }
 }

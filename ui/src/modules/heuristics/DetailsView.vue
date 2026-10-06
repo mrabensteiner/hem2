@@ -125,13 +125,24 @@ input[type="text"], input[type="password"], select, textarea {
 
 
 <style scoped>
+
+div:has(.list-row), .list-row {
+  border: 1px solid var(--color-text);
+}
+div:has(.list-row) {
+  border-width: 0 0 1px 1px;
+}
 .list-row {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  gap: .5rem;
+
+  border: 1px solid var(--color-text);
+  border-width: 1px 1px 0 0;
 
   &:nth-child(odd) {
-    background-color: var(--color-background-mute);
+    background-color: var(--color-background-soft);
   }
 
   >:nth-child(2) {
@@ -140,6 +151,7 @@ input[type="text"], input[type="password"], select, textarea {
     flex-direction: row;
     flex-wrap: wrap;
     margin-bottom: 1rem;
+    gap: .5rem;
 
     label:first-child {
       flex-grow: 1;
@@ -149,6 +161,15 @@ input[type="text"], input[type="password"], select, textarea {
     label:nth-last-child(2) {
       flex-basis: 100%;
       margin-top: 0;
+
+      &:has(input) {
+        margin-right: .5rem;
+        margin-top: .5rem;
+
+        input {
+          height: 2.5rem;
+        }
+      }
     }
   }
 

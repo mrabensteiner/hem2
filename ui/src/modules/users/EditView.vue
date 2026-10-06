@@ -31,13 +31,12 @@ onMounted(() => {
 async function save() {
   await saveUser(isNew.value);
   edited.value = false;
-  router.push({name: 'userdetails'});
+  router.push({name: 'userdetails', params: {id: user.value.id}});
 }
 
 const { edited } = useEdit();
 
 const colorSchemes = [
-  {id: "", title: "None"},
   {id: "system", title: "System"},
   {id: "light", title: "Light"},
   {id: "dark", title: "Dark"},
@@ -56,11 +55,13 @@ const colorSchemes = [
     </section>
 
     <FormControl type="text" label="Username" v-model="user.username" required/>
-    <FormControl type="password" label="Password" v-model="user.password"/>
     <FormControl type="text" label="Firstname" v-model="user.firstname"/>
     <FormControl type="text" label="Lastname" v-model="user.lastname"/>
     <FormControl type="text" label="Email" v-model="user.email" required/>
+    <br/>
     <FormControl type="select" label="Role" v-model="user.roleId" :options="roles" required/>
-    <FormControl type="select" label="Colour Scheme" v-model="user.colorScheme" :options="colorSchemes"/>
+    <FormControl type="select" label="Colour Scheme" v-model="user.colorScheme" :options="colorSchemes" required/>
+    <br/>
+    <FormControl type="password" label="Password" v-model="user.password" confirm="true"/>
   </form>
 </template>

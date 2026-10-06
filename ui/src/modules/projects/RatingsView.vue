@@ -30,29 +30,29 @@ onMounted(() => {
       <tr>
         <th>Title</th>
         <th class="right" v-for="m in members">{{users.find(u => u.id == m).lastname}}</th>
-        <th class="right">Calculated (AVG)</th>
+        <th class="right">Calculated Mean</th>
         <th>Aggregated</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="f in findings">
-        <td><RouterLink :to="'./findings/' + f.id" >{{f.title}}</RouterLink></td>
-        <td class="right" v-for="r in f.rpu" :title="r.title">{{r.value}}</td>
-        <td class="right">{{f.totalRating}}</td>
-        <td>
-          <div class="flex">
-            <button
-              @click="useCalculatedRating(f)"
-              :disabled="f.totalRating == '-' || f.totalRating == f.rating.order"
-              :title="f.totalRating == '-' ? 'No calculated value' : f.totalRating == f.rating.order ? 'Aggregated rating is the same as calculated.' : 'Take the caluclated value.'">
-                <IconTable class="icon"/> >>
-            </button>
-            <select disabled class="flex-1">
-              <option>{{f.rating?.title}}</option>
-            </select>
-          </div>
-        </td>
-      </tr>
+    <tr v-for="f in findings">
+      <td><RouterLink :to="'./findings/' + f.id" >{{f.title}}</RouterLink></td>
+      <td class="right" v-for="r in f.rpu" :title="r.title">
+        {{r.value}}
+        <button
+          @click="useCalculatedRating(f)"
+          :disabled="f.totalRating == '-' || f.totalRating == f.rating.order"
+          :title="f.totalRating == '-' ? 'No calculated value' : f.totalRating == f.rating.order ? 'Aggregated rating is the same as calculated.' : 'Take the caluclated value.'">
+          <IconTable class="icon"/> >>
+        </button>
+      </td>
+      <td class="right">{{f.totalRating}}</td>
+      <td>
+        <select disabled class="flex-1">
+          <option>{{f.rating?.title}}</option>
+        </select>
+      </td>
+    </tr>
     </tbody>
   </table>
 </template>

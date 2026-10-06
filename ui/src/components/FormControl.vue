@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PasswordInput from "@/components/PasswordInput.vue";
 import IconWarningYellow from "@/components/icons/IconWarningYellow.vue";
+import type {SelectHTMLAttributes} from "vue";
 
 const value = defineModel<any>();
 
@@ -11,6 +12,7 @@ defineProps<{
   required?: boolean | null;
   error?: string | null;
   info?: string | null;
+  confirm?: string | null;
 }>();
 </script>
 
@@ -19,7 +21,7 @@ defineProps<{
   <template v-if="type == 'select'">
     <label>
       <div>{{ label }} <span v-if="!required">- (optional)</span></div>
-      <select v-model="value" required @click="console.log($event.target)">
+      <select v-model="value" :required="required as SelectHTMLAttributes['required']">
         <option v-for="o in options" :value="o.id">{{ o.title }}</option>
       </select>
     </label>
@@ -37,6 +39,11 @@ defineProps<{
     <label>
       <div>{{ label }} <abbr title="Entering a new password will override the old one."><IconWarningYellow class="icon"/></abbr></div>
       <PasswordInput v-model="value"/>
+    </label>
+    <label v-if="confirm">
+      <div>Confirm {{ label }}</div>
+      <!-- TODO -->
+      <PasswordInput @input=""/>
     </label>
   </template>
 
