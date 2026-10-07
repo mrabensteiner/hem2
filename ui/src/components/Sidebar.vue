@@ -18,13 +18,13 @@ const { active } = defineProps<{
 }>();
 
 const { user, isAuthenticated, hasPrivilege, logout } = useAuth();
-const { project } = useProjects();
+const { project, prevStatus, nextStatus } = useProjects();
 </script>
 
 
 <template>
   <aside class="sidebar" :class="active ? '' : 'hidden'">
-    <details v-if="route.meta.context == 'project'" class="project" open>
+    <details v-if="route.meta.context == 'project' && project.id" class="project" open>
       <summary>
         Project:<br/>
         {{project.title}}
@@ -67,6 +67,14 @@ const { project } = useProjects();
               <IconMerge class="icon"/>
               Merge
             </RouterLink>
+          </li>
+          <li>
+            <button @click="prevStatus()" :disabled="!project.status.prev">
+              <<
+            </button>
+            <button @click="nextStatus()" :disabled="!project.status.next">
+              Next Project Status &nbsp; >>
+            </button>
           </li>
         </ul>
       </section>
@@ -163,7 +171,7 @@ aside ul {
     margin-bottom: .25rem;
   }
 
-  a {
+  a, button {
     color: var(--color-text);
     border: 1px solid var(--app-primary);
     border-radius: .25rem;
@@ -176,6 +184,24 @@ aside ul {
     }
     .icon {
       color: var(--app-primary);
+    }
+  }
+
+  li:has(button) {
+    display: flex;
+    gap: .5rem;
+    margin-top: 1rem;
+
+    button {
+      width: auto;
+      font-size: .75rem;
+      font-weight: normal;
+      margin: 0;
+      padding: .5rem;
+    }
+
+    button:last-child {
+     flex: 1 1 100%;
     }
   }
 }

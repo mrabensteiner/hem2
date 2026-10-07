@@ -43,9 +43,22 @@ async function update(req: Request, res: Response) {
   }
 }
 
+async function updateStatus(req: Request, res: Response) {
+  try {
+    const project = await projectService.updateStatus(req.body);
+    res.json({
+      ...project,
+      success: "Updated project status successfully."
+    });
+  } catch (error: any) {
+    res.status(500).json({error: error.message});
+  }
+}
+
 export const projectController = {
   getAll,
   getById,
   create,
-  update
+  update,
+  updateStatus
 };

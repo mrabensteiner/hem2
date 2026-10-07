@@ -169,6 +169,32 @@ export function useProjects() {
     }
   }
 
+  async function updateStatus(id: string) {
+    try {
+      const payload = {
+        id: project.value.id,
+        statusId: id
+      };
+
+      const savedData = await projectApi.updateStatus(payload);
+      project.value = savedData;
+      pushToast(savedData.success, "success");
+
+      return savedData;
+    } catch (err: any) {
+      pushToast(err.message, "error");
+      throw err;
+    }
+  }
+
+  async function prevStatus() {
+    updateStatus(project.value.status.prev.id);
+  }
+
+  async function nextStatus() {
+    updateStatus(project.value.status.next.id);
+  }
+
   function checkProjectPrivilege(privilege: string) {
     const status = project.value.status;
     // TODO
@@ -250,6 +276,8 @@ export function useProjects() {
     loadProject,
     setProject,
     saveProject,
+    prevStatus,
+    nextStatus,
     uploadImage,
     checkProjectPrivilege,
     useCalculatedRating,

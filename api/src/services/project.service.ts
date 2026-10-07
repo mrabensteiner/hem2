@@ -19,7 +19,7 @@ async function getAll(user: any): Promise<any> {
 }
 
 async function getById(id: string, user: any) {
-  const project = await prisma.project.findUnique({
+  let project: any = await prisma.project.findUnique({
     where: {id: id},
     include: {
       UserInProject: { include: { user: true }},
@@ -32,6 +32,10 @@ async function getById(id: string, user: any) {
   });
 
   checkProjectPrivileges(project, user, "projectViewDetails", "projectViewAll");
+
+  if (project?.status) {
+    project = await addStatusOrder(project);
+  }
 
   const uip = project?.UserInProject.find((u: any) => u.userId === user.id);
 
@@ -101,7 +105,7 @@ async function update(data: any) {
     ]
   })
 
-  return prisma.project.update({
+  let project = await prisma.project.update({
     where: { id: data.id },
     data: {
       title: data.title,
@@ -119,6 +123,34 @@ async function update(data: any) {
       Findings: { include: { user: true, heuristics: true , rating: true }}
     }
   });
+
+  return await addStatusOrder(project);
+}
+
+async function updateStatus(data: any) {
+  const id = data.id;
+  const statusId = data.statusId;
+
+  let project = await prisma.project.update({
+    where: { id },
+    data: {
+      status: {
+        connect: {
+          id: statusId
+        }
+      }
+    },
+    include: {
+      UserInProject: { include: { user: true }},
+      heuristicset: true,
+      ratingset: true,
+      status: true,
+      logo: true,
+      Findings: { include: { user: true, heuristics: true , rating: true }}
+    }
+  });
+
+  return await addStatusOrder(project);
 }
 
 async function changes(id: string) {
@@ -137,10 +169,50 @@ function checkProjectPrivileges(project: any, user: any, projectPrivilege: strin
   }
 }
 
+async function addStatusOrder(project: any) {
+  const prev = await prisma.status.findFirst({
+    where: {
+      order: {
+        lt: project.status.order
+      }
+    },
+    orderBy: {
+      order: "desc",
+    },
+    select: {
+      id: true
+    }
+  });
+
+  const next = await prisma.status.findFirst({
+    where: {
+      order: {
+        gt: project.status.order
+      }
+    },
+    orderBy: {
+      order: "asc",
+    },
+    select: {
+      id: true
+    }
+  });
+
+  return {
+    ...project,
+    status: {
+      ...project.status,
+      prev: prev,
+      next: next
+    }
+  }
+}
+
 export const projectService = {
   getById,
   getAll,
   create,
   update,
+  updateStatus,
   changes
 };

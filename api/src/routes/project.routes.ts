@@ -10,5 +10,6 @@ router.get('/', projectController.getAll);
 router.get('/:id', projectController.getById);
 router.post('/', projectController.create);
 router.put('/', projectController.update);
+router.put('/status', projectController.updateStatus);
 
 export default router;

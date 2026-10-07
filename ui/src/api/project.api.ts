@@ -24,4 +24,10 @@ export const projectApi = {
       body: projectData
     });
   },
+
+  async updateStatus(projectData: any) {
+    return apiClient(`${endpoint}/status`, Method.PUT, {
+      body: projectData
+    });
+  },
 };
