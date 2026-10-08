@@ -24,9 +24,18 @@ export function useAuth() {
   });
 
   const hasPrivilege = computed(() => {
-    return (id: string) => {
-      if (!isAuthenticated.value || privileges.value.length == 0) return false;
-      return privileges.value.includes(id);
+    return (name: string, project: any | null = null) => {
+      if (!isAuthenticated.value) return false;
+
+      if (project) {
+        const uip = project.UserInProject.find((uip: any) => (uip.userId === user.value.id));
+
+        if (privileges.value.includes("projectViewAll") || (uip && uip.projectRole == "MANAGER")) {
+          return true;
+        }
+        return project.status[name];
+      }
+      return privileges.value.includes(name);
     }
   });
 

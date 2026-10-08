@@ -38,37 +38,37 @@ const { project, prevStatus, nextStatus } = useProjects();
               Project Overview
             </RouterLink>
           </li>
-          <li>
+          <li v-if="hasPrivilege('manager', project)">
             <RouterLink :to="'/project/' + project.id + '/edit'">
               <IconEdit class="icon"/>
               Edit Project
             </RouterLink>
           </li>
-          <li>
+          <li v-if="hasPrivilege('findingsAdd', project)">
             <RouterLink :to="'/project/' + project.id + '/findings/new'">
               <IconAdd class="icon"/>
               New Finding
             </RouterLink>
           </li>
-          <li>
+          <li v-if="hasPrivilege('ratingEdit', project)">
             <RouterLink :to="'/project/' + project.id + '/findings/rate'">
               <IconRate class="icon"/>
               Rate
             </RouterLink>
           </li>
           <li>
-            <RouterLink :to="'/project/' + project.id + '/ratings'">
+            <RouterLink v-if="hasPrivilege('manager', project)" :to="'/project/' + project.id + '/ratings'">
               <IconTable class="icon"/>
               Rating Overview
             </RouterLink>
           </li>
-          <li>
+          <li v-if="hasPrivilege('manager', project)">
             <RouterLink :to="'/project/' + project.id + '/findings/merge'">
               <IconMerge class="icon"/>
               Merge
             </RouterLink>
           </li>
-          <li>
+          <li  v-if="hasPrivilege('manager', project)">
             <button @click="prevStatus()" :disabled="!project.status.prev">
               <<
             </button>
@@ -84,15 +84,27 @@ const { project, prevStatus, nextStatus } = useProjects();
       <section>
         <ul>
           <li>
-            <RouterLink v-if="isAuthenticated" to="/projects">
+            <RouterLink v-if="hasPrivilege('projectViewAll') || hasPrivilege('projectEditAll')" to="/projects">
               <IconSettings class="icon"/>
-              All Projects
+              Projects
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink v-if="hasPrivilege('projectAdd') && !hasPrivilege('projectViewAll') && !hasPrivilege('projectEditAll')" to="/project/new">
+              <IconAdd class="icon"/>
+              Add Project
             </RouterLink>
           </li>
           <li>
             <RouterLink v-if="hasPrivilege('userEdit')" to="/users">
               <IconSettings class="icon"/>
               Users
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink v-if="hasPrivilege('userAdd') && !hasPrivilege('userEdit')" to="/users">
+              <IconAdd class="icon"/>
+              New User
             </RouterLink>
           </li>
           <li>
