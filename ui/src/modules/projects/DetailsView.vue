@@ -13,11 +13,16 @@ import IconEdit from "@/components/icons/IconEdit.vue";
 import IconAdd from "@/components/icons/IconAdd.vue";
 import IconRate from "@/components/icons/IconRate.vue";
 import IconMerge from "@/components/icons/IconMerge.vue";
+import {useAuth} from "@/composables/useAuth.ts";
 
 const route = useRoute();
 const router = useRouter();
 
 const isNewProject = computed(() => route.params.id === 'new');
+
+const {
+  user
+} = useAuth();
 
 const {
   project,
@@ -40,10 +45,13 @@ const findingsTableHead = [
   { "key": "description", "title": "Description", "hidden": true },
   { "key": "heuristics", "title": "Heuristic(s)", "type": "multichip" },
   { "key": "rating", "title": "Rating", "type": "chip" },
-  { "key": "user", "title": "Found by", "type": "multi" },
+  { "key": "userstring", "title": "Found by", "type": "multi" },
   { "key": "updatedat", "title": "Last Change", "type": "time" },
   { "key": "link", "title": "Open", "type": "link", "locked": true },
 ];
+
+const findingsPersonal = computed(() => findings.value.filter(f => f.user.map((u: any) => u.id).includes(user.value.id)));
+const findingsReviewed = computed(() => findings.value.filter(f => f.reviewed));
 
 const ratingStatistic = computed(() => {
   let total = 0;
@@ -100,8 +108,35 @@ const view = useLocalStorage("view", viewType.TABLE)
     </div>
   </div>
 
+  <h2>Reviewed Findings ({{findingsReviewed.length}})
+    <div class="view-toggle animation" v-if="findingsReviewed || project.status?.findingsViewOwn || project.status?.findingsViewAll">
+      <label title="Table View"><input type="radio" id="view" v-model="view" :value="viewType.TABLE"/><IconTable/></label>
+      <label title="Cards View"><input type="radio" id="aview" v-model="view" :value="viewType.CARDS"/><IconCards/></label>
+    </div>
+  </h2>
 
-  <h2>Findings ({{findings.length}})
+  <div v-if="view == viewType.CARDS" class="row">
+    <FindingCard v-for="f in findingsReviewed" :finding="f" />
+  </div>
+
+  <Table v-else :head="findingsTableHead" :data="findingsReviewed" sort="updatedat" dir="asc" />
+
+
+  <h2>My Findings ({{findingsPersonal.length}})
+    <div class="view-toggle animation" v-if="findingsPersonal || project.status?.findingsViewOwn || project.status?.findingsViewAll">
+      <label title="Table View"><input type="radio" id="view" v-model="view" :value="viewType.TABLE"/><IconTable/></label>
+      <label title="Cards View"><input type="radio" id="aview" v-model="view" :value="viewType.CARDS"/><IconCards/></label>
+    </div>
+  </h2>
+
+  <div v-if="view == viewType.CARDS" class="row">
+    <FindingCard v-for="f in findingsPersonal" :finding="f" />
+  </div>
+
+  <Table v-else :head="findingsTableHead" :data="findingsPersonal" sort="updatedat" dir="asc" />
+
+
+  <h2>All Findings ({{findings.length}})
     <abbr class="info" v-if="project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, Findings of other Reviewers are hidden for reviewers.">i</abbr>
     <abbr class="info" v-if="!project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, all Findings are hidden for reviewers.">i</abbr>
 

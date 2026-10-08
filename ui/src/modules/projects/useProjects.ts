@@ -103,7 +103,7 @@ export function useProjects() {
 
     findings.value = projectData.Findings.map((finding: any) => ({
       ...finding,
-      user: finding.user ? finding.user.map((u: any) => `${u.firstname} ${u.lastname}`) : [],
+      userstring: finding.user ? finding.user.map((u: any) => `${u.firstname} ${u.lastname}`) : [],
       link: `/project/${projectData.id}/findings/${finding.id}`
     }));
   }
