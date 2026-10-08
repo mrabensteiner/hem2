@@ -14,6 +14,7 @@ import IconAdd from "@/components/icons/IconAdd.vue";
 import IconRate from "@/components/icons/IconRate.vue";
 import IconMerge from "@/components/icons/IconMerge.vue";
 import {useAuth} from "@/composables/useAuth.ts";
+import {useToast} from "@/composables/useToast.ts";
 
 const route = useRoute();
 const router = useRouter();
@@ -33,9 +34,16 @@ const {
   exportReportLatex
 } = useProjects();
 
+const {
+  pushToast
+} = useToast()
+
 onMounted(() => {
   loadProject(route.params.id as string, isNewProject.value).then(() => {
-    checkProjectPrivilege(route.meta.requiredProjectPrivilege as string);
+    if (!project.value.id || !checkProjectPrivilege(route.meta.requiredProjectPrivilege as string)) {
+      router.push({ name: "ProjectsList" });
+      pushToast("Access denied.", "error")
+    }
   });
 });
 

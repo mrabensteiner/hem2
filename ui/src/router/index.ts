@@ -44,19 +44,18 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to) => {
-  const { isAuthenticated, hasPrivilege } = useAuth();
-
+router.beforeEach(async (to) => {
+  const {initAuth, isAuthenticated, hasPrivilege} = useAuth();
   if (to.meta.requiresAuth && !isAuthenticated.value) {
-    return { name: 'login' };
+    return {name: 'login'};
   } else if (to.meta.authView && isAuthenticated.value) {
-    return { name: 'projects' };
+    return {name: 'projects'};
   }
+
   if (isAuthenticated.value) {
+    await initAuth();
     if (to.meta.requiredPrivilege && !hasPrivilege.value(to.meta.requiredPrivilege as string)) {
-      return { name: 'ProjectsList' };
-    } else if (to.meta.requiredProjectPrivilege) {
-      // TODO
+      return {name: 'ProjectsList'};
     }
   }
 

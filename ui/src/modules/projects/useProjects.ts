@@ -196,10 +196,7 @@ export function useProjects() {
   }
 
   function checkProjectPrivilege(privilege: string) {
-    const status = project.value.status;
-    // TODO
-    // managers.value.includes(userId)
-    // members.value.includes(userId) && status[privilege]
+    return hasPrivilege.value(privilege, project);
   }
 
   async function uploadImage(data: any) {

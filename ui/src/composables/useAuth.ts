@@ -7,10 +7,20 @@ const privileges = ref<string[]>([]);
 const token = ref<string | null>(localStorage.getItem('auth_token'));
 
 export function useAuth() {
+  const initalized = ref(false);
   const isLoading = ref(false);
   const error = ref<string | null>(null);
 
   const { pushToast } = useToast();
+
+  const initAuth = async () => {
+    if (initalized.value) {
+      return;
+    }
+
+    await fetchCurrentUser();
+    initalized.value = true;
+  }
 
   const isAuthenticated = computed(() => {
     if (!token.value) {
@@ -28,12 +38,12 @@ export function useAuth() {
       if (!isAuthenticated.value) return false;
 
       if (project) {
-        const uip = project.UserInProject.find((uip: any) => (uip.userId === user.value.id));
+        const uip = project.UserInProject?.find((uip: any) => (uip.userId === user.value.id)) ?? "";
 
         if (privileges.value.includes("projectViewAll") || (uip && uip.projectRole == "MANAGER")) {
           return true;
         }
-        return project.status[name];
+        return project.status ? project.status[name] : false;
       }
       return privileges.value.includes(name);
     }
@@ -90,5 +100,5 @@ export function useAuth() {
     document.body.dataset.theme = user.value.colorScheme;
   }
 
-  return { user, token, isAuthenticated, hasPrivilege, isLoading, error, login, logout };
+  return { user, token, initAuth, isAuthenticated, hasPrivilege, isLoading, error, login, logout };
 }
