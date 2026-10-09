@@ -61,17 +61,72 @@ const findingsTableHead = [
 const findingsPersonal = computed(() => findings.value.filter(f => f.user.map((u: any) => u.id).includes(user.value.id)));
 const findingsReviewed = computed(() => findings.value.filter(f => f.reviewed));
 
+const colorGenerator = (count: number, total: number) => {
+  return `lch(50 80 ${360 * count/total * ((count % 2) ? 1 : 1)})`;
+}
+
 const ratingStatistic = computed(() => {
   let total = 0;
-  let f = Object.values(findings.value.reduce((acc, {id, rating}) =>
-  {
+  let f = Object.values(findings.value.reduce((acc, finding) => {
+    let rating = finding.rating;
+
+    if (!rating) {
+      rating = {title: "Not rated", color: "#aaa"};
+    }
+
     total += 1;
     acc[rating.id] = acc[rating.id] ?? {...rating, count: 0};
     acc[rating.id]['count'] += 1;
     return acc;
   }, {}));
+
   f = f.map((r: any) => ({
     ...r,
+    percentage: r.count / total * 100
+  })).sort((a, b) => a.order - b.order);
+  return f;
+})
+
+const userStatistic = computed(() => {
+  let total = 0;
+
+  let f = Object.values(findings.value.reduce((acc, {user: users}) => {
+    for (const user of users) {
+      total += 1;
+      acc[user.id] = acc[user.id] ?? {...user, count: 0, order: Object.keys(acc).length};
+      acc[user.id]['count'] += 1;
+    }
+
+    return acc;
+  }, {}));
+
+  const length = Object.keys(f).length;
+
+  f = f.map((r: any) => ({
+    ...r,
+    title: `${r.firstname} ${r.lastname}`,
+    color: colorGenerator(r.order, length),
+    percentage: r.count / total * 100
+  })).sort((a, b) => b.count - a.count);
+
+  return f;
+})
+
+const heuristicStatistic = computed(() => {
+  let total = 0;
+  let f: any[] = Object.values(findings.value.reduce((acc, {heuristics}) => {
+    for (const heuristic of heuristics) {
+      total += 1;
+      acc[heuristic.id] = acc[heuristic.id] ?? {...heuristic, count: 0};
+      acc[heuristic.id]['count'] += 1;
+    }
+    return acc;
+  }, {}));
+
+  const length = project.value.heuristicset?.heuristics.length ?? 0;
+  f = f.map((r: any, i: number) => ({
+    ...r,
+    color: r.color == f[i-1]?.color ? colorGenerator(r.order, length) : r.color,
     percentage: r.count / total * 100
   })).sort((a, b) => a.order - b.order);
   return f;
@@ -182,6 +237,13 @@ const view = useLocalStorage("view", viewType.TABLE)
 
   <h2>Rating Statistics</h2>
   <div>
+    <h3>Authors</h3>
+    <SvgPieChart style="max-height: 12rem;" :data="userStatistic"/>
+
+    <h3>Heuristics</h3>
+    <SvgPieChart style="max-height: 12rem;" :data="heuristicStatistic"/>
+
+    <h3>Ratings</h3>
     <SvgPieChart style="max-height: 12rem;" :data="ratingStatistic"/>
   </div>
 
