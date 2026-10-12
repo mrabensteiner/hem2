@@ -3,7 +3,7 @@ import {findingService} from "../services/findingService";
 
 async function getAll(req: Request, res: Response) {
   try {
-    const findings = await findingService.getAll(req.body.id as string);
+    const findings = await findingService.getAll(req.params.id as string);
     res.json({
       data: findings
     });

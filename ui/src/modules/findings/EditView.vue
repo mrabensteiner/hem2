@@ -17,6 +17,7 @@ const {
   finding,
   images,
   projectUsers,
+  allFindings,
   loadFinding,
   saveFinding,
   uploadImages,
@@ -69,26 +70,53 @@ const { edited } = useEdit();
       <textarea type="text" placeholder="Description" v-model="finding.description"></textarea>
     </div>
     <div>
+      <label>Remarks or Recommendations</label>
+      <textarea type="text" placeholder="Remarks or Recommendations" v-model="finding.remarks"></textarea>
+    </div>
+    <div v-if="hasPrivilege('ratingEdit', finding?.project)">
       <label>Personal Rating</label>
       <select v-model="finding.personalRating">
         <option value="">-</option>
         <option v-for="h in finding.project?.ratingset.ratings" :value="h.id"><Chip :chip="h"/></option>
       </select>
     </div>
-    <div v-if="hasPrivilege('manager', finding?.project)">
-      <label>Final Rating</label>
-      <select v-model="finding.ratingId" name="ratingId">
-        <option>-</option>
-        <option v-for="h in finding.project?.ratingset.ratings" :value="h.id"><Chip :chip="h"/></option>
-      </select>
-    </div>
-    <div v-if="projectUsers.length && hasPrivilege('manager', finding?.project)">
-      <label>Authors</label><br/>
-      <select v-model="finding.user" multiple>
-        <option v-for="u in projectUsers" :key="u.id" type="checkbox" name="authors" :value="u.id" >
-          {{u.firstname}} {{u.lastname}}</option>
-      </select>
-    </div>
+    <template v-if="hasPrivilege('manager', finding?.project)">
+      <div>
+        <label>Final Rating</label>
+        <select v-model="finding.ratingId" name="ratingId">
+          <option value="">-</option>
+          <option v-for="h in finding.project?.ratingset.ratings" :value="h.id"><Chip :chip="h"/></option>
+        </select>
+      </div>
+      <div>
+        <label>Manager Review</label>
+        <label><input type="checkbox" v-model="finding.reviewed"/> Is Reviewed</label>
+      </div>
+      <div>
+        <label>Merged To</label>
+        <select v-model="finding.mergedToId">
+          <option value="">-</option>
+          <option v-for="f in allFindings" :value="f.id">
+            {{f.title}}
+          </option>
+        </select>
+      </div>
+      <div>
+        <label>Merged From</label>
+        <select v-model="finding.mergedFrom" multiple>
+          <option v-for="f in allFindings" :value="f.id">
+            {{f.title}}
+          </option>
+        </select>
+      </div>
+      <div v-if="projectUsers.length">
+        <label>Authors</label><br/>
+        <select v-model="finding.user" multiple>
+          <option v-for="u in projectUsers" :key="u.id" type="checkbox" name="authors" :value="u.id" >
+            {{u.firstname}} {{u.lastname}}</option>
+        </select>
+      </div>
+    </template>
     <div>
       <label>Heuristics</label><br/>
       <select v-model="finding.heuristics" multiple>

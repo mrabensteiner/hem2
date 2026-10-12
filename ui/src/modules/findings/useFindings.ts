@@ -2,7 +2,6 @@ import { ref } from 'vue';
 import { findingApi } from "@/modules/findings/findingApi.ts";
 import {projectApi} from "@/api/project.api.ts";
 import { imageApi } from "@/api/images.ts";
-import {useAuth} from "@/composables/useAuth.ts";
 import {useToast} from "@/composables/useToast.ts";
 import {useProjects} from "@/modules/projects/useProjects.ts";
 
@@ -11,10 +10,11 @@ export function useFindings() {
   const images = ref<any>([]);
   const userRating = ref<any>("");
   const projectUsers = ref<any>([]);
+  const allFindings = ref<any>([]);
 
   const isLoading = ref(false);
   const { pushToast } = useToast();
-  const { setProject } = useProjects();
+  const { setProject, checkProjectPrivilege } = useProjects();
 
   async function loadFinding(id: string, edit = false, pid = "") {
     isLoading.value = true;
@@ -32,6 +32,10 @@ export function useFindings() {
 
       if (edit) {
         mapSelectValues();
+
+        if (checkProjectPrivilege('findingsEditAll')) {
+          await loadAllFindings(finding.value.projectId);
+        }
       }
 
       const project = await projectApi.getById(response.data.projectId);
@@ -40,6 +44,15 @@ export function useFindings() {
       pushToast(err.message, "error");
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  async function loadAllFindings(pid: string) {
+    try {
+      const rawData = await findingApi.getAll(pid);
+      allFindings.value = rawData.data;
+    } catch (err: any) {
+      pushToast(err.message, "error");
     }
   }
 
@@ -63,8 +76,11 @@ export function useFindings() {
   }
 
   function mapSelectValues() {
+    finding.value.ratingId = finding.value.ratingId ?? "";
+    finding.value.mergedToId = finding.value.mergedToId ?? "";
     finding.value.heuristics = finding.value.heuristics.map((h: any) => h.id);
     finding.value.user = finding.value.user.map((a: any) => a.id);
+    finding.value.mergedFrom = finding.value.mergedFrom.map((f: any) => f.id);
   }
 
   async function createFinding() {
@@ -151,6 +167,7 @@ export function useFindings() {
     images,
     userRating,
     projectUsers,
+    allFindings,
     loadFinding,
     loadNewFinding,
     createFinding,

@@ -1,18 +1,17 @@
 import {prisma} from "../../lib/prisma";
 import {projectService} from "./project.service";
+import type {UserWhereInput} from "../../prisma/generated/models/User";
 
 async function getAll(projectId: string, userId = ""): Promise<any> {
+  const user = userId ? { id: userId ?? undefined } : undefined;
+
   return prisma.finding.findMany({
     where: {
       projectId: projectId,
-      user: { every: { id: userId ?? undefined } },
+      user: { every: user as UserWhereInput }
     },
     include: {
       user: { include: { UserInProject: true }},
-      project: { include: {
-          ratingset: { include: { ratings: true } },
-          heuristicset: { include: { heuristics: true } },
-        }},
       heuristics: true,
       rating: true,
       images: true
@@ -34,6 +33,8 @@ async function getById(id: string, user: any) {
       heuristics: true,
       rating: true,
       images: true,
+      mergedFrom: true,
+      mergedTo: true,
       userRatings: {
         where: { userId: user.Id },
         include: { rating: true }
@@ -110,8 +111,11 @@ async function create(data: any, user: any) {
 
 async function update(data: any, user: any) {
   const privileges = await projectService.getPrivileges(data.projectId);
+  let reviewed = undefined;
   let authors = undefined;
   let ratingId = undefined;
+  let mergedToId = undefined;
+  let mergedFrom = undefined;
 
   if (!privileges?.managers.includes(user.id) && !user.role.projectEditAll) {
     if (!privileges?.members.includes(user.id) || !privileges?.specific.findingsAdd) {
@@ -131,13 +135,20 @@ async function update(data: any, user: any) {
       throw Error("No privileges to edit this finding.");
     }
   } else {
+    reviewed = data.reviewed;
+    ratingId = data.ratingId == "" ? null : data.ratingId;
+    mergedToId = data.mergedToId == "" ? null : data.mergedToId;
     authors = data.user.map((uid: string) => ({id: uid})) ?? [];
-    ratingId = data.ratingId;
+    mergedFrom = data.mergedFrom.map((id: string) => ({id: id})) ?? [];
   }
 
   await projectService.changes(data.project.id);
 
-  if (data.personalRating && data.personalRating != "") await rate(data.id, {id: data.personalRating}, user);
+  if (data.personalRating == "") {
+    await rateRemove(data.id, user);
+  } else if (data.personalRating) {
+    await rate(data.id, {id: data.personalRating}, user)
+  }
 
   return prisma.finding.update({
     where: { id: data.id },
@@ -145,9 +156,13 @@ async function update(data: any, user: any) {
       id: data.id,
       title: data.title,
       description: data.description,
+      remarks: data.remarks,
+      reviewed: reviewed,
       heuristics: { set: [...data.heuristics.map((hid: string) => ({id: hid}))] },
       user: { set: authors },
-      ratingId: ratingId
+      ratingId: ratingId,
+      mergedToId: mergedToId,
+      mergedFrom: { set: mergedFrom }
     },
     include: {
       user: { include: { UserInProject: true }},
@@ -162,7 +177,9 @@ async function update(data: any, user: any) {
         where: { userId: user.Id },
         include: { rating: true }
       },
-      images: true
+      images: true,
+      mergedTo: true,
+      mergedFrom: true
     }
   });
 }
@@ -192,6 +209,16 @@ async function rate(id: any, rating: any, user: any) {
   })
 }
 
+async function rateRemove(id: any, user: any) {
+  return prisma.userRating.deleteMany({
+    where: {
+      AND: {
+        findingId: id,
+        userId: user.id
+      }
+    }
+  });
+}
 
 export const findingService = {
   getAll,

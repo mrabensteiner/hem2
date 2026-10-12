@@ -3,8 +3,8 @@ import { apiClient, Method } from '@/api/client.ts';
 const endpoint = "findings";
 
 export const findingApi = {
-  async getAll() {
-    return apiClient(endpoint);
+  async getAll(pid: string) {
+    return apiClient(`${endpoint}/all/${pid}`);
   },
 
   async getById(id: string) {
