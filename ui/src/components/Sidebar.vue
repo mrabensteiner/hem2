@@ -11,6 +11,7 @@ import IconProject from "@/components/icons/IconProject.vue";
 import IconSettings from "@/components/icons/IconSettings.vue";
 import IconLogout from "@/components/icons/IconLogout.vue";
 import IconUser from "@/components/icons/IconUser.vue";
+import Chip from "@/components/Chip.vue";
 
 const route = useRoute();
 const { active } = defineProps<{
@@ -67,6 +68,9 @@ const { project, prevStatus, nextStatus } = useProjects();
               <IconMerge class="icon"/>
               Merge
             </RouterLink>
+          </li>
+          <li>
+            Status: <Chip :chip="project.status"/>
           </li>
           <li  v-if="hasPrivilege('manager', project)">
             <button @click="prevStatus()" :disabled="!project.status.prev">
@@ -181,6 +185,10 @@ aside ul {
 
   li {
     margin-bottom: .25rem;
+
+    &:has(.chip) {
+      margin-top: .75rem;
+    }
   }
 
   a, button {

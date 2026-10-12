@@ -104,7 +104,7 @@ model Status {
   title              String    @default("")
   color              String    @default("#aaa")
   textcolor          String    @default("#222")
-  order              Int       @default(autoincrement())
+  order              Int       @default(autoincrement()) @unique
   projectViewDetails Boolean   @default(false)
   findingsAdd        Boolean   @default(false)
   findingsViewOwn    Boolean   @default(false)

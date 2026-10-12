@@ -21,13 +21,14 @@ async function getAll(projectId: string, userId = ""): Promise<any> {
 }
 
 async function getById(id: string, user: any) {
-  return prisma.finding.findUnique({
+  let finding = await prisma.finding.findUnique({
     where: { id: id },
     include: {
       user: { include: { UserInProject: true }},
       project: { include: {
           ratingset: { include: { ratings: true } },
           heuristicset: { include: { heuristics: true } },
+          status: true,
           logo: true
         }},
       heuristics: true,
@@ -39,6 +40,8 @@ async function getById(id: string, user: any) {
       }
     },
   });
+  if (finding) finding.project = await projectService.addStatusOrder(finding?.project);
+  return finding;
 }
 
 async function getRandom(pid: string, user: any) {
