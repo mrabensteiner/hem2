@@ -1,4 +1,5 @@
 import {prisma} from "../../lib/prisma";
+import {projectRole} from "../../prisma/generated/enums";
 
 async function getAll(user: any): Promise<any> {
   const where = user.role.projectViewAll ? {} : {
@@ -164,7 +165,10 @@ function checkProjectPrivileges(project: any, user: any, projectPrivilege: strin
   if (user.role[privilege]) return;
 
   const uip = project?.UserInProject.find((u: any) => u.userId === user.id);
-  if (uip == undefined || (uip.projectRole == "MEMBER" && !project?.status[projectPrivilege])) {
+
+  if (uip == undefined && !user.role.projectEditAll) {
+    throw new Error("Access denied.");
+  } else if (uip.projectRole == "MEMBER" && !project?.status[projectPrivilege]) {
     throw new Error("Not possible in this project status.");
   }
 }
@@ -208,11 +212,41 @@ async function addStatusOrder(project: any) {
   }
 }
 
+async function getPrivileges(id: string) {
+  const project = await prisma.project.findUnique({
+    where: {id: id},
+    select: {
+      UserInProject: { include: { user: true }},
+      status: {
+        omit: {
+          id: true,
+          title: true,
+          color: true,
+          textcolor: true,
+          order: true
+        }
+      }
+    }
+  });
+
+  if (project == null) {
+    return null;
+  }
+
+  return {
+    managers: project.UserInProject.filter(uip => uip.projectRole == projectRole.MANAGER).map(uip => uip.userId),
+    members: project.UserInProject.filter(uip => uip.projectRole == projectRole.MEMBER).map(uip => uip.userId),
+    specific: project.status,
+  }
+}
+
 export const projectService = {
   getById,
   getAll,
   create,
   update,
   updateStatus,
-  changes
+  addStatusOrder,
+  changes,
+  getPrivileges
 };

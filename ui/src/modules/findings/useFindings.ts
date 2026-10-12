@@ -93,7 +93,7 @@ export function useFindings() {
       if (response.success) pushToast(response.success, "success");
       if (response.error) pushToast(response.error, "error");
       finding.value = response.data ?? [];
-      finding.value.personalRating = response.data.userRatings[0]?.ratingId ?? "5";
+      finding.value.personalRating = response.data.userRatings[0]?.ratingId ?? "";
       mapSelectValues();
     } catch (err: any) {
       pushToast(err.message, "error");

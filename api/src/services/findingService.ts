@@ -63,10 +63,15 @@ async function getRandom(pid: string, user: any) {
 }
 
 async function create(data: any, user: any) {
+  const privileges = await projectService.getPrivileges(data.projectId);
   let authors = data.user ?? [];
   let heuristics = data.heuristics ?? [];
 
-  if (!user.role.projectEditAll) {
+  if (!privileges?.managers.includes(user.id) && !user.role.projectEditAll) {
+    if (!privileges?.members.includes(user.id) || !privileges?.specific.findingsAdd) {
+      throw Error("No privileges");
+    }
+
     authors = [user.id];
   }
 
@@ -82,11 +87,17 @@ async function create(data: any, user: any) {
       heuristics: { connect: [...heuristics.map((hid: string) => ({id: hid}))] }
     },
     include: {
-      user: { include: { UserInProject: true }},
-      project: { include: {
+      user: {
+        include: {
+          UserInProject: true
+        }
+      },
+      project: {
+        include: {
           ratingset: { include: { ratings: true } },
           heuristicset: { include: { heuristics: true } },
-        }},
+        }
+      },
       heuristics: true,
       rating: true,
       images: true
@@ -95,37 +106,45 @@ async function create(data: any, user: any) {
 }
 
 async function update(data: any, user: any) {
-  let authors = data.user ?? [];
-  let heuristics = data.heuristics ?? [];
+  const privileges = await projectService.getPrivileges(data.projectId);
+  let authors = undefined;
+  let ratingId = undefined;
 
-  if (!user.role.projectEditAll) {
-    authors = [user.id];
+  if (!privileges?.managers.includes(user.id) && !user.role.projectEditAll) {
+    if (!privileges?.members.includes(user.id) || !privileges?.specific.findingsAdd) {
+      throw Error("No privileges to edit findings.");
+    }
+
+    const finding = await prisma.finding.findUnique({
+      where: {
+        id: data.id
+      },
+      select: {
+        user: true
+      }
+    });
+
+    if (!finding?.user.find(u => u.id == user.id)) {
+      throw Error("No privileges to edit this finding.");
+    }
+  } else {
+    authors = data.user.map((uid: string) => ({id: uid})) ?? [];
+    ratingId = data.ratingId;
   }
-
-  delete data.authors;
-  delete data.heuristics;
-  delete data.userRatings;
 
   await projectService.changes(data.project.id);
 
-  if (data.personalRating) await rate(data.id, {id: data.personalRating}, user);
-
-  delete data.project;
-  delete data.rating;
-  delete data.user;
-  delete data.images;
-  delete data.updatedat;
-  delete data.userRating;
-  delete data.userRatingId;
-  delete data.userRatings;
-  delete data.personalRating;
+  if (data.personalRating && data.personalRating != "") await rate(data.id, {id: data.personalRating}, user);
 
   return prisma.finding.update({
     where: { id: data.id },
     data: {
-      ...data,
-      user: { set: [...authors.map((uid: string) => ({id: uid}))] },
-      heuristics: { set: [...heuristics.map((hid: string) => ({id: hid}))] }
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      heuristics: { set: [...data.heuristics.map((hid: string) => ({id: hid}))] },
+      user: { set: authors },
+      ratingId: ratingId
     },
     include: {
       user: { include: { UserInProject: true }},

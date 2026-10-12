@@ -40,7 +40,7 @@ export function useAuth() {
       if (project) {
         const uip = project.UserInProject?.find((uip: any) => (uip.userId === user.value.id)) ?? "";
 
-        if (privileges.value.includes("projectViewAll") || (uip && uip.projectRole == "MANAGER")) {
+        if (privileges.value.includes("projectViewAll") || (uip && uip.projectRole == "MANAGER") || user.value.role.projectEditAll) {
           return true;
         }
         return project.status ? project.status[name] : false;

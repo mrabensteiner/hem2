@@ -196,7 +196,7 @@ export function useProjects() {
   }
 
   function checkProjectPrivilege(privilege: string) {
-    return hasPrivilege.value(privilege, project);
+    return hasPrivilege.value(privilege, project.value);
   }
 
   async function uploadImage(data: any) {

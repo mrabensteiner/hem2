@@ -5,8 +5,13 @@ import {useRoute} from "vue-router";
 import Chip from "@/components/Chip.vue";
 import IconSave from "@/components/icons/IconSave.vue";
 import {useEdit} from "@/composables/useEdit.ts";
+import {useAuth} from "@/composables/useAuth.ts";
 
 const route = useRoute();
+
+const {
+  hasPrivilege
+} = useAuth();
 
 const {
   finding,
@@ -70,14 +75,14 @@ const { edited } = useEdit();
         <option v-for="h in finding.project?.ratingset.ratings" :value="h.id"><Chip :chip="h"/></option>
       </select>
     </div>
-    <div>
+    <div v-if="hasPrivilege('manager', finding?.project)">
       <label>Final Rating</label>
       <select v-model="finding.ratingId" name="ratingId">
         <option>-</option>
         <option v-for="h in finding.project?.ratingset.ratings" :value="h.id"><Chip :chip="h"/></option>
       </select>
     </div>
-    <div v-if="projectUsers.length">
+    <div v-if="projectUsers.length && hasPrivilege('manager', finding?.project)">
       <label>Authors</label><br/>
       <select v-model="finding.user" multiple>
         <option v-for="u in projectUsers" :key="u.id" type="checkbox" name="authors" :value="u.id" >
