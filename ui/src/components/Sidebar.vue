@@ -63,12 +63,20 @@ const { project, prevStatus, nextStatus } = useProjects();
               Rating Overview
             </RouterLink>
           </li>
-          <li v-if="hasPrivilege('manager', project)">
-            <RouterLink :to="'/project/' + project.id + '/findings/merge'">
-              <IconMerge class="icon"/>
-              Merge
-            </RouterLink>
-          </li>
+          <template v-if="hasPrivilege('manager', project)">
+            <li>
+              <RouterLink :to="'/project/' + project.id + '/findings/merge'">
+                <IconMerge class="icon"/>
+                Merge (ListMerger)
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink :to="'/project/' + project.id + '/findings/mergev2'">
+                <IconMerge class="icon"/>
+                Merge (Reactive)
+              </RouterLink>
+            </li>
+          </template>
           <li>
             Status: <Chip :chip="project.status"/>
           </li>

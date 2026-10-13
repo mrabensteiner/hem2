@@ -3,6 +3,7 @@ import NewView from "@/modules/findings/NewView.vue";
 import EditView from "@/modules/findings/EditView.vue";
 import RatingView from "@/modules/findings/RatingView.vue";
 import MergingView from "@/modules/findings/MergingView.vue";
+import MergingViewReactive from "@/modules/findings/MergingViewReactive.vue";
 
 export default [
   {
@@ -45,6 +46,15 @@ export default [
     path: '/project/:pid/findings/merge',
     name: 'FindingsMerge',
     component: MergingView,
+    meta: {
+      context: 'project',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/project/:pid/findings/mergev2',
+    name: 'FindingsMergeReactive',
+    component: MergingViewReactive,
     meta: {
       context: 'project',
       requiresAuth: true
