@@ -1,17 +1,26 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
+import {useManualRefHistory} from '@vueuse/core';
 import draggable from 'vuedraggable';
 import {useProjects} from "@/modules/projects/useProjects.ts";
 
 const route = useRoute();
 
+const lists = ref<any>({
+  merge: [],
+  origin: []
+});
+
+const { clear, undo, redo, commit, canUndo, canRedo, history } = useManualRefHistory(lists, {
+  clone: true
+});
+
 const {
+  project,
   loadProject,
 } = useProjects();
 
-const originLists = ref<any[]>([]);
-const mergeList = ref<any>({items:[]});
 
 type NumberOrNull = number | null;
 
@@ -20,22 +29,24 @@ let draggedListIndex: NumberOrNull = null;
 let draggedItemIndex: NumberOrNull = null;
 let lastMergeId: string | null = null;
 
-onMounted(() => {
-  loadProject(route.params.pid as string).then((data) => {
-    const findings = data.Findings;
+onMounted(async () => {
+  await loadProject(route.params.pid as string);
+  const findings = project.value.Findings;
 
-    // TODO: filter already merged and reviewed findings before and put them into the merge list
-    const reviewerIds = Map.groupBy(findings, (item: any) => item.user[0]?.id);
-    originLists.value = Array.from(reviewerIds, ([userId, items]) => {
-      const name = userId == null ? 'No author' : `${items[0].user[0]?.firstname} ${items[0].user[0]?.lastname}`;
-      return {
-        id: userId,
-        name: name,
-        originalCount: items.length,
-        items
-      };
-    });
+  // TODO: filter already merged and reviewed findings before and put them into the merge list
+  const reviewerIds = Map.groupBy(findings, (item: any) => item.user[0]?.id);
+  lists.value.origin = Array.from(reviewerIds, ([userId, items]) => {
+    const name = userId == null ? 'No author' : `${items[0].user[0]?.firstname} ${items[0].user[0]?.lastname}`;
+    return {
+      id: userId,
+      name: name,
+      originalCount: items.length,
+      items
+    };
   });
+
+  commit();
+  clear();
 });
 
 const setMergeTarget = (id: NumberOrNull) => {
@@ -54,15 +65,15 @@ const executeMerge = (targetItemIndex: number) => {
     return;
   }
 
-  const target = mergeList.value.items[targetItemIndex];
-  const dragged = (draggedListIndex ? originLists.value[draggedListIndex] : mergeList.value).items[draggedItemIndex];
+  const target = lists.value.merge[targetItemIndex];
+  const dragged = (draggedListIndex ? lists.value.origin[draggedListIndex].items : lists.value.merge)[draggedItemIndex];
 
   // TODO merge modal
   target.reviewed = true;
   target.title += ` + ${dragged.title}`;
 
   if (draggedListIndex === null) {
-    mergeList.value.items = mergeList.value.items.filter((item: { id: string }) => item.id !== dragged.id);
+    lists.value.merge = lists.value.merge.filter((item: { id: string }) => item.id !== dragged.id);
   } else {
     lastMergeId = dragged.id;
   }
@@ -70,7 +81,7 @@ const executeMerge = (targetItemIndex: number) => {
 
 const handleDrop = () => {
   if (lastMergeId) {
-    mergeList.value.items = mergeList.value.items.filter((item: { id: string }) => item.id !== lastMergeId);
+    lists.value.merge = lists.value.merge.filter((item: { id: string }) => item.id !== lastMergeId);
   }
 
   // TODO: set reviewed
@@ -78,25 +89,29 @@ const handleDrop = () => {
   setMergeTarget(null);
   draggedItemIndex = null;
   lastMergeId = null;
+  commit();
 };
 
 const moveAll = (listIndex: number) => {
-  originLists.value[listIndex].items.forEach((item: any) => {
+  lists.value.origin[listIndex].items.forEach((item: any) => {
     item.title += " (moved)"
-    mergeList.value.items.push(item);
+    lists.value.merge.push(item);
   })
-  originLists.value[listIndex].items = [];
+  lists.value.origin[listIndex].items = [];
+  commit();
 }
 </script>
 
 
 <template>
+  <button @click="undo" :disabled="!canUndo">Undo</button>
+  <button @click="redo" :disabled="!canRedo">Redo</button>
   <h1>Merge Findings</h1>
   <div>
-    <h2>Merged <span v-if="mergeList.items.length">({{mergeList.items.length}})</span></h2>
+    <h2>Merged <span v-if="lists.merge.length">({{lists.merge.length}})</span></h2>
     <div>
       <draggable
-        v-model="mergeList.items"
+        v-model="lists.merge"
         item-key="id"
         @start="onDragStart"
         @end="handleDrop"
@@ -127,14 +142,14 @@ const moveAll = (listIndex: number) => {
 
   <div>
     <h2>Origin Lists</h2>
-    <div v-for="(list, i) in originLists" :key="list.id">
+    <div v-for="(list, i) in lists.origin" :key="list.id">
       <h3>
         {{ list.name }}
         <span v-if="list.originalCount">({{list.originalCount - list.items.length}}/{{list.originalCount}})</span>
         <button @click="moveAll(i)" :disabled="!list.items.length" style="display: inline">Move Remaining</button>
       </h3>
       <draggable
-        v-model="originLists[i].items"
+        v-model="lists.origin[i].items"
         :group="{ name: 'people', put: false }"
         item-key="id"
         :sort="false"
