@@ -14,7 +14,7 @@ export function useFindings() {
 
   const isLoading = ref(false);
   const { pushToast } = useToast();
-  const { setProject, checkProjectPrivilege } = useProjects();
+  const { project, setProject, checkProjectPrivilege } = useProjects();
 
   async function loadFinding(id: string, edit = false, pid = "") {
     isLoading.value = true;
@@ -49,8 +49,11 @@ export function useFindings() {
 
   async function loadAllFindings(pid: string) {
     try {
+      const project = await projectApi.getById(pid);
+      setProject(project);
+
       const rawData = await findingApi.getAll(pid);
-      allFindings.value = rawData.data;
+      setFindings(rawData.data);
     } catch (err: any) {
       pushToast(err.message, "error");
     }
@@ -117,6 +120,20 @@ export function useFindings() {
     }
   }
 
+  async function saveAllFindings() {
+    try {
+      const payload = allFindings.value;
+
+      const response = await findingApi.saveAll(project.value.id, payload);
+      if (response.success) pushToast(response.success, "success");
+      if (response.error) pushToast(response.error, "error");
+      setFindings(response.data ?? []);
+    } catch (err: any) {
+      pushToast(err.message, "error");
+      throw err;
+    }
+  }
+
   async function removeFinding(id: string) {
     try {
       const response = await findingApi.remove(id);
@@ -162,6 +179,13 @@ export function useFindings() {
     }
   }
 
+  function setFindings(findings: any) {
+    allFindings.value = findings.map((f: any) => ({
+      ...f,
+      mergedFromIds: f.mergedFrom.map((mf: any) => mf.id)
+    }));
+  }
+
   return {
     finding,
     images,
@@ -169,9 +193,11 @@ export function useFindings() {
     projectUsers,
     allFindings,
     loadFinding,
+    loadAllFindings,
     loadNewFinding,
     createFinding,
     saveFinding,
+    saveAllFindings,
     removeFinding,
     saveRating,
     uploadImages,

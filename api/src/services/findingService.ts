@@ -14,7 +14,9 @@ async function getAll(projectId: string, userId = ""): Promise<any> {
       user: { include: { UserInProject: true }},
       heuristics: true,
       rating: true,
-      images: true
+      images: true,
+      mergedFrom: true,
+      mergedTo: true,
     }
   });
 }
@@ -33,8 +35,12 @@ async function getById(id: string, user: any) {
       heuristics: true,
       rating: true,
       images: true,
-      mergedFrom: true,
-      mergedTo: true,
+      mergedFrom: {
+        include: { user: true }
+      },
+      mergedTo: {
+        include: { user: true }
+      },
       userRatings: {
         where: { userId: user.Id },
         include: { rating: true }
@@ -184,6 +190,35 @@ async function update(data: any, user: any) {
   });
 }
 
+async function updateAll(data: any, projectId: string, user: any) {
+  await prisma.$transaction(
+    Object.values(data).map((f: any) => {
+      if (f.newMerge) {
+        return prisma.finding.create({
+          data: {
+            projectId: projectId,
+            title: f.title,
+            mergedFrom: { connect: [...f.mergedFromIds.map((id: string) => ({id: id}))] }
+          },
+        });
+      } else {
+        return prisma.finding.update({
+          where: {
+            id: f.id
+          },
+          data: {
+            title: f.title,
+            reviewed: true,
+            mergedFrom: { connect: [...f.mergedFromIds.map((id: string) => ({id: id}))] }
+          },
+        })
+      }
+    })
+  );
+
+  return await getAll(projectId);
+}
+
 async function remove(data: any) {
   return prisma.finding.delete({
     where: { id: data.id }
@@ -226,6 +261,7 @@ export const findingService = {
   getRandom,
   create,
   update,
+  updateAll,
   remove,
   rate
 };

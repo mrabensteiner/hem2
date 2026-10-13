@@ -27,6 +27,12 @@ export const findingApi = {
     });
   },
 
+  async saveAll(pid: string, data: any) {
+    return apiClient(`${endpoint}/all/${pid}`, Method.PUT, {
+      body: data
+    });
+  },
+
   async remove(id: string) {
     return apiClient(endpoint, Method.DELETE, {
       body: { id: id }

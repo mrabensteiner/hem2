@@ -70,7 +70,19 @@ async function update(req: Request, res: Response) {
     const finding = await findingService.update(req.body, req.user);
     res.json({
       data: finding,
-      success: "Updated finding set successfully."
+      success: "Updated finding successfully."
+    });
+  } catch (error: any) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+async function updateAll(req: Request, res: Response) {
+  try {
+    const findings = await findingService.updateAll(req.body, req.params.pid, req.user);
+    res.json({
+      data: findings,
+      success: "Updated findings successfully."
     });
   } catch (error: any) {
     res.status(500).json({error: error.message});
@@ -95,5 +107,6 @@ export const findingController = {
   create,
   remove,
   update,
+  updateAll,
   rate
 };

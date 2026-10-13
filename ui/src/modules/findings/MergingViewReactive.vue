@@ -3,7 +3,7 @@ import {onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
 import {useManualRefHistory} from '@vueuse/core';
 import draggable from 'vuedraggable';
-import {useProjects} from "@/modules/projects/useProjects.ts";
+import {useFindings} from "@/modules/findings/useFindings.ts";
 
 const route = useRoute();
 
@@ -17,9 +17,10 @@ const { clear, undo, redo, commit, canUndo, canRedo, history } = useManualRefHis
 });
 
 const {
-  project,
-  loadProject,
-} = useProjects();
+  allFindings,
+  loadAllFindings,
+  saveAllFindings,
+} = useFindings();
 
 
 type NumberOrNull = number | null;
@@ -30,11 +31,17 @@ let draggedItemIndex: NumberOrNull = null;
 let lastMergeId: string | null = null;
 
 onMounted(async () => {
-  await loadProject(route.params.pid as string);
-  const findings = project.value.Findings;
+  await loadAllFindings(route.params.pid as string);
+  splitFindings();
+});
 
+function splitFindings() {
   // TODO: filter already merged and reviewed findings before and put them into the merge list
-  const reviewerIds = Map.groupBy(findings, (item: any) => item.user[0]?.id);
+  const findings: any[] = allFindings.value;
+  const reviewed = findings.filter(f => (f.reviewed || f.mergedFrom.length) && !f.mergedTo);
+  const notReviewed = findings.filter(f => !(f.reviewed || f.mergedFrom.length || f.mergedTo));
+  lists.value.merge = reviewed;
+  const reviewerIds = Map.groupBy(notReviewed, (item: any) => item.user[0]?.id);
   lists.value.origin = Array.from(reviewerIds, ([userId, items]) => {
     const name = userId == null ? 'No author' : `${items[0].user[0]?.firstname} ${items[0].user[0]?.lastname}`;
     return {
@@ -47,7 +54,7 @@ onMounted(async () => {
 
   commit();
   clear();
-});
+}
 
 const setMergeTarget = (id: NumberOrNull) => {
   mergeTargetId.value = id;
@@ -66,10 +73,14 @@ const executeMerge = (targetItemIndex: number) => {
   }
 
   const target = lists.value.merge[targetItemIndex];
-  const dragged = (draggedListIndex ? lists.value.origin[draggedListIndex].items : lists.value.merge)[draggedItemIndex];
+  const dragged = (draggedListIndex != null ? lists.value.origin[draggedListIndex].items : lists.value.merge)[draggedItemIndex];
 
   // TODO merge modal
+  target.newMerge = target.newMerge || target.mergedFromIds.length == 0;
   target.reviewed = true;
+
+  target.mergedFrom = [...(target.mergedFrom ?? [target]), ...(dragged.mergedFrom ?? [dragged])];
+  target.mergedFromIds = [...(target.mergedFromIds.length ? target.mergedFromIds : [target.id]), ...(dragged.mergedFromIds.length ? dragged.mergedFromIds : [dragged.id])];
   target.title += ` + ${dragged.title}`;
 
   if (draggedListIndex === null) {
@@ -79,12 +90,12 @@ const executeMerge = (targetItemIndex: number) => {
   }
 };
 
-const handleDrop = () => {
+const handleDrop = (e: any) => {
   if (lastMergeId) {
     lists.value.merge = lists.value.merge.filter((item: { id: string }) => item.id !== lastMergeId);
+  } else if (lists.value.merge[e.newIndex]) {
+    lists.value.merge[e.newIndex].reviewed = true;
   }
-
-  // TODO: set reviewed
 
   setMergeTarget(null);
   draggedItemIndex = null;
@@ -99,13 +110,20 @@ const moveAll = (listIndex: number) => {
   })
   lists.value.origin[listIndex].items = [];
   commit();
-}
+};
+
+const save = async () => {
+  allFindings.value = lists.value.merge;
+  await saveAllFindings();
+  splitFindings();
+};
 </script>
 
 
 <template>
   <button @click="undo" :disabled="!canUndo">Undo</button>
   <button @click="redo" :disabled="!canRedo">Redo</button>
+  <button @click="save" :disabled="!history">Save</button>
   <h1>Merge Findings</h1>
   <div>
     <h2>Merged <span v-if="lists.merge.length">({{lists.merge.length}})</span></h2>

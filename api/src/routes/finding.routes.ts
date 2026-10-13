@@ -12,6 +12,7 @@ router.delete('/', findingController.remove);
 router.put('/', findingController.update);
 router.get('/:id', findingController.getById);
 router.get('/all/:pid', findingController.getAll);
+router.put('/all/:pid', findingController.updateAll);
 router.get('/random/:pid', findingController.getRandom);
 router.post('/:id/rate', findingController.rate);
 
