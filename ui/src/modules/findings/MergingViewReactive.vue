@@ -4,6 +4,8 @@ import {useRoute} from "vue-router";
 import {useManualRefHistory} from '@vueuse/core';
 import draggable from 'vuedraggable';
 import {useFindings} from "@/modules/findings/useFindings.ts";
+import FindingCollapsible from "@/components/FindingCollapsible.vue";
+import MergeModal from "@/components/MergeModal.vue";
 
 const route = useRoute();
 
@@ -11,6 +13,11 @@ const lists = ref<any>({
   merge: [],
   origin: []
 });
+
+const modalMergeComponent =ref<InstanceType<typeof MergeModal> | null>(null);
+const findingMerge = ref<any>({});
+const findingMergeLeft = ref<any>({});
+const findingMergeRight = ref<any>({});
 
 const { clear, undo, redo, commit, canUndo, canRedo, history } = useManualRefHistory(lists, {
   clone: true
@@ -65,7 +72,7 @@ const onDragStart = (e: any, listIndex: NumberOrNull = null) => {
   draggedItemIndex = e.oldIndex;
 };
 
-const executeMerge = (targetItemIndex: number) => {
+function startMerge(targetItemIndex: number) {
   setMergeTarget(null);
 
   if (draggedItemIndex === null || (draggedListIndex === null && draggedItemIndex === targetItemIndex)) {
@@ -75,20 +82,32 @@ const executeMerge = (targetItemIndex: number) => {
   const target = lists.value.merge[targetItemIndex];
   const dragged = (draggedListIndex != null ? lists.value.origin[draggedListIndex].items : lists.value.merge)[draggedItemIndex];
 
-  // TODO merge modal
+  findingMergeLeft.value = target;
+  findingMergeRight.value = dragged;
+  findingMerge.value = {...target};
+
+  modalMergeComponent.value?.openModal();
+  return;
+}
+
+function saveMerge() {
+  const target = findingMergeLeft.value;
+  const dragged = findingMergeRight.value;
+  const merged = findingMerge.value;
+
   target.newMerge = target.newMerge || target.mergedFromIds.length == 0;
   target.reviewed = true;
 
   target.mergedFrom = [...(target.mergedFrom ?? [target]), ...(dragged.mergedFrom ?? [dragged])];
   target.mergedFromIds = [...(target.mergedFromIds.length ? target.mergedFromIds : [target.id]), ...(dragged.mergedFromIds.length ? dragged.mergedFromIds : [dragged.id])];
-  target.title += ` + ${dragged.title}`;
+  target.title = merged.title;
 
   if (draggedListIndex === null) {
     lists.value.merge = lists.value.merge.filter((item: { id: string }) => item.id !== dragged.id);
   } else {
     lastMergeId = dragged.id;
   }
-};
+}
 
 const handleDrop = (e: any) => {
   if (lastMergeId) {
@@ -121,95 +140,93 @@ const save = async () => {
 
 
 <template>
-  <button @click="undo" :disabled="!canUndo">Undo</button>
-  <button @click="redo" :disabled="!canRedo">Redo</button>
-  <button @click="save" :disabled="!history">Save</button>
-  <h1>Merge Findings</h1>
-  <div>
-    <h2>Merged <span v-if="lists.merge.length">({{lists.merge.length}})</span></h2>
-    <div>
-      <draggable
-        v-model="lists.merge"
-        item-key="id"
-        @start="onDragStart"
-        @end="handleDrop"
-        :sort="true"
-        group="people"
-        class="drop-field">
-      >
-        <template #item="{ element, index }">
-          <div class="item-row">
-            <div
-              :class="{ 'merge-target': mergeTargetId === element.id }"
-              @dragover.prevent="setMergeTarget(element.id)"
-              @dragleave="setMergeTarget(null)"
-              @drop="executeMerge(index)">
+  <section class="sticky">
+    <h1>Merge Findings</h1>
+    <button @click="undo" :disabled="!canUndo">Undo</button>
+    <button @click="redo" :disabled="!canRedo">Redo</button>
+    <button @click="save" :disabled="!history">Save</button>
+  </section>
 
-              <details>
-                <summary>{{element.title}}</summary>
-                <section>
-                  <RouterLink :to="{name: 'FindingsDetails', params: {id: element.id}}">Open</RouterLink>
-                </section>
-              </details>
+  <div class="flex flex-half">
+    <div class="flex flex-column">
+      <h2>Merged <span v-if="lists.merge.length">({{lists.merge.length}})</span></h2>
+      <div>
+        <draggable
+          v-model="lists.merge"
+          item-key="id"
+          @start="onDragStart"
+          @end="handleDrop"
+          :sort="true"
+          group="people"
+          class="drop-field">
+        >
+          <template #item="{ element, index }">
+            <div class="item-row">
+              <div
+                :class="{ 'merge-target': mergeTargetId === element.id }"
+                @dragover.prevent="setMergeTarget(element.id)"
+                @dragleave="setMergeTarget(null)"
+                @drop="startMerge(index)"
+              >
+                  <FindingCollapsible :finding="element"/>
+              </div>
             </div>
-          </div>
-        </template>
-      </draggable>
+          </template>
+        </draggable>
+      </div>
     </div>
-  </div>
 
-  <div>
-    <h2>Origin Lists</h2>
-    <div v-for="(list, i) in lists.origin" :key="list.id">
-      <h3>
-        {{ list.name }}
-        <span v-if="list.originalCount">({{list.originalCount - list.items.length}}/{{list.originalCount}})</span>
-        <button @click="moveAll(i)" :disabled="!list.items.length" style="display: inline">Move Remaining</button>
-      </h3>
-      <draggable
-        v-model="lists.origin[i].items"
-        :group="{ name: 'people', put: false }"
-        item-key="id"
-        :sort="false"
-        @start="onDragStart($event, i)"
-        @end="handleDrop"
-      >
-        <template #item="{ element }">
-          <div>
-            <details>
-              <summary>{{element.title}}</summary>
-              <section>
-                <RouterLink :to="{name: 'FindingsDetails', params: {id: element.id}}">Open</RouterLink>
-              </section>
-            </details>
-          </div>
-        </template>
-      </draggable>
+    <div>
+      <h2>Origin Lists</h2>
+      <div v-for="(list, i) in lists.origin" :key="list.id">
+        <h3>
+          {{ list.name }}
+          <span v-if="list.originalCount">({{list.originalCount - list.items.length}}/{{list.originalCount}})</span>
+          <button @click="moveAll(i)" :disabled="!list.items.length" style="display: inline">Move Remaining</button>
+        </h3>
+        <draggable
+          v-model="lists.origin[i].items"
+          :group="{ name: 'people', put: false }"
+          item-key="id"
+          :sort="false"
+          @start="onDragStart($event, i)"
+          @end="handleDrop"
+        >
+          <template #item="{ element }">
+            <div class="item-row">
+              <FindingCollapsible :finding="element"/>
+            </div>
+          </template>
+        </draggable>
+      </div>
     </div>
   </div>
+  <MergeModal ref="modalMergeComponent" :save-callback="saveMerge" v-model="findingMerge" :findingLeft="findingMergeLeft" :findingRight="findingMergeRight"/>
 </template>
 
 
 <style scoped>
-.item-row {
-  margin: .5rem;
+.flex {
+  flex: 1;
 }
 
-details {
-  padding: 1rem;
-  background: var(--color-background);
-  border: 1px solid var(--color-border);
+.item-row {
+  margin: .5rem;
   cursor: grab;
 }
 
-.merge-target details {
-  background-color: color-mix(in srgb, var(--app-primary) 10%, transparent);
+.merge-target {
+  &:deep(details), &:deep(summary) {
+    background-color: color-mix(in srgb, var(--app-primary) 10%, transparent);
+  }
 }
 
+div:has(> .drop-field) {
+  flex: 1 0 10%;
+}
 
 .drop-field {
   background-color: #eee; min-height: 10rem; border: 1px solid gray;
-
   .sortable-ghost {
     height: .25rem !important;
     background-color: var(--app-primary);
