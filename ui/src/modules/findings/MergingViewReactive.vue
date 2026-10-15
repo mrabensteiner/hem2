@@ -84,6 +84,15 @@ function startMerge(targetItemIndex: number) {
 
   findingMergeLeft.value = target;
   findingMergeRight.value = dragged;
+
+  findingMergeLeft.value.heuristicIds = findingMergeLeft.value.heuristics.map((item: any) => item.id);
+  findingMergeRight.value.heuristicIds = findingMergeRight.value.heuristics.map((item: any) => item.id);
+
+  findingMergeLeft.value.userIds = findingMergeLeft.value.user.map((item: any) => item.id);
+  findingMergeRight.value.userIds = findingMergeRight.value.user.map((item: any) => item.id);
+
+  findingMerge.value.images = [...findingMerge.value.images, ...findingMergeRight.value.images];
+
   findingMerge.value = {...target};
 
   modalMergeComponent.value?.openModal();
