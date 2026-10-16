@@ -4,8 +4,12 @@ import Chip from "@/components/Chip.vue";
 import Thumbnails from "@/components/Thumbnails.vue";
 import IconMerge from "@/components/icons/IconMerge.vue";
 import IconCancel from "@/components/icons/IconCancel.vue";
+import {useProjects} from "@/modules/projects/useProjects.ts";
+import TimeAgo from "@/components/TimeAgo.vue";
 
 const dialogRef = ref<HTMLDialogElement | null>(null);
+
+const { project } = useProjects();
 
 const findingMerge = defineModel<any>();
 
@@ -95,7 +99,11 @@ defineExpose({
         <tr>
           <td><Chip v-for="h in findingLeft.heuristics" :chip="h"/></td>
           <td><button @click="append(Origin.LEFT, 'heuristicIds', true)">></button></td>
-          <td>{{findingMerge.heuristicIds}}</td>
+          <td>
+            <select v-model="findingMerge.heuristicIds" multiple>
+              <option v-for="h in project.heuristicset?.heuristics" :value="h.id"><Chip :chip="h"/></option>
+            </select>
+          </td>
           <td><button @click="append(Origin.RIGHT, 'heuristicIds', true)"><</button></td>
           <td><Chip v-for="h in findingRight.heuristics" :chip="h"/></td>
         </tr>
@@ -105,23 +113,40 @@ defineExpose({
         <tr>
           <td><span v-for="u in findingLeft.user">{{u.firstname}} {{u.lastname}}</span></td>
           <td><button @click="append(Origin.LEFT, 'userIds', true)">></button></td>
-          <td>{{findingMerge.userIds}}</td>
+          <td>
+
+            <select v-model="findingMerge.userIds" multiple>
+              <option v-for="uip in project.UserInProject" :value="uip.userId">{{uip.user.firstname}} {{uip.user.lastname}}</option>
+            </select>
+          </td>
           <td><button @click="append(Origin.RIGHT, 'userIds', true)"><</button></td>
           <td><span v-for="u in findingRight.user">{{u.firstname}} {{u.lastname}}</span></td>
         </tr>
+        <template v-if="findingLeft.images?.length || findingRight.images?.length">
+          <tr class="title">
+            <th colspan="5">Images</th>
+          </tr>
+          <tr>
+            <td>
+              <Thumbnails :images="findingLeft.images"/>
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+              <Thumbnails :images="findingRight.images"/>
+            </td>
+          </tr>
+        </template>
         <tr class="title">
-          <th colspan="5">Images</th>
+          <th colspan="5">Last Updated</th>
         </tr>
         <tr>
-          <td>
-            <Thumbnails :images="findingLeft.images"/>
-          </td>
+          <td><TimeAgo :date="findingLeft.updatedat"/></td>
           <td></td>
           <td></td>
           <td></td>
-          <td>
-            <Thumbnails :images="findingRight.images"/>
-          </td>
+          <td><TimeAgo :date="findingRight.updatedat"/></td>
         </tr>
       </tbody>
     </table>
