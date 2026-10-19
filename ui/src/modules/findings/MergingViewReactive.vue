@@ -15,11 +15,12 @@ const lists = ref<any>({
 });
 
 const modalMergeComponent =ref<InstanceType<typeof MergeModal> | null>(null);
+const targetIndex = ref<NumberOrNull>(null);
 const findingMerge = ref<any>({});
 const findingMergeLeft = ref<any>({});
 const findingMergeRight = ref<any>({});
 
-const { clear, undo, redo, commit, canUndo, canRedo, history } = useManualRefHistory(lists, {
+const { clear, undo, redo, reset, commit, canUndo, canRedo, history } = useManualRefHistory(lists, {
   clone: true
 });
 
@@ -79,10 +80,14 @@ function startMerge(targetItemIndex: number) {
     return;
   }
 
+  targetIndex.value = targetItemIndex;
+
   const target = lists.value.merge[targetItemIndex];
   const dragged = (draggedListIndex != null ? lists.value.origin[draggedListIndex].items : lists.value.merge)[draggedItemIndex];
+  dragged.reviewed = false;
 
   findingMergeLeft.value = target;
+  findingMergeLeft.value = lists.value.merge[targetItemIndex];
   findingMergeRight.value = dragged;
 
   findingMergeLeft.value.heuristicIds = findingMergeLeft.value.heuristics.map((item: any) => item.id);
@@ -91,49 +96,60 @@ function startMerge(targetItemIndex: number) {
   findingMergeLeft.value.userIds = findingMergeLeft.value.user.map((item: any) => item.id);
   findingMergeRight.value.userIds = findingMergeRight.value.user.map((item: any) => item.id);
 
+  findingMerge.value = {...target};
   findingMerge.value.images = [...findingMerge.value.images, ...findingMergeRight.value.images];
 
-  findingMerge.value = {...target};
-
+  lastMergeId = dragged.id;
   modalMergeComponent.value?.openModal();
-  return;
+
 }
 
 function saveMerge() {
-  const target = findingMergeLeft.value;
+  if (targetIndex === null) return;
+  const target = lists.value.merge[targetIndex.value as number];
   const dragged = findingMergeRight.value;
   const merged = findingMerge.value;
 
   target.newMerge = target.newMerge || target.mergedFromIds.length == 0;
   target.reviewed = true;
 
-  target.mergedFrom = [...(target.mergedFrom ?? [target]), ...(dragged.mergedFrom ?? [dragged])];
+  target.images = [...(target.images ?? []), ...(dragged.images ?? [])];
+  target.mergedFrom = [...(target.mergedFrom.length ? target.mergedFrom : [findingMergeLeft.value]), ...(dragged.mergedFrom.length ? dragged.mergedFrom : [dragged])];
   target.mergedFromIds = [...(target.mergedFromIds.length ? target.mergedFromIds : [target.id]), ...(dragged.mergedFromIds.length ? dragged.mergedFromIds : [dragged.id])];
   target.title = merged.title;
+  target.description = merged.description;
+  target.user = merged.user;
+  target.userIds = merged.userIds;
+  target.heuristics = merged.heuristics;
+  target.heuristicIds = merged.heuristicIds;
+
+ lists.value.merge[targetIndex.value as number] = target;
+
+  setMergeTarget(null);
 
   if (draggedListIndex === null) {
     lists.value.merge = lists.value.merge.filter((item: { id: string }) => item.id !== dragged.id);
   } else {
+    lists.value.origin[draggedListIndex].items.splice(draggedListIndex, 1);
     lastMergeId = dragged.id;
   }
+
+  commit();
 }
 
 const handleDrop = (e: any) => {
-  if (lastMergeId) {
-    lists.value.merge = lists.value.merge.filter((item: { id: string }) => item.id !== lastMergeId);
-  } else if (lists.value.merge[e.newIndex]) {
-    lists.value.merge[e.newIndex].reviewed = true;
+  if (lastMergeId != null) {
+    reset();
+  } else {
+    commit();
   }
 
-  setMergeTarget(null);
   draggedItemIndex = null;
   lastMergeId = null;
-  commit();
 };
 
 const moveAll = (listIndex: number) => {
   lists.value.origin[listIndex].items.forEach((item: any) => {
-    item.title += " (moved)"
     lists.value.merge.push(item);
   })
   lists.value.origin[listIndex].items = [];
@@ -210,7 +226,7 @@ const save = async () => {
       </div>
     </div>
   </div>
-  <MergeModal ref="modalMergeComponent" :save-callback="saveMerge" v-model="findingMerge" :findingLeft="findingMergeLeft" :findingRight="findingMergeRight"/>
+  <MergeModal ref="modalMergeComponent" @close="lastMergeId == null" :save-callback="saveMerge" v-model="findingMerge" :findingLeft="findingMergeLeft" :findingRight="findingMergeRight"/>
 </template>
 
 
