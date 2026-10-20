@@ -63,3 +63,12 @@ input, textarea, select {
 select[multiple] {
   min-height: 12rem;
 }
+
+dialog {
+  border: none;
+  border-radius: .5rem;
+}
+
+::backdrop {
+  background-color: var(--color-border-hover);
+}

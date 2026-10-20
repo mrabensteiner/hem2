@@ -6,13 +6,15 @@ defineProps<{
   index: number;
   prev: any | null;
   next: any | null;
+  click: (event: MouseEvent) => void;
 }>();
 </script>
 
 
 <template>
   <div>
-    <img :src="baseurl + image.path" :data-index="index" :data-prev="prev ? baseurl + prev.path : null" :data-next="next ? baseurl + next.path : null"/>
+    <img @click="click" :src="baseurl + image.path" :data-index="index" :data-prev="prev ? baseurl + prev.path : null" :data-next="next ? baseurl + next.path : null"/>
+    <slot/>
   </div>
 </template>
 

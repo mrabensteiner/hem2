@@ -45,6 +45,18 @@ function append(origin: Origin, key: string, isArray = false) {
   }
 }
 
+function updateUsers() {
+  const allUsers = project.value.UserInProject;
+  const uIds = findingMerge.value.userIds;
+  findingMerge.value.user = uIds.map((id: string) => allUsers.find((u: any) => u.userId === id).user);
+}
+
+function updateHeuristics() {
+  const allHeuristics = project.value.heuristicset.heuristics;
+  const heuristicIds = findingMerge.value.heuristicIds;
+  findingMerge.value.heuristics = heuristicIds.map((id: string) => allHeuristics.find((h: any) => h.id === id));
+}
+
 defineExpose({
   openModal
 })
@@ -52,106 +64,107 @@ defineExpose({
 
 <template>
   <dialog ref="dialogRef">
-    <table>
-      <thead>
-        <tr>
-          <th>Finding 1</th>
-          <th></th>
-          <th>Merged Finding</th>
-          <th></th>
-          <th>Finding 2</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="title">
-          <th colspan="5">Title</th>
-        </tr>
-        <tr>
-          <td>{{findingLeft.title}}</td>
-          <td><button @click="append(Origin.LEFT, 'title')">></button></td>
-          <td><input v-model="findingMerge.title"/></td>
-          <td><button @click="append(Origin.RIGHT, 'title')"><</button></td>
-          <td>{{findingRight.title}}</td>
-        </tr>
-        <tr class="title">
-          <th colspan="5">Description</th>
-        </tr>
-        <tr>
-          <td>{{findingLeft.description}}</td>
-          <td><button @click="append(Origin.LEFT, 'description')">></button></td>
-          <td><textarea v-model="findingMerge.description"/></td>
-          <td><button @click="append(Origin.RIGHT, 'description')"><</button></td>
-          <td>{{findingRight.description}}</td>
-        </tr>
-        <tr class="title">
-          <th colspan="5">Remarks</th>
-        </tr>
-        <tr>
-          <td>{{findingLeft.remarks}}</td>
-          <td><button @click="append(Origin.LEFT, 'remarks')">></button></td>
-          <td><textarea v-model="findingMerge.remarks"/></td>
-          <td><button @click="append(Origin.RIGHT, 'remarks')"><</button></td>
-          <td>{{findingRight.remarks}}</td>
-        </tr>
-        <tr class="title">
-          <th colspan="5">Heuristics</th>
-        </tr>
-        <tr>
-          <td><Chip v-for="h in findingLeft.heuristics" :chip="h"/></td>
-          <td><button @click="append(Origin.LEFT, 'heuristicIds', true)">></button></td>
-          <td>
-            <select v-model="findingMerge.heuristicIds" multiple>
-              <option v-for="h in project.heuristicset?.heuristics" :value="h.id"><Chip :chip="h"/></option>
-            </select>
-          </td>
-          <td><button @click="append(Origin.RIGHT, 'heuristicIds', true)"><</button></td>
-          <td><Chip v-for="h in findingRight.heuristics" :chip="h"/></td>
-        </tr>
-        <tr class="title">
-          <th colspan="5">Reviewers</th>
-        </tr>
-        <tr>
-          <td><span v-for="u in findingLeft.user">{{u.firstname}} {{u.lastname}}</span></td>
-          <td><button @click="append(Origin.LEFT, 'userIds', true)">></button></td>
-          <td>
-
-            <select v-model="findingMerge.userIds" multiple>
-              <option v-for="uip in project.UserInProject" :value="uip.userId">{{uip.user.firstname}} {{uip.user.lastname}}</option>
-            </select>
-          </td>
-          <td><button @click="append(Origin.RIGHT, 'userIds', true)"><</button></td>
-          <td><span v-for="u in findingRight.user">{{u.firstname}} {{u.lastname}}</span></td>
-        </tr>
-        <template v-if="findingLeft.images?.length || findingRight.images?.length">
+    <form @submit.prevent="save">
+      <table>
+        <thead>
+          <tr>
+            <th>Finding 1</th>
+            <th></th>
+            <th>Merged Finding</th>
+            <th></th>
+            <th>Finding 2</th>
+          </tr>
+        </thead>
+        <tbody>
           <tr class="title">
-            <th colspan="5">Images</th>
+            <th colspan="5">Title</th>
           </tr>
           <tr>
-            <td>
-              <Thumbnails :images="findingLeft.images"/>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-              <Thumbnails :images="findingRight.images"/>
-            </td>
+            <td>{{findingLeft.title}}</td>
+            <td><button type="button" @click="append(Origin.LEFT, 'title')">></button></td>
+            <td><input v-model="findingMerge.title"/></td>
+            <td><button type="button" @click="append(Origin.RIGHT, 'title')"><</button></td>
+            <td>{{findingRight.title}}</td>
           </tr>
-        </template>
-        <tr class="title">
-          <th colspan="5">Last Updated</th>
-        </tr>
-        <tr>
-          <td><TimeAgo :date="findingLeft.updatedat"/></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td><TimeAgo :date="findingRight.updatedat"/></td>
-        </tr>
-      </tbody>
-    </table>
-    <button @click="dialogRef?.close();"><IconCancel class="icon"/> Cancel</button>
-    <button @click="save"><IconMerge class="icon"/> Merge</button>
+          <tr class="title">
+            <th colspan="5">Description</th>
+          </tr>
+          <tr>
+            <td>{{findingLeft.description}}</td>
+            <td><button type="button" @click="append(Origin.LEFT, 'description')">></button></td>
+            <td><textarea v-model="findingMerge.description"/></td>
+            <td><button type="button" @click="append(Origin.RIGHT, 'description')"><</button></td>
+            <td>{{findingRight.description}}</td>
+          </tr>
+          <tr class="title">
+            <th colspan="5">Remarks</th>
+          </tr>
+          <tr>
+            <td>{{findingLeft.remarks}}</td>
+            <td><button type="button" @click="append(Origin.LEFT, 'remarks')">></button></td>
+            <td><textarea v-model="findingMerge.remarks"/></td>
+            <td><button type="button" @click="append(Origin.RIGHT, 'remarks')"><</button></td>
+            <td>{{findingRight.remarks}}</td>
+          </tr>
+          <tr class="title">
+            <th colspan="5">Heuristics</th>
+          </tr>
+          <tr>
+            <td><Chip v-for="h in findingLeft.heuristics" :chip="h"/></td>
+            <td><button type="button" @click="append(Origin.LEFT, 'heuristicIds', true)">></button></td>
+            <td>
+              <select v-if="findingMerge.heuristicIds" v-model="findingMerge.heuristicIds" multiple @change="updateHeuristics">
+                <option v-for="h in project.heuristicset?.heuristics" :value="h.id"><Chip :chip="h"/></option>
+              </select>
+            </td>
+            <td><button type="button" @click="append(Origin.RIGHT, 'heuristicIds', true)"><</button></td>
+            <td><Chip v-for="h in findingRight.heuristics" :chip="h"/></td>
+          </tr>
+          <tr class="title">
+            <th colspan="5">Reviewers</th>
+          </tr>
+          <tr>
+            <td><span v-for="u in findingLeft.user">{{u.firstname}} {{u.lastname}}</span></td>
+            <td><button type="button" @click="append(Origin.LEFT, 'userIds', true)">></button></td>
+            <td>
+              <select v-if="findingMerge.userIds" v-model="findingMerge.userIds" multiple @change="updateUsers">
+                <option v-for="uip in project.UserInProject" :value="uip.userId">{{uip.user.firstname}} {{uip.user.lastname}}</option>
+              </select>
+            </td>
+            <td><button type="button" @click="append(Origin.RIGHT, 'userIds', true)"><</button></td>
+            <td><span v-for="u in findingRight.user">{{u.firstname}} {{u.lastname}}</span></td>
+          </tr>
+          <template v-if="findingLeft.images?.length || findingRight.images?.length">
+            <tr class="title">
+              <th colspan="5">Images</th>
+            </tr>
+            <tr>
+              <td>
+                <Thumbnails :images="findingLeft.images" v-model="findingMerge.imageIds"/>
+              </td>
+              <td></td>
+              <td>{{findingMerge.imageIds}}</td>
+              <td></td>
+              <td>
+                <Thumbnails :images="findingRight.images" v-model="findingMerge.imageIds"/>
+              </td>
+            </tr>
+          </template>
+          <tr class="title">
+            <th colspan="5">Last Updated</th>
+          </tr>
+          <tr>
+            <td><TimeAgo v-if="findingLeft.updatedat" :date="findingLeft.updatedat"/></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><TimeAgo v-if="findingRight.updatedat" :date="findingRight.updatedat"/></td>
+          </tr>
+        </tbody>
+      </table>
+      <button type="button" @click="dialogRef?.close();"><IconCancel class="icon"/> Cancel</button>
+      <button autofocus><IconMerge class="icon"/> Merge</button>
+    </form>
   </dialog>
 </template>
 
@@ -191,9 +204,5 @@ th, td {
 dialog {
   z-index: 2;
   margin: auto;
-}
-
-dialog::backdrop {
-  background-color: #aaaa;
 }
 </style>

@@ -35,16 +35,20 @@ async function uploadProjectImage(file: Express.Multer.File, projectId: string) 
 }
 
 async function uploadFindingImages(files: Express.Multer.File[], projectId: string, findingId: string) {
-  await prisma.image.createMany({
-    data: files.map(file => ({
-      filename: file.filename,
-      path: `uploads/projects/${projectId}/${file.filename}`,
-      findingId: findingId
-    })),
-  });
+  await prisma.$transaction(
+    Object.values(files).map(file => {
+      return prisma.image.create({
+        data: {
+          filename: file.filename,
+          path: `uploads/projects/${projectId}/${file.filename}`,
+          findings: { connect: { id: findingId } }
+        }
+      });
+    })
+  );
 
   return await prisma.image.findMany({
-    where: { findingId: findingId }
+    where: { findings: { some: { id: findingId } } }
   });
 }
 

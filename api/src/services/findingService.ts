@@ -193,24 +193,27 @@ async function update(data: any, user: any) {
 async function updateAll(data: any, projectId: string, user: any) {
   await prisma.$transaction(
     Object.values(data).map((f: any) => {
+      const finding = {
+        projectId: projectId,
+        title: f.title,
+        description: f.description,
+        reviewed: f.reviewed,
+        user: { connect: [...(f.userIds ?? []).map((id: string) => ({id: id}))] },
+        heuristics: { connect: [...(f.heuristicIds ?? []).map((id: string) => ({id: id}))] },
+        mergedFrom: { connect: [...(f.mergedFromIds ?? []).map((id: string) => ({id: id}))] },
+        images: { connect: [...(f.imageIds ?? []).map((id: string) => ({id: id}))] }
+      }
+
       if (f.newMerge) {
         return prisma.finding.create({
-          data: {
-            projectId: projectId,
-            title: f.title,
-            mergedFrom: { connect: [...f.mergedFromIds.map((id: string) => ({id: id}))] }
-          },
+          data: finding
         });
       } else {
         return prisma.finding.update({
           where: {
             id: f.id
           },
-          data: {
-            title: f.title,
-            reviewed: true,
-            mergedFrom: { connect: [...f.mergedFromIds.map((id: string) => ({id: id}))] }
-          },
+          data: finding
         })
       }
     })

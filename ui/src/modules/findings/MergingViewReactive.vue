@@ -6,6 +6,7 @@ import draggable from 'vuedraggable';
 import {useFindings} from "@/modules/findings/useFindings.ts";
 import FindingCollapsible from "@/components/FindingCollapsible.vue";
 import MergeModal from "@/components/MergeModal.vue";
+import IconSave from "@/components/icons/IconSave.vue";
 
 const route = useRoute();
 
@@ -44,7 +45,6 @@ onMounted(async () => {
 });
 
 function splitFindings() {
-  // TODO: filter already merged and reviewed findings before and put them into the merge list
   const findings: any[] = allFindings.value;
   const reviewed = findings.filter(f => (f.reviewed || f.mergedFrom.length) && !f.mergedTo);
   const notReviewed = findings.filter(f => !(f.reviewed || f.mergedFrom.length || f.mergedTo));
@@ -74,8 +74,6 @@ const onDragStart = (e: any, listIndex: NumberOrNull = null) => {
 };
 
 function startMerge(targetItemIndex: number) {
-  setMergeTarget(null);
-
   if (draggedItemIndex === null || (draggedListIndex === null && draggedItemIndex === targetItemIndex)) {
     return;
   }
@@ -97,11 +95,10 @@ function startMerge(targetItemIndex: number) {
   findingMergeRight.value.userIds = findingMergeRight.value.user.map((item: any) => item.id);
 
   findingMerge.value = {...target};
-  findingMerge.value.images = [...findingMerge.value.images, ...findingMergeRight.value.images];
+  findingMerge.value.imageIds = [...findingMerge.value.images, ...findingMergeRight.value.images].map(i => i.id);
 
   lastMergeId = dragged.id;
   modalMergeComponent.value?.openModal();
-
 }
 
 function saveMerge() {
@@ -111,9 +108,9 @@ function saveMerge() {
   const merged = findingMerge.value;
 
   target.newMerge = target.newMerge || target.mergedFromIds.length == 0;
-  target.reviewed = true;
 
-  target.images = [...(target.images ?? []), ...(dragged.images ?? [])];
+  target.images = [...(target.images ?? []), ...(dragged.images ?? [])].filter(i => merged.imageIds.includes(i.id));
+  target.imageIds = merged.imageIds;
   target.mergedFrom = [...(target.mergedFrom.length ? target.mergedFrom : [findingMergeLeft.value]), ...(dragged.mergedFrom.length ? dragged.mergedFrom : [dragged])];
   target.mergedFromIds = [...(target.mergedFromIds.length ? target.mergedFromIds : [target.id]), ...(dragged.mergedFromIds.length ? dragged.mergedFromIds : [dragged.id])];
   target.title = merged.title;
@@ -141,6 +138,7 @@ const handleDrop = (e: any) => {
   if (lastMergeId != null) {
     reset();
   } else {
+    lists.value.merge[e.newIndex].reviewed = true;
     commit();
   }
 
@@ -150,6 +148,7 @@ const handleDrop = (e: any) => {
 
 const moveAll = (listIndex: number) => {
   lists.value.origin[listIndex].items.forEach((item: any) => {
+    item.reviewed = true;
     lists.value.merge.push(item);
   })
   lists.value.origin[listIndex].items = [];
@@ -169,13 +168,13 @@ const save = async () => {
     <h1>Merge Findings</h1>
     <button @click="undo" :disabled="!canUndo">Undo</button>
     <button @click="redo" :disabled="!canRedo">Redo</button>
-    <button @click="save" :disabled="!history">Save</button>
+    <button @click="save" :disabled="!history"><IconSave class="icon"/> Save</button>
   </section>
 
-  <div class="flex flex-half">
+  <div class="flex flex-half" id="merging">
     <div class="flex flex-column">
       <h2>Merged <span v-if="lists.merge.length">({{lists.merge.length}})</span></h2>
-      <div>
+      <div class="flex">
         <draggable
           v-model="lists.merge"
           item-key="id"
@@ -201,28 +200,30 @@ const save = async () => {
       </div>
     </div>
 
-    <div>
+    <div class="flex flex-column">
       <h2>Origin Lists</h2>
-      <div v-for="(list, i) in lists.origin" :key="list.id">
-        <h3>
-          {{ list.name }}
-          <span v-if="list.originalCount">({{list.originalCount - list.items.length}}/{{list.originalCount}})</span>
-          <button @click="moveAll(i)" :disabled="!list.items.length" style="display: inline">Move Remaining</button>
-        </h3>
-        <draggable
-          v-model="lists.origin[i].items"
-          :group="{ name: 'people', put: false }"
-          item-key="id"
-          :sort="false"
-          @start="onDragStart($event, i)"
-          @end="handleDrop"
-        >
-          <template #item="{ element }">
-            <div class="item-row">
-              <FindingCollapsible :finding="element"/>
-            </div>
-          </template>
-        </draggable>
+      <div>
+        <div v-for="(list, i) in lists.origin" :key="list.id" class="originList">
+          <h3>
+            {{ list.name }}
+            <span v-if="list.originalCount">({{list.originalCount - list.items.length}}/{{list.originalCount}})</span>
+            <button @click="moveAll(i)" :disabled="!list.items.length" style="display: inline">Move Remaining</button>
+          </h3>
+          <draggable
+            v-model="lists.origin[i].items"
+            :group="{ name: 'people', put: false }"
+            item-key="id"
+            :sort="false"
+            @start="onDragStart($event, i)"
+            @end="handleDrop"
+          >
+            <template #item="{ element }">
+              <div class="item-row">
+                <FindingCollapsible :finding="element"/>
+              </div>
+            </template>
+          </draggable>
+        </div>
       </div>
     </div>
   </div>
@@ -230,9 +231,51 @@ const save = async () => {
 </template>
 
 
+<style>
+body:has(#merging) {
+  overflow: hidden;
+
+  main {
+    height: 80vh;
+    overflow: auto;
+
+    section.sticky {
+      top: -2rem;
+    }
+  }
+
+  footer {
+    position: fixed;
+    bottom: 0;
+  }
+}
+</style>
+
+
 <style scoped>
+#merging {
+  overflow: auto;
+
+  div {
+    flex: 1 0;
+    overflow: auto;
+  }
+}
+
 .flex {
   flex: 1;
+}
+
+div.originList {
+  margin-bottom: 1rem;
+
+  h3 {
+    margin: .5rem;
+
+    button {
+      margin: 0 0 0 1rem;
+    }
+  }
 }
 
 .item-row {
@@ -251,7 +294,10 @@ div:has(> .drop-field) {
 }
 
 .drop-field {
-  background-color: #eee; min-height: 10rem; border: 1px solid gray;
+  background-color: var(--color-background-mute);
+  min-height: 10rem;
+  border: 1px solid var(--color-border-hover);
+
   .sortable-ghost {
     height: .25rem !important;
     background-color: var(--app-primary);

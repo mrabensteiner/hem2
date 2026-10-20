@@ -7,6 +7,8 @@ const props = defineProps<{
   images: any[];
 }>();
 
+const imageSelect = defineModel<any>();
+
 function openModal(e: MouseEvent) {
   if (!e.target) {
     return;
@@ -18,10 +20,6 @@ function openModal(e: MouseEvent) {
   const dialog = document.createElement("dialog");
   dialog.classList.add("thumbnail-full");
   document.body.append(dialog);
-
-  const closeButton = document.createElement("button");
-  closeButton.classList.add("close");
-  dialog.append(closeButton);
 
   const prevButton = document.createElement("button");
   prevButton.classList.add("prev");
@@ -36,6 +34,11 @@ function openModal(e: MouseEvent) {
   const image = target.cloneNode(true) as HTMLImageElement;
   dialog.append(image);
   dialog.showModal();
+
+  const closeButton = document.createElement("button");
+  closeButton.classList.add("close");
+  closeButton.innerText = "X";
+  dialog.append(closeButton);
 
   dialog.addEventListener("close", (e) => {
     dialog.remove();
@@ -68,7 +71,11 @@ function replaceImage(image: HTMLImageElement, index: number) {
 <template>
   <div>
     <template v-for="(img, i) in images">
-      <Thumbnail @click="openModal" :image="img" :index="i" :prev="images[i-1]" :next="images[i+1]"/>
+      <Thumbnail :click="openModal" :image="img" :index="i" :prev="images[i-1]" :next="images[i+1]">
+        <template v-if="imageSelect">
+          <input v-model="imageSelect" :value="img.id" type="checkbox"/>
+        </template>
+      </Thumbnail>
     </template>
     <span v-if="!images">No images</span>
   </div>
@@ -115,5 +122,16 @@ div {
       height: 100%;
     }
   }
+}
+
+input {
+  position: relative;
+  height: 2rem;
+  width: 2rem;
+}
+
+div:has(> input:not(:checked)) :deep(img)  {
+  filter: grayscale(1);
+  opacity: .5;
 }
 </style>

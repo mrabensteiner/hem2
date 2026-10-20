@@ -5,6 +5,7 @@ import IconClock from "@/components/icons/IconClock.vue";
 import IconUser from "@/components/icons/IconUser.vue";
 import IconCheck from "@/components/icons/IconCheck.vue";
 import IconOpen from "@/components/icons/IconOpen.vue";
+import Thumbnails from "@/components/Thumbnails.vue";
 
 const { finding } = defineProps<{
   finding: any
@@ -20,7 +21,7 @@ const { finding } = defineProps<{
       <ul>
         <li>
           <IconUser class="icon"/>
-          {{ finding.user.map(u => u.firstname).join(", ") }}
+          {{ finding.user.map(u => `${u.firstname} ${u.lastname}`).join(", ") }}
         </li>
         <li>
           <IconClock class="icon"/>
@@ -29,11 +30,12 @@ const { finding } = defineProps<{
         <li>
           <IconCheck class="icon"/>
           <Chip v-for="h in finding.heuristics" :chip="h"/>
+          <span v-if="!finding.heuristics?.length">no heuristic</span>
         </li>
-        <li>
+        <li v-if="finding.mergedTo">
           Merged to: {{finding.mergedTo}}
         </li>
-        <li>
+        <li v-if="finding.mergedFrom.length">
           Merged from:
           <template v-for="(f, i) in finding.mergedFrom">
             <RouterLink :to="{name: 'FindingsDetails', params: {id: f.id}}" target="_blank">{{f.title}}</RouterLink>
@@ -68,6 +70,11 @@ details {
     border-radius: .5rem;
     background-color: var(--color-background);
 
+    &::marker {
+      color: var(--app-primary);
+      cursor: pointer;
+    }
+
     .title {
       line-height: 1.3;
     }
@@ -96,5 +103,4 @@ details {
     margin-right: 0;
   }
 }
-
 </style>

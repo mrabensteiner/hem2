@@ -1,4 +1,7 @@
 header {
+  position: sticky;
+  top: 0;
+
   background-color: var(--app-secondary);
   color: var(--vt-c-white);
   padding: .5rem 1rem;
@@ -70,7 +73,7 @@ section.sticky {
   padding: 1rem 2rem;
   position: sticky;
   z-index: 1;
-  top: -2rem;
+  top: 0;
   display: flex;
   align-items: center;
 

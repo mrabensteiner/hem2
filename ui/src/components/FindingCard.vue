@@ -20,7 +20,7 @@ const { finding } = defineProps<{
       </p>
       <p>
         <IconUser class="icon"/>
-        {{ finding.user.join(", ") }}
+        {{ finding.user.map(u => `${u.firstname} ${u.lastname}`).join(", ") }}
       </p>
       <p>
         <IconCheck class="icon"/>

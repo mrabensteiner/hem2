@@ -442,13 +442,16 @@ function setItems() {
 }
 
 onMounted(() => {
+  import("listmerger/src/example/listmerger.css");
+  import("listmerger/src/example/style.css");
+
   loadProject(route.params.pid as string).then((data) => {
     const findings = data.Findings;
 
-    const reviewerIds = Map.groupBy(findings, (item: any) => item.user[0].id);
+    const reviewerIds = Map.groupBy(findings, (item: any) => item.user[0]?.id ?? 'None');
     const lists = Array.from(reviewerIds, ([userId, items]) => ({
       id: userId,
-      name: `${items[0].user[0].firstname} ${items[0].user[0].lastname}`,
+      name: `${items[0]?.user[0]?.firstname} ${items[0]?.user[0]?.lastname}` ?? 'None',
       items
     }));
     itemsbase['originlists'] = lists;
@@ -483,9 +486,6 @@ onMounted(() => {
 </template>
 
 <style>
-@import "listmerger/src/example/listmerger.css" layer(listmerger);
-@import "listmerger/src/example/style.css" layer(listmerger);
-
 #listmerger {
   .tabbar > details > section {
     margin-top: -1px;
