@@ -25,7 +25,6 @@ export function useFindings() {
       if (response.error) pushToast(response.error, "error");
       finding.value = response.data;
       finding.value = response.data;
-      setProject(response.data.project);
 
       finding.value.personalRating = response.data.userRatingId ?? "";
       userRating.value = response.data.userRatingId ?? "";
@@ -38,7 +37,9 @@ export function useFindings() {
         }
       }
 
-      const project = await projectApi.getById(response.data.projectId);
+      const project = await projectApi.getById(response.data.projectId ?? pid)
+      setProject(project);
+
       projectUsers.value = project.UserInProject.map((u: any) => u.user);
     } catch (err: any) {
       pushToast(err.message, "error");

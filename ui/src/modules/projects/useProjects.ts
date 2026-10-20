@@ -91,7 +91,7 @@ export function useProjects() {
       total = total.length ? total.reduce((a: number, b: number) => a + b) / total.length : "-";
       f.totalRating = total;
 
-      findings.value.push(f);
+      if ((f.reviewed || f.mergedFrom.length) && !f.mergedToId) findings.value.push(f);
     })
   }
 

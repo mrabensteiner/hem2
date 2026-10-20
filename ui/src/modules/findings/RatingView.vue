@@ -6,8 +6,14 @@ import Chip from "@/components/Chip.vue";
 import TimeAgo from "@/components/TimeAgo.vue";
 import IconSave from "@/components/icons/IconSave.vue";
 import IconOpen from "@/components/icons/IconOpen.vue";
+import IconEdit from "@/components/icons/IconEdit.vue";
+import {useAuth} from "@/composables/useAuth.ts";
 const route = useRoute();
 const router = useRouter();
+
+const {
+  hasPrivilege
+} = useAuth();
 
 const {
   finding,
@@ -78,12 +84,15 @@ function save(event: SubmitEvent) {
   <h3>Rate</h3>
   <div class="ratingbuttons">
     <label v-for="r in finding.project?.ratingset.ratings" :style="'--main-bg-color:'+ r.color + ';--main-text-color:'+ r.textcolor">
-      <input type="radio" name="rating" :value="r.id" v-model="userRating" required>
+      <input type="radio" name="rating" :value="r.id" v-model="userRating">
       <span>{{r.title}}</span>
     </label>
   </div>
-  <button type="submit"><IconSave class="icon"/> Save</button>
-  <button type="submit" data-next="true"><IconOpen class="icon"/> Save and Rate Next</button>
+  <button type="button" @click="userRating = null">Reset Rating</button>
+  <RouterLink :to="{name: 'FindingsDetails'}" class="button">Back to View</RouterLink>
+  <RouterLink v-if="hasPrivilege('findingEditOwn', finding.project)" :to="{name: 'FindingsEdit'}" class="button"><IconEdit class="icon"/> Edit</RouterLink>
+  <button><IconSave class="icon"/> Save</button>
+  <button data-next="true"><IconOpen class="icon"/> Save and Rate Next</button>
 
   </form>
   </div>

@@ -28,7 +28,7 @@ async function getById(id: string, user: any) {
       ratingset: { include: { ratings: true }},
       status: true,
       logo: true,
-      Findings: { include: { user: true, heuristics: true , rating: true, userRatings: true, images: true }}
+      Findings: { include: { user: true, heuristics: true , rating: true, userRatings: true, images: true, mergedFrom: true }}
     }
   });
 

@@ -150,11 +150,7 @@ async function update(data: any, user: any) {
 
   await projectService.changes(data.project.id);
 
-  if (data.personalRating == "") {
-    await rateRemove(data.id, user);
-  } else if (data.personalRating) {
-    await rate(data.id, {id: data.personalRating}, user)
-  }
+  await rate(data.id, {id: data.personalRating}, user)
 
   return prisma.finding.update({
     where: { id: data.id },
@@ -198,6 +194,7 @@ async function updateAll(data: any, projectId: string, user: any) {
         title: f.title,
         description: f.description,
         reviewed: f.reviewed,
+        ratingId: f.ratingId,
         user: { connect: [...(f.userIds ?? []).map((id: string) => ({id: id}))] },
         heuristics: { connect: [...(f.heuristicIds ?? []).map((id: string) => ({id: id}))] },
         mergedFrom: { connect: [...(f.mergedFromIds ?? []).map((id: string) => ({id: id}))] },
@@ -229,6 +226,8 @@ async function remove(data: any) {
 }
 
 async function rate(id: any, rating: any, user: any) {
+  if (rating.id == "") return rateRemove(id, user);
+
   return prisma.userRating.upsert({
     where: {
       userId_findingId: {
