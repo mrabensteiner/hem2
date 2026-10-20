@@ -131,6 +131,8 @@ export function useProjects() {
         extractRoles(data.UserInProject);
         prepareFindingsForTable(data);
         return data;
+      } else {
+        project.value = {};
       }
     } catch (err: any) {
       pushToast(err.message, "error");

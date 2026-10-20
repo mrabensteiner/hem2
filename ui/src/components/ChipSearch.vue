@@ -20,7 +20,7 @@ const { prefix, users } = defineProps<{
       </div>
     </template>
     <div style="anchor-name: --input;">
-      <input type="search" :id="prefix" v-model="search" autocomplete="off"/>
+      <input type="search" :id="prefix" v-model="search" autocomplete="off" placeholder="Type to see suggestions..."/>
       <IconAdd class="floating-icon"/>
       <div class="suggestions" v-if="search != ''">
         <label v-for="u in users.filter((uf:any) => !selected?.includes(uf.id) && (uf.firstname + ' ' + uf.lastname).toLowerCase().search(search.toLowerCase()) != -1)"
@@ -52,11 +52,6 @@ const { prefix, users } = defineProps<{
     outline: none;
   }
 
-
-  &:not(:has(:focus)) .suggestions {
-    display: none;
-  }
-
   .suggestions {
     background-color: var(--color-background-mute);
     width: fit-content;
@@ -70,6 +65,7 @@ const { prefix, users } = defineProps<{
     label {
       border: 1px solid var(--color-border);
       margin: 0;
+      padding: .5rem;
       font-weight: normal;
 
       &:hover {
@@ -80,7 +76,7 @@ const { prefix, users } = defineProps<{
   }
 
 
-  &:not(:has(:focus)) {
+  &:has(input:placeholder-shown):not(:has(input:focus)) {
     input[type=search], .floating-icon {
       cursor: pointer;
     }
@@ -97,9 +93,11 @@ const { prefix, users } = defineProps<{
     }
   }
 
-
-  &:has(:focus) .floating-icon {
-    display: none;
+  :has(input:focus),
+  :has(input:not(:focus):not(:placeholder-shown)) {
+    .floating-icon {
+      display: none;
+    }
   }
 
   input[type=search] {

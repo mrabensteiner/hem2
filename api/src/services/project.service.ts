@@ -1,6 +1,15 @@
 import {prisma} from "../../lib/prisma";
 import {projectRole} from "../../prisma/generated/enums";
 
+const projectIncludeFull = {
+  UserInProject: { include: { user: true }},
+  heuristicset: { include: { heuristics: true }},
+  ratingset: { include: { ratings: true }},
+  status: true,
+  logo: true,
+  Findings: { include: { user: true, heuristics: true , rating: true, userRatings: true, images: true, mergedFrom: true }}
+};
+
 async function getAll(user: any): Promise<any> {
   const where = user.role.projectViewAll ? {} : {
     UserInProject: { some: { userId: user.id } }
@@ -20,16 +29,9 @@ async function getAll(user: any): Promise<any> {
 }
 
 async function getById(id: string, user: any) {
-  let project: any = await prisma.project.findUnique({
+  let project = await prisma.project.findUnique({
     where: {id: id},
-    include: {
-      UserInProject: { include: { user: true }},
-      heuristicset: { include: { heuristics: true }},
-      ratingset: { include: { ratings: true }},
-      status: true,
-      logo: true,
-      Findings: { include: { user: true, heuristics: true , rating: true, userRatings: true, images: true, mergedFrom: true }}
-    }
+    include: projectIncludeFull
   });
 
   checkProjectPrivileges(project, user, "projectViewDetails", "projectViewAll");
@@ -56,20 +58,14 @@ async function getById(id: string, user: any) {
 async function create(data: any) {
 
   const managers = data.managers;
-  const members = data.members.filter((uid: string) => !managers.includes(uid));
+  const members = data.members;
 
   delete data.members;
   delete data.managers;
 
   const project = await prisma.project.create({
     data: data,
-    include: {
-      UserInProject: { include: { user: true }},
-      heuristicset: true,
-      ratingset: true,
-      status: true,
-      Findings: { include: { user: true, heuristics: true , rating: true }}
-    }
+    include: projectIncludeFull
   })
   const projectId = project.id;
 
@@ -89,7 +85,7 @@ async function create(data: any) {
 
 async function update(data: any) {
   const managers = data.managers;
-  const members = data.members.filter((uid: string) => !managers.includes(uid));
+  const members = data.members;
 
   await prisma.userInProject.deleteMany({
     where: { projectId: data.id },
@@ -115,14 +111,7 @@ async function update(data: any) {
       ratingsetId: data.ratingsetId,
       statusId: data.statusId
     },
-    include: {
-      UserInProject: { include: { user: true }},
-      heuristicset: true,
-      ratingset: true,
-      status: true,
-      logo: true,
-      Findings: { include: { user: true, heuristics: true , rating: true }}
-    }
+    include: projectIncludeFull
   });
 
   return await addStatusOrder(project);
@@ -141,14 +130,7 @@ async function updateStatus(data: any) {
         }
       }
     },
-    include: {
-      UserInProject: { include: { user: true }},
-      heuristicset: true,
-      ratingset: true,
-      status: true,
-      logo: true,
-      Findings: { include: { user: true, heuristics: true , rating: true }}
-    }
+    include: projectIncludeFull
   });
 
   return await addStatusOrder(project);
@@ -164,11 +146,12 @@ async function changes(id: string) {
 function checkProjectPrivileges(project: any, user: any, projectPrivilege: string, privilege: string) {
   if (user.role[privilege]) return;
 
-  const uip = project?.UserInProject.find((u: any) => u.userId === user.id);
+  const uip1 = project?.UserInProject.find((u: any) => u.userId === user.id && u.projectRole === "MANAGER");
+  const uip2 = project?.UserInProject.find((u: any) => u.userId === user.id && u.projectRole === "MEMBER");
 
-  if (uip == undefined && !user.role.projectEditAll) {
+  if ((uip1 == undefined || uip2 == undefined) && !user.role.projectEditAll) {
     throw new Error("Access denied.");
-  } else if (uip.projectRole == "MEMBER" && !project?.status[projectPrivilege]) {
+  } else if (uip1 == undefined && uip2 != undefined && !project?.status[projectPrivilege]) {
     throw new Error("Not possible in this project status.");
   }
 }

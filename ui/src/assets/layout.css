@@ -69,7 +69,10 @@ main {
 }
 
 footer {
-  padding: 1rem;
+  position: fixed;
+  bottom: 0;
+  font-size: 1rem;
+  padding: .5rem;
   background-color: var(--app-secondary);
   color: var(--vt-c-white);
 }

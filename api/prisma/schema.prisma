@@ -52,7 +52,7 @@ model UserInProject {
   projectId   String
   projectRole projectRole @default(MEMBER)
 
-  @@id([userId, projectId])
+  @@id([userId, projectId, projectRole])
 }
 
 model Project {

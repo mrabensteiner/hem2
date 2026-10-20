@@ -2,6 +2,8 @@
 import { onMounted } from 'vue';
 import {useRoute, useRouter} from "vue-router";
 import {useProjects} from "@/modules/projects/useProjects.ts";
+import ChipSearch from "@/components/ChipSearch.vue";
+import IconSave from "@/components/icons/IconSave.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -45,6 +47,7 @@ async function save() {
     <div>
       <label for="status">Status</label>
       <select id="status" v-model="project.statusId" required>
+        <option :value="undefined" disabled>-- selection required --</option>
         <option v-for="status in statuses" :key="status.id" :value="status.id">
           {{ status.title }}
         </option>
@@ -54,6 +57,7 @@ async function save() {
     <div>
       <label for="heuristic">Heuristic Set</label>
       <select id="heuristic" v-model="project.heuristicsetId" required>
+        <option :value="undefined" disabled>-- selection required --</option>
         <option v-for="h in heuristicSets" :key="h.id" :value="h.id">
           {{ h.title }}
         </option>
@@ -63,6 +67,7 @@ async function save() {
     <div>
       <label for="rating">Rating Set</label>
       <select id="rating" v-model="project.ratingsetId" required>
+        <option :value="undefined" disabled>-- selection required --</option>
         <option v-for="s in ratingSets" :key="s.id" :value="s.id">
           {{ s.title }}
         </option>
@@ -71,22 +76,14 @@ async function save() {
 
     <div>
       <label>Managers</label>
-      <div class="checkbox-group">
-        <label v-for="u in users" :key="'form-mgr-' + u.id" class="checkbox-label">
-          <input type="checkbox" :value="u.id" v-model="managers" />
-          {{ u.firstname }} {{ u.lastname }}
-        </label>
-      </div>
+      <ChipSearch prefix="managers" v-model="managers" :users="users" />
     </div>
 
     <div>
       <label>Reviewers</label>
-      <label v-for="u in users" :key="'form-mbr-' + u.id" class="checkbox-label">
-        <input type="checkbox" :value="u.id" v-model="members" :disabled="managers.includes(u.id)" />
-        {{ u.firstname }} {{ u.lastname }}
-      </label>
+      <ChipSearch prefix="members" v-model="members" :users="users" />
     </div>
 
-    <input type="submit" value="Save"/>
+    <button><IconSave class="icon"/> Save</button>
   </form>
 </template>
