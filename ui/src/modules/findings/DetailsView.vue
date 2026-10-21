@@ -8,6 +8,7 @@ import Thumbnails from "@/components/Thumbnails.vue";
 import IconEdit from "@/components/icons/IconEdit.vue";
 import IconRate from "@/components/icons/IconRate.vue";
 import {useAuth} from "@/composables/useAuth.ts";
+import FindingStatus from "@/components/FindingStatus.vue";
 
 const route = useRoute();
 
@@ -45,51 +46,61 @@ watch(
   </section>
 
   <div class="row">
-  <div class="col-3">
-
-    <label>Images and Videos</label>
-    <Thumbnails :images="finding.images"/>
-
-    <p>
-      <label>Overall Rating:</label>
-      <span v-if="finding.rating"><Chip :chip="finding.rating"/></span>
-      <span v-else>Not yet rated</span>
-    </p>
-
-    <p>
-      <label>My Rating:</label>
-      <span v-if="finding.userRating?.rating"><Chip :chip="finding.userRating.rating"/></span>
-      <span v-else>Not yet rated</span>
-    </p>
-  </div>
   <div class="col-9">
     <div>
-      <label>Reviewer(s):</label>
+      <label>
+        <template v-if="finding.user?.length > 1">Reviewers:</template>
+        <template v-else>Reviewer:</template>
+        &nbsp;
+      </label>
       <span>{{finding.user?.map(u => [u.firstname, u.lastname].join(" ")).join(", ")}}</span>
     </div>
     <div>
-      <label>Heuristics(s):</label>
+      <label>Heuristics(s):&nbsp;</label>
       <template v-for="h in finding.heuristics" :key="h.id">
         <Chip :chip="h" />
       </template>
     </div>
     <div>
-      <label>Last Update:</label>
+      <label>Last Update:&nbsp;</label>
       <span><TimeAgo :date="finding.updatedat"/></span>
     </div>
-  <label>Description:</label>
+  <label>Description:&nbsp;</label>
   <p>{{ finding.description }}</p>
 
     <label>Remarks or Recommendations:</label>
     <p>{{ finding.remarks }}</p>
+  </div>
+  <div class="col-3">
+
+    <label>Images and Videos&nbsp;</label><br/>
+    <Thumbnails v-if="finding.images?.length" :images="finding.images"/>
+    <span v-else>No images</span>
+
+    <p>
+      <label>Overall Rating:&nbsp;</label>
+      <span v-if="finding.rating"><Chip :chip="finding.rating"/></span>
+      <span v-else>Not yet rated</span>
+    </p>
+
+    <p>
+      <label>My Rating:&nbsp;</label>
+      <span v-if="finding.userRating?.rating"><Chip :chip="finding.userRating.rating"/></span>
+      <span v-else>Not yet rated</span>
+    </p>
+
+    <div>
+      <label>Status: &nbsp;</label>
+      <FindingStatus :finding="finding"/>
+    </div>
 
     <div v-if="finding.mergedToId">
-      <label>Merged To:</label>
+      <label>Merged To:&nbsp;</label>
       <RouterLink :to="{ params: {id: finding.mergedTo.id} }">{{finding.mergedTo.title}}</RouterLink>
     </div>
 
     <div v-if="finding.mergedFrom?.length">
-      <label>Merged from:</label>
+      <label>Merged from:&nbsp;</label>
       <template v-for="(f,i) in finding.mergedFrom">
         <RouterLink :to="{ params: {id: f.id} }">
           {{f.title}}
