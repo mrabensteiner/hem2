@@ -95,50 +95,50 @@ const { project, prevStatus, nextStatus } = useProjects();
       <summary>System Settings</summary>
       <section>
         <ul>
-          <li>
-            <RouterLink v-if="hasPrivilege('projectViewAll') || hasPrivilege('projectEditAll')" to="/projects">
+          <li v-if="hasPrivilege('projectViewAll') || hasPrivilege('projectEditAll')">
+            <RouterLink to="/projects">
               <IconSettings class="icon"/>
               Projects
             </RouterLink>
           </li>
-          <li>
-            <RouterLink v-if="hasPrivilege('projectAdd') && !hasPrivilege('projectViewAll') && !hasPrivilege('projectEditAll')" to="/project/new">
+          <li v-if="hasPrivilege('projectAdd') && !hasPrivilege('projectViewAll') && !hasPrivilege('projectEditAll')">
+            <RouterLink to="/project/new">
               <IconAdd class="icon"/>
               Add Project
             </RouterLink>
           </li>
-          <li>
-            <RouterLink v-if="hasPrivilege('userEdit')" to="/users">
+          <li v-if="hasPrivilege('userEdit')">
+            <RouterLink to="/users">
               <IconSettings class="icon"/>
               Users
             </RouterLink>
           </li>
-          <li>
-            <RouterLink v-if="hasPrivilege('userAdd') && !hasPrivilege('userEdit')" to="/users">
+          <li v-if="hasPrivilege('userAdd') && !hasPrivilege('userEdit')">
+            <RouterLink to="/users">
               <IconAdd class="icon"/>
               New User
             </RouterLink>
           </li>
-          <li>
-            <RouterLink v-if="hasPrivilege('roleEdit')" to="/roles">
+          <li v-if="hasPrivilege('roleEdit')">
+            <RouterLink to="/roles">
               <IconSettings class="icon"/>
               Roles
             </RouterLink>
           </li>
-          <li>
-            <RouterLink v-if="hasPrivilege('statusEdit')" to="/statuses">
+          <li v-if="hasPrivilege('statusEdit')">
+            <RouterLink to="/statuses">
               <IconSettings class="icon"/>
               Statuses
             </RouterLink>
           </li>
-          <li>
-            <RouterLink v-if="hasPrivilege('heuristicSetEdit')" to="/heuristics">
+          <li v-if="hasPrivilege('heuristicSetEdit')">
+            <RouterLink to="/heuristics">
               <IconSettings class="icon"/>
               Heuristics
             </RouterLink>
           </li>
-          <li>
-            <RouterLink v-if="hasPrivilege('ratingSetEdit')" to="/ratings">
+          <li v-if="hasPrivilege('ratingSetEdit')">
+            <RouterLink to="/ratings">
               <IconSettings class="icon"/>
               Ratings
             </RouterLink>
@@ -240,6 +240,10 @@ details {
   border-radius: 1rem;
   padding: 1rem;
   transition: all .3s ease;
+
+  &:not(:has(li)) {
+    display: none;
+  }
 
   summary {
     background-color: var(--color-background-mute);

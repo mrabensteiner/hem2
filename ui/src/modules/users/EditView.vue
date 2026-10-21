@@ -24,9 +24,9 @@ const {
   saveUser,
 } = useUser();
 
-onMounted(() => {
-  loadRoles();
-  loadUser(route.params.id as string, isNew.value);
+onMounted(async () => {
+  await loadRoles();
+  await loadUser(route.params.id as string, isNew.value);
 });
 
 async function save() {
@@ -43,7 +43,6 @@ const uploadImageHandler = (event: Event) => {
   if (!file || !image) return;
 
   newImage.value = file;
-  console.log("do", newImage.value, file, image);
   const reader = new FileReader();
   reader.onload = (e) => {
     image.src = (e.target?.result as string);

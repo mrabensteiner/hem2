@@ -8,7 +8,7 @@ import {imageApi} from "@/api/images.ts";
 import {useToast} from "@/composables/useToast.ts";
 import {useAuth} from "@/composables/useAuth.ts";
 
-const {hasPrivilege} = useAuth();
+const {user, hasPrivilege} = useAuth();
 
 const project = ref<any>({ title: '', description: '', statusId: '', heuristicsetId: '', ratingsetId: '' });
 
@@ -88,7 +88,7 @@ export function useProjects() {
 
       let total = f.rpu.map((r: any) => r.value);
       total = total.filter((i: string | number) => i != "-");
-      total = total.length ? total.reduce((a: number, b: number) => a + b) / total.length : "-";
+      total = total.length ? (total.reduce((a: number, b: number) => a + b) / total.length).toFixed(2) : "-";
       f.totalRating = total;
 
       if ((f.reviewed || f.mergedFrom.length) && !f.mergedToId) findings.value.push(f);
@@ -132,7 +132,12 @@ export function useProjects() {
         prepareFindingsForTable(data);
         return data;
       } else {
-        project.value = {};
+        project.value = {
+          statusId: "",
+          heuristicsetId: "",
+          ratingsetId: ""
+        };
+        managers.value = [user.value.id]
       }
     } catch (err: any) {
       pushToast(err.message, "error");

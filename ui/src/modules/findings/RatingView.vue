@@ -89,7 +89,7 @@ function save(event: SubmitEvent) {
     </label>
   </div>
   <button type="button" @click="userRating = null">Reset Rating</button>
-  <RouterLink :to="{name: 'FindingsDetails'}" class="button">Back to View</RouterLink>
+  <RouterLink v-if="finding.id" :to="{name: 'FindingsDetails', params: { id: finding.id }}" class="button">Back to View</RouterLink>
   <RouterLink v-if="hasPrivilege('findingEditOwn', finding.project)" :to="{name: 'FindingsEdit'}" class="button"><IconEdit class="icon"/> Edit</RouterLink>
   <button><IconSave class="icon"/> Save</button>
   <button data-next="true"><IconOpen class="icon"/> Save and Rate Next</button>

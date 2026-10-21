@@ -236,7 +236,7 @@ body:has(#merging) {
   overflow: hidden;
 
   main {
-    height: 80vh;
+    height: 90vh;
     overflow: auto;
 
     section.sticky {

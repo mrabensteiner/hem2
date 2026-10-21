@@ -9,7 +9,7 @@ import IconOpen from "@/components/icons/IconOpen.vue";
 interface HeaderColumn {
   key: string;
   title: string;
-  type?: 'link' | 'multi' | 'chip' | 'multichip' | 'time';
+  type?: 'link' | 'multi' | 'chip' | 'multichip' | 'time' | 'image' | 'imagelink' | 'imagecircle';
   sortable?: boolean;
   hidden?: boolean;
   locked?: boolean;
@@ -220,7 +220,7 @@ watch(
           {{ h.title }}
 
           <span
-            v-if="!['link', 'multi', 'multichip', 'image'].includes(h.type || '') || h.sortable"
+            v-if="!['link', 'multi', 'multichip', 'image', 'imagecircle', 'imagelink'].includes(h.type || '') || h.sortable"
             :data-dir="sortKey === h.key ? sortDir : ''"
             @click="sortCol(h.key)"
             :class="sortKey == h.key ? 'active' : ''"
@@ -230,7 +230,7 @@ watch(
           </span>
 
           <span
-            v-if="!['link', 'time', 'image'].includes(h.type || '') || h.sortable"
+            v-if="!['link', 'time', 'image', 'imagecircle', 'imagelink'].includes(h.type || '') || h.sortable"
             :data-filter="h.key"
             :class="activeFilter(h.key) ? 'active' : ''"
             title="Filter"
@@ -293,11 +293,22 @@ watch(
           <template v-else-if="h.type === 'image'">
             <img v-if="r[h.key]" :src="'http://localhost:3000/' + r[h.key].path" />
           </template>
+          <template v-else-if="h.type === 'imagecircle'">
+            <img v-if="r[h.key]" :src="'http://localhost:3000/' + r[h.key].path" />
+          </template>
           <template v-else-if="h.type === 'imagelink'">
             <RouterLink :to="{ path: r.link }" v-if="!r.deactivated">
               <img v-if="r[h.key]" :src="'http://localhost:3000/' + r[h.key].path" />
             </RouterLink>
+          </template>
+          <template v-else-if="h.type === 'boolean'">
+            <template v-if="r[h.key]">
+              yes
             </template>
+            <template v-else>
+              no
+            </template>
+          </template>
           <template v-else>{{ r[h.key] }}</template>
         </td>
       </tr>
@@ -445,7 +456,7 @@ tbody {
   > div:last-child {
     background-color: var(--color-background);
     max-height: 50vh;
-    overflow-y: scroll;
+    overflow-y: auto;
 
     > div {
       border-bottom: 1px solid var(--color-border);
@@ -463,5 +474,9 @@ tbody {
 
 [data-key="link"] {
   width: 6rem;
+}
+
+table td > a:has(img):hover {
+  background-color: transparent;
 }
 </style>

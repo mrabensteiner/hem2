@@ -44,7 +44,7 @@ const { finding } = defineProps<{
         </li>
       </ul>
       <p>{{finding.description}}</p>
-      <img v-if="finding.images?.length" :src="'http://localhost:3000/' + finding.images[0].path" />
+      <Thumbnails :images="finding.images"/>
       <RouterLink :to="{name: 'FindingsDetails', params: {id: finding.id}}" target="_blank">
         Open <IconOpen class="icon icon-right"/>
       </RouterLink>

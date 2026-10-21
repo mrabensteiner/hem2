@@ -143,7 +143,7 @@ defineExpose({
                 <Thumbnails :images="findingLeft.images" v-model="findingMerge.imageIds"/>
               </td>
               <td></td>
-              <td>{{findingMerge.imageIds}}</td>
+              <td></td>
               <td></td>
               <td>
                 <Thumbnails :images="findingRight.images" v-model="findingMerge.imageIds"/>
@@ -162,8 +162,10 @@ defineExpose({
           </tr>
         </tbody>
       </table>
-      <button type="button" @click="dialogRef?.close();"><IconCancel class="icon"/> Cancel</button>
-      <button autofocus><IconMerge class="icon"/> Merge</button>
+      <div class="footer">
+        <button type="button" @click="dialogRef?.close();"><IconCancel class="icon"/> Cancel</button>
+        <button autofocus><IconMerge class="icon"/> Merge</button>
+      </div>
     </form>
   </dialog>
 </template>
@@ -174,6 +176,15 @@ table {
   table-layout: fixed;
   width: 100%;
 }
+
+thead {
+  position: sticky;
+  top: 0;
+  background-color: var(--color-background);
+  box-shadow: 0 .25rem .5rem var(--color-border);
+  margin: -1rem;
+}
+
 th {
   font-weight: bold;
 }
@@ -204,5 +215,15 @@ th, td {
 dialog {
   z-index: 2;
   margin: auto;
+}
+
+.footer {
+  position: sticky;
+  bottom: -1rem;
+  margin: 1rem -1rem -1rem -1rem;
+  padding: 0 1rem;
+  background-color: var(--color-background);
+  border-top: 1px solid var(--color-border);
+  box-shadow: 0 -.25rem .5rem var(--color-border);
 }
 </style>

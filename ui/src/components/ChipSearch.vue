@@ -76,7 +76,7 @@ const { prefix, users } = defineProps<{
   }
 
 
-  &:has(input:placeholder-shown):not(:has(input:focus)) {
+  &:has(input:placeholder-shown):not(:has(input[type=search]:focus)) {
     input[type=search], .floating-icon {
       cursor: pointer;
     }

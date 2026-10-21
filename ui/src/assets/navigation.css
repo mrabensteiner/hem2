@@ -1,6 +1,7 @@
 header {
   position: sticky;
   top: 0;
+  z-index: 0;
 
   background-color: var(--app-secondary);
   color: var(--vt-c-white);

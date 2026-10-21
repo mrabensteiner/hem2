@@ -51,6 +51,7 @@ const findingsTableHead = [
   { "key": "id", "title": "ID", "hidden": true },
   { "key": "title", "title": "Title", "type": "link", "locked": true, sortable: true },
   { "key": "description", "title": "Description", "hidden": true },
+  { "key": "reviewed", "title": "Reviewed", "type": "boolean", hidden: true},
   { "key": "heuristics", "title": "Heuristic(s)", "type": "multichip" },
   { "key": "rating", "title": "Rating", "type": "chip" },
   { "key": "userstring", "title": "Found by", "type": "multi" },
@@ -59,7 +60,7 @@ const findingsTableHead = [
 ];
 
 const findingsPersonal = computed(() => findings.value.filter(f => f.user.map((u: any) => u.id).includes(user.value.id)));
-const findingsReviewed = computed(() => findings.value.filter(f => f.reviewed));
+const findingsReviewed = computed(() => findings.value.filter(f => (f.reviewed || f.mergedFrom.length) && !f.mergedToId));
 
 const colorGenerator = (count: number, total: number) => {
   return `lch(50 80 ${360 * count/total * ((count % 2) ? 1 : 1)})`;
@@ -115,15 +116,20 @@ const userStatistic = computed(() => {
 const heuristicStatistic = computed(() => {
   let total = 0;
   let f: any[] = Object.values(findings.value.reduce((acc, {heuristics}) => {
-    for (const heuristic of heuristics) {
+    for (let heuristic of heuristics) {
       total += 1;
+
+      if (!heuristic.id) {
+        heuristic = {title: "Not rated", color: "#aaaaaa"};
+      }
+
       acc[heuristic.id] = acc[heuristic.id] ?? {...heuristic, count: 0};
       acc[heuristic.id]['count'] += 1;
     }
     return acc;
   }, {}));
 
-  const length = project.value.heuristicset?.heuristics.length ?? 0;
+  const length = project.value.heuristicset?.heuristics?.length ?? 0;
   f = f.map((r: any, i: number) => ({
     ...r,
     color: r.color == f[i-1]?.color ? colorGenerator(r.order, length) : r.color,
@@ -216,7 +222,7 @@ const view = useLocalStorage("view", viewType.TABLE)
   <Table v-else :head="findingsTableHead" :data="findings" sort="updatedat" dir="asc" />
 
   <div v-if="project.status">
-    <h3>Current Project Status ({{project.status?.title}})</h3>
+    <h3>Current Project Status Privileges ({{project.status?.title}})</h3>
     <ul class="project-status">
       <li :data-allowed="project.status?.projectViewDetails">View project details</li>
       <li :data-allowed="project.status?.findingsAdd">Add new findings</li>
@@ -228,23 +234,28 @@ const view = useLocalStorage("view", viewType.TABLE)
     </ul>
   </div>
 
-  <RouterLink :to="`/project/${project.id}/findings/new`" class="button"><IconAdd class="icon"/> New Finding</RouterLink>
-  <RouterLink :to="`/project/${project.id}/findings/rate`" class="button"><IconRate class="icon"/> Rate</RouterLink>
-  <RouterLink :to="`/project/${project.id}/ratings`" class="button"><IconTable class="icon"/> Rating Overview</RouterLink>
-  <RouterLink :to="`/project/${project.id}/findings/merge`" class="button"><IconMerge class="icon"/> Merge Findings</RouterLink>
-  <button role="button" @click="exportJson">Export JSON</button>
-  <button role="button" @click="exportReportLatex">Export TEX</button>
+  <div>
+    <RouterLink :to="`/project/${project.id}/findings/new`" class="button"><IconAdd class="icon"/> New Finding</RouterLink>
+    <RouterLink :to="`/project/${project.id}/findings/rate`" class="button"><IconRate class="icon"/> Rate</RouterLink>
+    <RouterLink :to="`/project/${project.id}/ratings`" class="button"><IconTable class="icon"/> Rating Overview</RouterLink>
+    <RouterLink :to="`/project/${project.id}/findings/merge`" class="button"><IconMerge class="icon"/> Merge Findings</RouterLink>
+    <button role="button" @click="exportJson">Export JSON</button>
+    <button role="button" @click="exportReportLatex">Export TEX</button>
+  </div>
 
   <h2>Rating Statistics</h2>
   <div>
     <h3>Authors</h3>
-    <SvgPieChart style="max-height: 12rem;" :data="userStatistic"/>
+    <SvgPieChart v-if="userStatistic.length" style="max-height: 12rem;" :data="userStatistic"/>
+    <span v-else>no data</span>
 
     <h3>Heuristics</h3>
-    <SvgPieChart style="max-height: 12rem;" :data="heuristicStatistic"/>
+    <SvgPieChart v-if="heuristicStatistic.length" style="max-height: 12rem;" :data="heuristicStatistic"/>
+    <span v-else>no data</span>
 
     <h3>Ratings</h3>
-    <SvgPieChart style="max-height: 12rem;" :data="ratingStatistic"/>
+    <SvgPieChart v-if="ratingStatistic.length" style="max-height: 12rem;" :data="ratingStatistic"/>
+    <span v-else>no data</span>
   </div>
 
   <h2>Findings per Reviewer</h2>

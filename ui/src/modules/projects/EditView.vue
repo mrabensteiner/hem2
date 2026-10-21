@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted} from 'vue';
+import {nextTick, onMounted} from 'vue';
 import {useRoute, useRouter} from "vue-router";
 import {useProjects} from "@/modules/projects/useProjects.ts";
 import IconSave from "@/components/icons/IconSave.vue";
@@ -33,17 +33,17 @@ async function save() {
   router.push({ name: 'ProjectDetails', params: {id: route.params.id} });
 }
 
-const uploadImageHandler = (event: Event) => {
+const uploadImageHandler = async (event: Event) => {
   const target = (event.target as HTMLInputElement);
-  const image = (target.previousElementSibling as HTMLImageElement);
   const file = target ? (target.files ? target.files[0] : null) : null;
 
-  if (!file || !image) return;
-
+  if (!file) return;
   newLogo.value = file;
+  await nextTick();
 
   const reader = new FileReader();
   reader.onload = (e) => {
+    const image = (target.previousElementSibling as HTMLImageElement);
     image.src = (e.target?.result as string);
   }
   reader.readAsDataURL(file);
@@ -83,7 +83,7 @@ const { edited } = useEdit();
     <div>
       <label>Logo</label>
       <div>
-        <img class="inline-logo" v-if="project.logo" :alt="project.logo.title" :src="'http://localhost:3000/'+project.logo.path"/>
+        <img class="inline-logo" v-if="project.logo || newLogo" :alt="project.logo?.title ?? ''" :src="('http://localhost:3000/' + project.logo?.path) ?? ''"/>
         <input type="file" @change="uploadImageHandler" accept="image/png, image/jpeg, image/gif, image/svg+xml">
       </div>
     </div>

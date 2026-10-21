@@ -55,6 +55,7 @@ aside {
 }
 
 main {
+  z-index: 0;
   anchor-name: --main;
   max-width: 1280px;
   align-self: stretch;

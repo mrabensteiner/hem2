@@ -72,7 +72,7 @@ function replaceImage(image: HTMLImageElement, index: number) {
   <div>
     <template v-for="(img, i) in images">
       <Thumbnail :click="openModal" :image="img" :index="i" :prev="images[i-1]" :next="images[i+1]">
-        <template v-if="imageSelect">
+        <template v-if="imageSelect != null">
           <input v-model="imageSelect" :value="img.id" type="checkbox"/>
         </template>
       </Thumbnail>
@@ -125,7 +125,7 @@ div {
 }
 
 input {
-  position: relative;
+  position: absolute;
   height: 2rem;
   width: 2rem;
 }

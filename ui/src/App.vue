@@ -41,6 +41,8 @@ const sidebar = ref<boolean>(true);
 
 <style scoped>
 .sidebar-toggle {
+  margin-left: 10rem;
+
   transition: .2s all ease;
   cursor: pointer;
 

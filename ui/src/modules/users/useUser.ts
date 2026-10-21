@@ -2,6 +2,11 @@ import { ref } from 'vue';
 import { userApi } from "./userApi.ts";
 import {useToast} from "@/composables/useToast.ts";
 import {imageApi} from "@/api/images.ts";
+import {useAuth} from "@/composables/useAuth.ts";
+
+const {
+  user: currentUser,
+} = useAuth();
 
 export function useUser() {
   const users = ref<any[]>([]);
@@ -39,6 +44,8 @@ export function useUser() {
       if (!isNew) {
         const data = await userApi.getById(id);
         user.value = data;
+      } else {
+        user.value.colorScheme = "system";
       }
     } catch (err: any) {
       pushToast(err.message, "error");
@@ -53,6 +60,10 @@ export function useUser() {
 
       const savedData = await userApi.save(payload, isNew);
       user.value = savedData;
+
+      if (currentUser.value.id == user.value.id) {
+        currentUser.value = user.value;
+      }
 
       if (newImage.value) {
         const formData = new FormData();
