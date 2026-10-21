@@ -40,6 +40,9 @@ async function update(data: any) {
       roleId: data.roleId,
       password: data.password,
       colorScheme: data.colorScheme
+    },
+    include: {
+      image: true
     }
   });
 }

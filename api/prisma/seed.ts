@@ -20,22 +20,21 @@ async function main() {
 
   const managerrole = await prisma.role.create({
     data: {
-      title: "Manager",
+      title: "Project and User Creator",
       description: "Can add users and projects, and view all porejcts",
       userAdd: true,
       projectAdd: true,
-      projectViewAll: true,
     }
   });
 
   const userrole = await prisma.role.create({
     data: {
-      title: "Simple user",
+      title: "Reviewer",
       description: "No system privileges"
     }
   });
 
-  let user = await prisma.user.create({
+  let userAdmin = await prisma.user.create({
       data: {
         username: "admin",
         password: "admin",
@@ -47,7 +46,7 @@ async function main() {
     }
   );
 
-  let user2 = await prisma.user.create({
+  let userManager = await prisma.user.create({
       data: {
         username: "manager",
         password: "manager",
@@ -59,7 +58,7 @@ async function main() {
     }
   );
 
-  let user3 = await prisma.user.create({
+  let reviewer1 = await prisma.user.create({
       data: {
         username: "johndoe",
         password: "johndoe",
@@ -71,7 +70,7 @@ async function main() {
     }
   );
 
-  let user4 = await prisma.user.create({
+  let reviewer2 = await prisma.user.create({
       data: {
         username: "maxmustermann",
         password: "maxmustermann",
@@ -83,7 +82,7 @@ async function main() {
     }
   );
 
-  let user5 = await prisma.user.create({
+  let reviewer3 = await prisma.user.create({
       data: {
         username: "mariorossi",
         password: "mariorossi",
@@ -95,10 +94,14 @@ async function main() {
     }
   );
 
+  const status = await prisma.status.create({
+    data: {
+      title: "Draft"
+    }
+  });
 
   const statuses = await prisma.status.createMany({
     data: [
-      {title: "Draft"},
       {title: "Preparing", projectViewDetails: true},
       {title: "Evaluating", projectViewDetails: true, findingsAdd: true, findingsViewOwn: true, findingsEditOwn: true},
       {title: "Manager Review", projectViewDetails: true},
@@ -106,17 +109,90 @@ async function main() {
       {title: "Concluding", projectViewDetails: true},
       {title: "Finished", projectViewDetails: true},
     ]
-  })
-
-  const status = await prisma.status.findFirst({
-    where: { title: "Preparing" }
   });
+
+  let heuristicSet = await prisma.heuristicSet.create({
+    data: {
+      // https://www.nngroup.com/articles/ten-usability-heuristics/
+      title: "Nielsen's 10 Usability Heuristics",
+      description: " Jakob Nielsen's 10 general principles for interaction design. They are called \"heuristics\" because they are broad rules of thumb and not specific usability guidelines.",
+      heuristics: {
+        create: [
+          {
+            title: "#1: Visibility of System Status",
+            description: "The design should always keep users informed about what is going on, through appropriate feedback within a reasonable amount of time."
+          },
+          {
+            title: "#2: Match Between the System and the Real World",
+            description: "The design should speak the users' language. Use words, phrases, and concepts familiar to the user, rather than internal jargon. Follow real-world conventions, making information appear in a natural and logical order."
+          },
+          {
+            title: "#3: User Control and Freedom",
+            description: "Users often perform actions by mistake. They need a clearly marked \"emergency exit\" to leave the unwanted action without having to go through an extended process."
+          },
+          {
+            title: "#4: Consistency and Standards",
+            description: "Users should not have to wonder whether different words, situations, or actions mean the same thing. Follow platform and industry conventions."
+          },
+          {
+            title: "#5: Error Prevention",
+            description: "Good error messages are important, but the best designs carefully prevent problems from occurring in the first place. Either eliminate error-prone conditions, or check for them and present users with a confirmation option before they commit to the action."
+          },
+          {
+            title: "#6: Recognition Rather than Recall",
+            description: "Minimize the user's memory load by making elements, actions, and options visible. The user should not have to remember information from one part of the interface to another. Information required to use the design (e.g. field labels or menu items) should be visible or"
+          },
+          {
+            title: "#7: Flexibility and Efficiency of Use",
+            description: "Shortcuts — hidden from novice users — may speed up the interaction for the expert user so that the design can cater to both inexperienced and experienced users. Allow users to tailor frequent actions."
+          },
+          {
+            title: "#8: Aesthetic and Minimalist Design",
+            description: "Interfaces should not contain information that is irrelevant or rarely needed. Every extra unit of information in an interface competes with the relevant units of information and diminishes their relative visibility."
+          },
+          {
+            title: "#9: Help Users Recognize, Diagnose, and Recover from Errors",
+            description: "Error messages should be expressed in plain language (no error codes), precisely indicate the problem, and constructively suggest a solution."
+          },
+          {
+            title: "#10: Help and Documentation",
+            description: "It’s best if the system doesn’t need any additional explanation. However, it may be necessary to provide documentation to help users understand how to complete their tasks."
+          }
+        ]
+      }
+    },
+    include: {
+      heuristics: true
+    }
+  });
+
+  let ratingSet = await prisma.ratingSet.create({
+      data: {
+        // https://courses.isds.tugraz.at/hci/hci.pdf
+        title: "Andrews' Severity Rating",
+        ratings: {
+          create: [
+            { title: "Not a Problem at all", color: "#007700", textcolor: "white" },
+            { title: "Cosmetic Problem only", color: "#0670ac", textcolor: "white" },
+            { title: "Minor Problem", color: "#e7a711", textcolor: "white" },
+            { title: "Major Problem", color: "#c31111", textcolor: "white" },
+            { title: "Catastrophic Problem", color: "#b70693", textcolor: "white" },
+          ]
+        }
+      },
+      include: {
+        ratings: true
+      }
+    }
+  );
 
   let project = await prisma.project.create({
     data: {
       title: "Evaluation of tugraz.at",
-      description: "This is an evaluation example of the website tugraz.at",
-      status: { connect: { id: status?.id } },
+      description: "This is an evaluation example of the web site tugraz.at",
+      statusId: status.id,
+      heuristicsetId: heuristicSet.id,
+      ratingsetId: ratingSet.id,
       logo: {
         create: {
           filename: "tugraz.svg",
@@ -124,200 +200,157 @@ async function main() {
         }
       },
       Findings: {
-          create: [
-            {
-              user: { connect: { id: user3.id } },
-              title: "Video on the Start Page",
-              description: "The start page has a muted video that starts automatically.",
-              images: {
-                create: {
-                  filename: "tugraz.png",
-                  path: "uploads/examples/tugraz.png"
-                }
+        create: [
+          {
+            user: {connect: {id: reviewer1.id}},
+            title: "Video on the Start Page",
+            description: "The start page has a muted video that starts automatically.",
+            remarks: "Can be done better",
+            images: {
+              create: {
+                filename: "tugraz.png",
+                path: "uploads/examples/tugraz.png"
               }
-            },
-            {
-              user: { connect: { id: user3.id } },
-              title: "Study Programs",
-              description: "This is the second item in the list.",
-              images: {
-                create: {
-                  filename: "studydata.png",
-                  path: "uploads/examples/studydata.png"
-                }
+            }
+          },
+          {
+            user: {connect: {id: reviewer1.id}},
+            title: "Study Programs",
+            description: "This is the second item in the list.",
+            remarks: "Writing details about the location here...",
+            images: {
+              create: {
+                filename: "studydata.png",
+                path: "uploads/examples/studydata.png"
               }
-            },
-            {
-              user: { connect: { id: user3.id } },
-              title: "Consultation and Tips Boxes",
-              description: "This is an item about the Consultation and Tips Boxes."
-            },
-            {
-              user: { connect: { id: user4.id } },
-              title: "Description of Majors",
-              description: "The Master Programe offers 8 specialisation."
-            },
-            {
-              user: { connect: { id: user4.id } },
-              title: "Study Data",
-              description: "A box at the top show the key facts about the program."
-            },
-            {
-              user: { connect: { id: user5.id } },
-              title: "3x4 Grid of Master Programs at TU Graz",
-              description: "A practical alternative to a long list."
             }
-          ]
-        },
-        heuristicset : {
-          create: {
-            // https://www.nngroup.com/articles/ten-usability-heuristics/
-            title: "Nielsen's 10 Usability Heuristics",
-            description: " Jakob Nielsen's 10 general principles for interaction design. They are called \"heuristics\" because they are broad rules of thumb and not specific usability guidelines.",
-            heuristics: {
-              create: [
-                {
-                  title: "#1: Visibility of System Status",
-                  description: "The design should always keep users informed about what is going on, through appropriate feedback within a reasonable amount of time."
-                },
-                {
-                  title: "#2: Match Between the System and the Real World",
-                  description: "The design should speak the users' language. Use words, phrases, and concepts familiar to the user, rather than internal jargon. Follow real-world conventions, making information appear in a natural and logical order."
-                },
-                {
-                  title: "#3: User Control and Freedom",
-                  description: "Users often perform actions by mistake. They need a clearly marked \"emergency exit\" to leave the unwanted action without having to go through an extended process."
-                },
-                {
-                  title: "#4: Consistency and Standards",
-                  description: "Users should not have to wonder whether different words, situations, or actions mean the same thing. Follow platform and industry conventions."
-                },
-                {
-                  title: "#5: Error Prevention",
-                  description: "Good error messages are important, but the best designs carefully prevent problems from occurring in the first place. Either eliminate error-prone conditions, or check for them and present users with a confirmation option before they commit to the action."
-                },
-                {
-                  title: "#6: Recognition Rather than Recall",
-                  description: "Minimize the user's memory load by making elements, actions, and options visible. The user should not have to remember information from one part of the interface to another. Information required to use the design (e.g. field labels or menu items) should be visible or"
-                },
-                {
-                  title: "#7: Flexibility and Efficiency of Use",
-                  description: "Shortcuts — hidden from novice users — may speed up the interaction for the expert user so that the design can cater to both inexperienced and experienced users. Allow users to tailor frequent actions."
-                },
-                {
-                  title: "#8: Aesthetic and Minimalist Design",
-                  description: "Interfaces should not contain information that is irrelevant or rarely needed. Every extra unit of information in an interface competes with the relevant units of information and diminishes their relative visibility."
-                },
-                {
-                  title: "#9: Help Users Recognize, Diagnose, and Recover from Errors",
-                  description: "Error messages should be expressed in plain language (no error codes), precisely indicate the problem, and constructively suggest a solution."
-                },
-                {
-                  title: "#10: Help and Documentation",
-                  description: "It’s best if the system doesn’t need any additional explanation. However, it may be necessary to provide documentation to help users understand how to complete their tasks."
-                }
-              ]
-            }
+          },
+          {
+            user: {connect: {id: reviewer1.id}},
+            title: "Consultation and Tips Boxes",
+            description: "This is an item about the Consultation and Tips Boxes."
+          },
+          {
+            user: {connect: {id: reviewer2.id}},
+            title: "Description of Majors",
+            description: "The Master Programe offers 8 specialisation."
+          },
+          {
+            user: {connect: {id: reviewer2.id}},
+            title: "Study Data",
+            description: "A box at the top show the key facts about the program."
+          },
+          {
+            user: {connect: {id: reviewer3.id}},
+            title: "3x4 Grid of Master Programs at TU Graz",
+            description: "A practical alternative to a long list."
+          },
+          {
+            user: {connect: {id: reviewer3.id}},
+            title: "Positive Finding",
+            description: "Some things are done well.",
+            positive: true
           }
-        },
-        ratingset : {
-          create: {
-            // https://courses.isds.tugraz.at/hci/hci.pdf
-            title: "Andrews' Severity Rating",
-            ratings: {
-              create: [
-                { title: "Not a Problem at all", color: "darkgreen", textcolor: "white" },
-                { title: "Cosmetic Problem only", color: "#87cefa", textcolor: "white" },
-                { title: "Minor Problem", color: "orange", textcolor: "white" },
-                { title: "Major Problem", color: "red", textcolor: "white" },
-                { title: "Catastrophic Problem", color: "darkred", textcolor: "white" },
-              ]
-            }
-          }
-        }
-      },
-      include: {
-        Findings: true,
-        heuristicset: { include: { heuristics: true } },
-        ratingset: { include: { ratings: true } }
+        ]
       }
     },
-  );
+    include: {
+      Findings: true
+    }
+  });
 
   // Add users to the project
   let uip = await prisma.userInProject.createMany({
     data: [
       {
-        userId: user2.id,
+        userId: userManager.id,
         projectId: project.id,
         projectRole: "MANAGER"
       },
       {
-        userId: user3.id,
+        userId: reviewer1.id,
         projectId: project.id,
         projectRole: "MEMBER"
       },
       {
-        userId: user4.id,
+        userId: reviewer2.id,
         projectId: project.id,
         projectRole: "MEMBER"
       },
       {
-        userId: user5.id,
+        userId: reviewer3.id,
         projectId: project.id,
         projectRole: "MEMBER"
       }
     ]
   })
 
-  // Add heuristics to findings
+  // Add heuristics and ratings to findings
   await prisma.finding.update({
-    where: {id: project.Findings[0].id},
+    where: {id: project.Findings[0]?.id},
     data: {
-      heuristics: {connect: {id: project.heuristicset.heuristics[0].id}},
-      rating: {connect: {id: project.ratingset.ratings[1].id}}
+      reviewed: true,
+      heuristics: {connect: {id: heuristicSet.heuristics[0]?.id}},
+      rating: {connect: {id: ratingSet.ratings[1]?.id}},
+      userRatings: {
+        create: [
+          { userId: reviewer1.id, ratingId: ratingSet.ratings[2]?.id as string },
+          { userId: reviewer2.id, ratingId: ratingSet.ratings[2]?.id as string },
+          { userId: reviewer3.id, ratingId: ratingSet.ratings[3]?.id as string },
+        ]
+      }
     }
   });
+
   await prisma.finding.update({
-    where: {id: project.Findings[1].id},
+    where: {id: project.Findings[1]?.id},
     data: {
-      heuristics: {connect: {id: project.heuristicset.heuristics[0].id}},
-      rating: {connect: {id: project.ratingset.ratings[2].id}}
+      reviewed: true,
+      heuristics: {connect: {id: heuristicSet.heuristics[0]?.id}},
+      rating: {connect: {id: ratingSet.ratings[2]?.id}},
+      userRatings: {
+        create: [
+          { userId: reviewer1.id, ratingId: ratingSet.ratings[4]?.id as string },
+          { userId: reviewer2.id, ratingId: ratingSet.ratings[2]?.id as string },
+          { userId: reviewer3.id, ratingId: ratingSet.ratings[3]?.id as string },
+        ]
+      }
     }
   });
+
   await prisma.finding.update({
-    where: {id: project.Findings[1].id},
+    where: {id: project.Findings[1]?.id},
     data: {
-      heuristics: {connect: {id: project.heuristicset.heuristics[3].id}},
-      rating: {connect: {id: project.ratingset.ratings[0].id}}
+      heuristics: {connect: {id: heuristicSet.heuristics[3]?.id}},
     }
   });
+
   await prisma.finding.update({
-    where: {id: project.Findings[2].id},
+    where: {id: project.Findings[2]?.id},
     data: {
-      heuristics: {connect: {id: project.heuristicset.heuristics[9].id}},
-      rating: {connect: {id: project.ratingset.ratings[2].id}}
+      heuristics: {connect: {id: heuristicSet.heuristics[9]?.id}},
     }
   });
+
   await prisma.finding.update({
-    where: {id: project.Findings[3].id},
+    where: {id: project.Findings[3]?.id},
     data: {
-      heuristics: {connect: {id: project.heuristicset.heuristics[9].id}},
-      rating: {connect: {id: project.ratingset.ratings[2].id}}
+      heuristics: {connect: {id: heuristicSet.heuristics[9]?.id}},
     }
   });
+
   await prisma.finding.update({
-    where: {id: project.Findings[4].id},
+    where: {id: project.Findings[4]?.id},
     data: {
-      heuristics: {connect: {id: project.heuristicset.heuristics[9].id}},
-      rating: {connect: {id: project.ratingset.ratings[2].id}}
+      heuristics: {connect: {id: heuristicSet.heuristics[9]?.id}},
     }
   });
+
   await prisma.finding.update({
-    where: {id: project.Findings[5].id},
+    where: {id: project.Findings[5]?.id},
     data: {
-      heuristics: {connect: {id: project.heuristicset.heuristics[4].id}},
-      rating: {connect: {id: project.ratingset.ratings[3].id}}
+      heuristics: {connect: {id: heuristicSet.heuristics[4]?.id}},
+      rating: {connect: {id: ratingSet.ratings[3]?.id}}
     }
   });
 
@@ -384,4 +417,4 @@ async function main() {
   });
 }
 
-main();
+await main();

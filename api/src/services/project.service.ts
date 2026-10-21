@@ -149,7 +149,7 @@ function checkProjectPrivileges(project: any, user: any, projectPrivilege: strin
   const uip1 = project?.UserInProject.find((u: any) => u.userId === user.id && u.projectRole === "MANAGER");
   const uip2 = project?.UserInProject.find((u: any) => u.userId === user.id && u.projectRole === "MEMBER");
 
-  if ((uip1 == undefined || uip2 == undefined) && !user.role.projectEditAll) {
+  if (uip1 == undefined && uip2 == undefined && !user.role.projectEditAll) {
     throw new Error("Access denied.");
   } else if (uip1 == undefined && uip2 != undefined && !project?.status[projectPrivilege]) {
     throw new Error("Not possible in this project status.");

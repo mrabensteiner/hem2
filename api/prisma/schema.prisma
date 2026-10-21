@@ -88,6 +88,7 @@ model Finding {
   createdat   DateTime?    @default(now())
   userRatings UserRating[]
   reviewed    Boolean      @default(false)
+  positive    Boolean      @default(false)
   mergedToId  String?
   mergedTo    Finding?     @relation("merge", fields: [mergedToId], references: [id])
   mergedFrom  Finding[]    @relation("merge")

@@ -27,7 +27,9 @@ export const requireAuth = async (req: Request, res: Response, next: Function): 
         firstname: true,
         lastname: true,
         role: true,
-        colorScheme: true }
+        colorScheme: true,
+        image: true
+      }
     });
 
     if (!user) {

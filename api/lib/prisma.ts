@@ -20,7 +20,18 @@ const prisma = new PrismaClient({
   query: {
     user: {
       async create({ args, query }) {
-        return query(passwordSanitizeOrEncrypt(args));
+        return query(passwordSanitizeOrEncrypt({
+          ...args,
+          data: {
+            image: {
+              create: {
+                filename: "user.png",
+                path: "uploads/examples/user.png"
+              }
+            },
+            ...args.data
+          }
+        }));
       },
       async update({ args, query }) {
         return query(passwordSanitizeOrEncrypt(args));
