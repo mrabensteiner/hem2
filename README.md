@@ -30,7 +30,8 @@ Set up your database environment variables in the `.env` file.
 When using the included docker file, the content of `.env.example` can be used.
 
 
-Start Docker and initialise the HEM2 container either with the command:
+Start Docker and initialise the HEM2 container either with
+the Docker app, or using the command:
 ```
 pnpm docker
 ```
