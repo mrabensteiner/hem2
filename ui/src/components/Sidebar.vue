@@ -131,13 +131,13 @@ const { project, prevStatus, nextStatus } = useProjects();
               Statuses
             </RouterLink>
           </li>
-          <li v-if="hasPrivilege('heuristicSetEdit')">
+          <li v-if="hasPrivilege('heuristicSetEditOwn') | hasPrivilege('heuristicSetEditAll')">
             <RouterLink to="/heuristics">
               <IconSettings class="icon"/>
               Heuristics
             </RouterLink>
           </li>
-          <li v-if="hasPrivilege('ratingSetEdit')">
+          <li v-if="hasPrivilege('ratingSetEditOwn') || hasPrivilege('ratingSetEditAll')">
             <RouterLink to="/ratings">
               <IconSettings class="icon"/>
               Ratings

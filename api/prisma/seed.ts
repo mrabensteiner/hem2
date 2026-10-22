@@ -11,8 +11,8 @@ async function main() {
       projectAdd: true,
       projectViewAll: true,
       projectEditAll: true,
-      heuristicSetEdit: true,
-      ratingSetEdit: true,
+      heuristicSetEditAll: true,
+      ratingSetEditAll: true,
       statusEdit: true,
       roleEdit: true,
     }
@@ -24,6 +24,8 @@ async function main() {
       description: "Can add users and projects, and view all porejcts",
       userAdd: true,
       projectAdd: true,
+      heuristicSetEditOwn: true,
+      ratingSetEditOwn: true
     }
   });
 

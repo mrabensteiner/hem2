@@ -42,8 +42,8 @@ const { edited } = useEdit();
           <td rowspan="2">Title</td>
           <td colspan="2">User</td>
           <td colspan="3">Project</td>
-          <td>Heuristic Sets</td>
-          <td>Rating Sets</td>
+          <td colspan="2">Heuristic Sets</td>
+          <td colspan="2">Rating Sets</td>
           <td>Statuses</td>
           <td>Roles</td>
           <td rowspan="2">Remove</td>
@@ -54,8 +54,10 @@ const { edited } = useEdit();
           <td>Add</td>
           <td>View All</td>
           <td>Edit All</td>
-          <td>Add + Edit</td>
-          <td>Add + Edit</td>
+          <td>Add + Edit All</td>
+          <td>Add + Edit Own</td>
+          <td>Add + Edit All</td>
+          <td>Add + Edit Own</td>
           <td>Add + Edit</td>
           <td>Add + Edit</td>
         </tr>
@@ -68,8 +70,10 @@ const { edited } = useEdit();
           <td><input type="checkbox" v-model="role.projectAdd"></td>
           <td><input type="checkbox" v-model="role.projectViewAll"></td>
           <td><input type="checkbox" v-model="role.projectEditAll"></td>
-          <td><input type="checkbox" v-model="role.heuristicSetEdit"></td>
-          <td><input type="checkbox" v-model="role.ratingSetEdit"></td>
+          <td><input type="checkbox" v-model="role.heuristicSetEditAll"></td>
+          <td><input type="checkbox" v-model="role.heuristicSetEditOwn"></td>
+          <td><input type="checkbox" v-model="role.ratingSetEditAll"></td>
+          <td><input type="checkbox" v-model="role.ratingSetEditOwn"></td>
           <td><input type="checkbox" v-model="role.statusEdit"></td>
           <td><input type="checkbox" v-model="role.roleEdit"></td>
           <td>

@@ -13,20 +13,22 @@ enum projectRole {
 }
 
 model Role {
-  id               String  @id @unique @default(nanoid(8))
-  title            String  @default("")
-  description      String  @default("")
-  order            Int     @default(autoincrement())
-  userAdd          Boolean @default(false)
-  userEdit         Boolean @default(false)
-  projectAdd       Boolean @default(false)
-  projectViewAll   Boolean @default(false)
-  projectEditAll   Boolean @default(false)
-  heuristicSetEdit Boolean @default(false)
-  ratingSetEdit    Boolean @default(false)
-  statusEdit       Boolean @default(false)
-  roleEdit         Boolean @default(false)
-  users            User[]
+  id                  String  @id @unique @default(nanoid(8))
+  title               String  @default("")
+  description         String  @default("")
+  order               Int     @default(autoincrement())
+  userAdd             Boolean @default(false)
+  userEdit            Boolean @default(false)
+  projectAdd          Boolean @default(false)
+  projectViewAll      Boolean @default(false)
+  projectEditAll      Boolean @default(false)
+  heuristicSetEditAll Boolean @default(false)
+  heuristicSetEditOwn Boolean @default(false)
+  ratingSetEditAll    Boolean @default(false)
+  ratingSetEditOwn    Boolean @default(false)
+  statusEdit          Boolean @default(false)
+  roleEdit            Boolean @default(false)
+  users               User[]
 }
 
 model User {
@@ -43,6 +45,8 @@ model User {
   Findings      Finding[]
   roleId        String
   userRatings   UserRating[]
+  heuristicSets HeuristicSet[]
+  ratingSets    RatingSet[]
 }
 
 model UserInProject {
@@ -127,6 +131,8 @@ model HeuristicSet {
   description String      @default("")
   project     Project[]
   heuristics  Heuristic[]
+  user        User?       @relation(fields: [userId], references: [id])
+  userId      String?
 }
 
 model Heuristic {
@@ -147,6 +153,8 @@ model RatingSet {
   description String    @default("")
   project     Project[]
   ratings     Rating[]
+  user        User?     @relation(fields: [userId], references: [id])
+  userId      String?
 }
 
 model Rating {
