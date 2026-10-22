@@ -8,11 +8,17 @@ import IconSave from "@/components/icons/IconSave.vue";
 import IconAdd from "@/components/icons/IconAdd.vue";
 import IconRemove from "@/components/icons/IconRemove.vue";
 import {useEdit} from "@/composables/useEdit.ts";
+import {useAuth} from "@/composables/useAuth.ts";
+import {useUser} from "@/modules/users/useUser.ts";
 
 const route = useRoute();
 const router = useRouter();
 
 const isNewRatingSet = computed(() => route.params.id === 'new');
+
+const {
+  hasPrivilege
+} = useAuth();
 
 const {
   ratingSet,
@@ -22,11 +28,19 @@ const {
   removeRating,
 } = useRating();
 
+const {
+  users,
+  loadUsers
+} = useUser();
+
 const colorOverride = ref("#777");
 const textcolorOverride = ref("#fff");
 
 onMounted(() => {
   loadRatingSet(route.params.id as string, isNewRatingSet.value);
+  if (hasPrivilege.value('ratingSetEditAll')) {
+    loadUsers();
+  }
 });
 
 watch(colorOverride, (newColor: string) => {
@@ -76,6 +90,15 @@ input[type="text"], input[type="password"], select, textarea {
       Description
       <textarea v-model="ratingSet.description"/>
     </label>
+    <div v-if="hasPrivilege('ratingSetEditAll')">
+      <label>
+        Owner (Can edit on its own, not shown to others)
+        <select v-model="ratingSet.userId">
+          <option :value="null">None (available for all)</option>
+          <option v-for="u in users" :value="u.id">{{ u.firstname }} {{ u.lastname }}</option>
+        </select>
+      </label>
+    </div>
     <div>
       <label>
         Override Background

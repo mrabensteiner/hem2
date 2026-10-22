@@ -13,6 +13,7 @@ export function useRating() {
   function prepareForTable(data: any[]) {
     return data.map((ratingSet: any) => ({
       ...ratingSet,
+      owner: ratingSet.user ? ratingSet.user.firstname + " " + ratingSet.user.lastname : undefined,
       link: `/ratings/${ratingSet.id}`
     }));
   }

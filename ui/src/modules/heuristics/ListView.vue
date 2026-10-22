@@ -11,6 +11,7 @@ onMounted(() => {
 
 const tablehead = [
   { "key": "title", "title": "Title", "type": "link", "locked": true },
+  { "key": "owner", "title": "Owner" },
   { "key": "link", "title": "Open", "type": "link", "locked": true  },
 ];
 </script>

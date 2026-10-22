@@ -21,7 +21,7 @@ async function getById(req: Request, res: Response) {
 
 async function create(req: Request, res: Response) {
   try {
-    const ratingSet = await ratingSetService.create(req.body);
+    const ratingSet = await ratingSetService.create(req.body, req.user);
     res.status(201).json({
       ...ratingSet,
       success: "Created rating set successfully."
@@ -66,7 +66,7 @@ async function removeSingle(req: Request, res: Response) {
 
 async function update(req: Request, res: Response) {
   try {
-    const ratingSet = await ratingSetService.update(req.body);
+    const ratingSet = await ratingSetService.update(req.body, req.user);
     res.json({
       ...ratingSet,
       success: "Updated rating set successfully."

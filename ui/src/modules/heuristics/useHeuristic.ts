@@ -13,6 +13,7 @@ export function useHeuristic() {
   function prepareForTable(data: any[]) {
     return data.map((heuristicSet: any) => ({
       ...heuristicSet,
+      owner: heuristicSet.user ? heuristicSet.user.firstname + " " + heuristicSet.user.lastname : undefined,
       link: `/heuristics/${heuristicSet.id}`
     }));
   }

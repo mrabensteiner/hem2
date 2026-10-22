@@ -8,11 +8,17 @@ import IconSave from "@/components/icons/IconSave.vue";
 import IconAdd from "@/components/icons/IconAdd.vue";
 import IconRemove from "@/components/icons/IconRemove.vue";
 import {useEdit} from "@/composables/useEdit.ts";
+import {useAuth} from "@/composables/useAuth.ts";
+import {useUser} from "@/modules/users/useUser.ts";
 
 const route = useRoute();
 const router = useRouter();
 
 const isNewHeuristicSet = computed(() => route.params.id === 'new');
+
+const {
+  hasPrivilege
+} = useAuth();
 
 const {
   heuristicSet,
@@ -22,11 +28,19 @@ const {
   removeHeuristic,
 } = useHeuristic();
 
+const {
+  users,
+  loadUsers
+} = useUser();
+
 const colorOverride = ref("#777");
 const textcolorOverride = ref("#fff");
 
 onMounted(() => {
   loadHeuristicSet(route.params.id as string, isNewHeuristicSet.value);
+  if (hasPrivilege.value('heuristicSetEditAll')) {
+    loadUsers();
+  }
 });
 
 watch(colorOverride, (newColor: string) => {
@@ -86,6 +100,15 @@ input[type="text"], input[type="password"], select, textarea {
         <input v-model="textcolorOverride" type="color"/>
       </label>
     </div>
+    <div v-if="hasPrivilege('heuristicSetEditAll')">
+      <label>
+        Owner (Can edit on its own, not shown to others)
+        <select v-model="heuristicSet.userId">
+          <option :value="null">None (available for all)</option>
+          <option v-for="u in users" :value="u.id">{{ u.firstname }} {{ u.lastname }}</option>
+        </select>
+      </label>
+    </div>
     <label>Heuristics</label>
     <draggable v-model="heuristicSet.heuristics" item-key="id" handle=".drag-handle" ghost-class="ghost" @end="edited = true">
       <template #item="{ element }">
@@ -99,7 +122,7 @@ input[type="text"], input[type="password"], select, textarea {
             <div>
             <label>
               Background
-              <input @change="console.log('ch', element.id, element.color)" v-model="element.color" type="color"/>
+              <input v-model="element.color" type="color"/>
             </label>
             <label>
               Text Colour

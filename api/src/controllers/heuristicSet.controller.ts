@@ -21,7 +21,7 @@ async function getById(req: Request, res: Response) {
 
 async function create(req: Request, res: Response) {
   try {
-    const heuristicSet = await heuristicSetService.create(req.body);
+    const heuristicSet = await heuristicSetService.create(req.body, req.user);
     res.status(201).json({
       ...heuristicSet,
       success: "Created heuristic set successfully."
@@ -66,7 +66,7 @@ async function removeSingle(req: Request, res: Response) {
 
 async function update(req: Request, res: Response) {
   try {
-    const heuristicSet = await heuristicSetService.update(req.body);
+    const heuristicSet = await heuristicSetService.update(req.body, req.user);
     res.json({
       ...heuristicSet,
       success: "Updated heuristic set successfully."

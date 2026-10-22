@@ -1,17 +1,28 @@
 import {prisma} from "../../lib/prisma";
 
 async function getAll(): Promise<any> {
-  return prisma.ratingSet.findMany();
+  return prisma.ratingSet.findMany({
+    include: {
+      user: true
+    }
+  });
 }
 
 async function getById(id: string) {
   return prisma.ratingSet.findUnique({
     where: { id: id },
-    include: { ratings: { orderBy: { order: 'asc' } } }
+    include: {
+      ratings: { orderBy: { order: 'asc' } },
+      user: true
+    }
   });
 }
 
-async function create(data = {}) {
+async function create(data: any, user: any) {
+  if (!user.role.ratingSetEditAll) {
+    data.userId = user.id;
+  }
+
   return prisma.ratingSet.create({
     data: data
   });
@@ -47,7 +58,11 @@ async function removeSingle(setId: string, ratingId: string) {
   return getById(setId);
 }
 
-async function update(data: any) {
+async function update(data: any, user: any) {
+  if (!user.role.ratingSetEditAll) {
+    data.userId = user.id;
+  }
+
   await prisma.$transaction(
     data.ratings.map((s: any, i: Number) =>
       prisma.rating.update({
@@ -64,9 +79,13 @@ async function update(data: any) {
     where: {id: data.id},
     data: {
       title: data.title,
-      description: data.description
+      description: data.description,
+      userId: data.userId
     },
-    include: { ratings: { orderBy: { order: 'asc' } } }
+    include: {
+      ratings: { orderBy: { order: 'asc' } },
+      user: true
+    }
   });
 }
 
