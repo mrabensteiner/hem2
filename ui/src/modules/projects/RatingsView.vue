@@ -63,16 +63,17 @@ function save() {
         <td class="right">
           {{f.totalRating}}
           <button
-            @click="useCalculatedRating(f)"
-            :disabled="f.totalRating == '-' || Math.round(f.totalRating) == f.rating?.order"
-            :title="f.totalRating == '-' ? 'No calculated value' : Math.round(f.totalRating) == f.rating?.order ? 'Aggregated rating is the same as calculated.' : 'Take the caluclated value.'">
+            type="button"
+            @click="f.ratingId = f.calculatedRatingId"
+            :disabled="f.totalRating == '-' || f.ratingId == f.calculatedRatingId"
+            :title="f.totalRating == '-' ? 'No calculated value' : f.ratingId == f.calculatedRatingId ? 'Aggregated rating is the same as calculated.' : 'Take the calculated value.'">
             <IconTable class="icon"/> >>
           </button>
         </td>
         <td>
           <select class="flex-1" v-model="f.ratingId">
             <option :value="null">None</option>
-            <option v-for="r in project.ratingset.ratings" :value="r.id">{{r.title}}</option>
+            <option v-for="r in project.ratingset.ratings" :value="r.id">{{r.title}} ({{r.value}})</option>
           </select>
         </td>
       </tr>

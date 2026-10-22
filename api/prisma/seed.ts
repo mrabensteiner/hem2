@@ -172,11 +172,11 @@ async function main() {
         title: "Andrews' Severity Rating",
         ratings: {
           create: [
-            { title: "Not a Problem at all", color: "#007700", textcolor: "white" },
-            { title: "Cosmetic Problem only", color: "#0670ac", textcolor: "white" },
-            { title: "Minor Problem", color: "#e7a711", textcolor: "white" },
-            { title: "Major Problem", color: "#c31111", textcolor: "white" },
-            { title: "Catastrophic Problem", color: "#b70693", textcolor: "white" },
+            { title: "Not a Problem at all", color: "#007700", textcolor: "white", value: 1 },
+            { title: "Cosmetic Problem only", color: "#0670ac", textcolor: "white", value: 2 },
+            { title: "Minor Problem", color: "#e7a711", textcolor: "white", value: 3 },
+            { title: "Major Problem", color: "#c31111", textcolor: "white", value: 4 },
+            { title: "Catastrophic Problem", color: "#b70693", textcolor: "white", value: 5 },
           ]
         }
       },

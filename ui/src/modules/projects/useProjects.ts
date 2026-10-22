@@ -82,7 +82,7 @@ export function useProjects() {
         return {
           userId: uid,
           title: rating?.title ?? "",
-          value: rating?.order ?? "-"
+          value: rating?.value ?? "-"
         };
       })
 
@@ -90,6 +90,9 @@ export function useProjects() {
       total = total.filter((i: string | number) => i != "-");
       total = total.length ? (total.reduce((a: number, b: number) => a + b) / total.length).toFixed(2) : "-";
       f.totalRating = total;
+      f.calculatedRatingId = project.value.ratingset.ratings.reduce((prev: any, curr: any) => {
+        return (Math.abs(curr.value - total) < Math.abs(prev.value - total) ? curr : prev);
+      }).id;
 
       if ((f.reviewed || f.mergedFrom.length) && !f.mergedToId) findings.value.push(f);
     })
@@ -218,17 +221,6 @@ export function useProjects() {
     }
   }
 
-  function useCalculatedRating(finding: any) {
-    const calculated = finding.totalRating;
-    const rounded = Math.round(calculated);
-    const rating = project.value.ratingset.ratings.find((r: any) => r.order == rounded);
-
-    if (rating) {
-      finding.rating = rating;
-      finding.ratingId = rating.id ?? undefined;
-    }
-  }
-
   async function exportJson() {
     const blob = await projectApi.exportJson(project.value.id);
 
@@ -284,7 +276,6 @@ export function useProjects() {
     nextStatus,
     uploadImage,
     checkProjectPrivilege,
-    useCalculatedRating,
     exportJson,
     exportReportLatex
   };

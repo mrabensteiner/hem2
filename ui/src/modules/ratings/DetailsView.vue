@@ -96,10 +96,14 @@ input[type="text"], input[type="password"], select, textarea {
               Title
               <input v-model="element.title"/>
             </label>
+            <label>
+              Value
+              <input v-model="element.value" type="number"/>
+            </label>
             <div>
             <label>
               Background
-              <input @change="console.log('ch', element.id, element.color)" v-model="element.color" type="color"/>
+              <input v-model="element.color" type="color"/>
             </label>
             <label>
               Text Colour
@@ -140,6 +144,7 @@ input[type="text"], input[type="password"], select, textarea {
     flex-direction: row;
     flex-wrap: wrap;
     margin-bottom: 1rem;
+    gap: .5rem;
 
     label:first-child {
       flex-grow: 1;

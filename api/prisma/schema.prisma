@@ -159,6 +159,7 @@ model Rating {
   ratingsetId String?
   Finding     Finding[]
   order       Int          @default(autoincrement())
+  value       Int          @default(0)
   userRatings UserRating[]
 }
 
