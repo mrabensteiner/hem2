@@ -17,6 +17,7 @@ const router = useRouter();
 const isNewRatingSet = computed(() => route.params.id === 'new');
 
 const {
+  user,
   hasPrivilege
 } = useAuth();
 
@@ -74,14 +75,15 @@ input[type="text"], input[type="password"], select, textarea {
 </style>
 
 <template>
-  <form @submit.prevent="save" @input="edited = true">
+  <form v-if="hasPrivilege('ratingSetEditAll') || ratingSet.user?.id == user.id" @submit.prevent="save" @input="edited = true">
     <section class="sticky">
       <div>
         <RouterLink :to="{ path: '/ratings'}">Rating Sets</RouterLink>
         <h1>Rating Set: {{ratingSet.title}}</h1>
       </div>
       <button type="button" @click="addRating"><IconAdd class="icon"/> Add Rating</button>
-      <button :disabled="!edited"><IconSave class="icon"/> Save</button>    </section>
+      <button :disabled="!edited"><IconSave class="icon"/> Save</button>
+    </section>
     <label>
       Title
       <input type="text" v-model="ratingSet.title"/>
@@ -148,6 +150,48 @@ input[type="text"], input[type="password"], select, textarea {
     </draggable>
     <button type="button" @click="addRating">Add Rating</button>
   </form>
+  <template v-else>
+    <section class="sticky">
+      <div>
+        <RouterLink :to="{ path: '/ratings'}">Rating Sets</RouterLink>
+        <h1>Rating Set: {{ratingSet.title}}</h1>
+      </div>
+    </section>
+    <p>
+      <label>Title:</label>
+      {{ ratingSet.title }}
+    </p>
+    <p>
+      <label>Description:</label>
+      {{ ratingSet.description }}
+    </p>
+    <p>
+      <label>Amount of Rating Steps:</label>
+      {{ ratingSet.ratings.length }}
+    </p>
+    <p v-if="ratingSet.user">
+      <label>Owner:</label>
+      {{ ratingSet.user.firstname }} {{ ratingSet.user.lastname }}
+    </p>
+    <table>
+      <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Value</th>
+        <th>Preview</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-for="r in ratingSet.ratings">
+        <td>{{ r.title }}</td>
+        <td>{{ r.description }}</td>
+        <td>{{ r.value }}</td>
+        <td><Chip :chip="r"/></td>
+      </tr>
+      </tbody>
+    </table>
+  </template>
 </template>
 
 

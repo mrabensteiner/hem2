@@ -17,6 +17,7 @@ const router = useRouter();
 const isNewHeuristicSet = computed(() => route.params.id === 'new');
 
 const {
+  user,
   hasPrivilege
 } = useAuth();
 
@@ -73,7 +74,7 @@ input[type="text"], input[type="password"], select, textarea {
 </style>
 
 <template>
-  <form @submit.prevent="save" @input="edited = true">
+  <form v-if="hasPrivilege('heuristicSetEditAll') || heuristicSet.user?.id == user.id" @submit.prevent="save" @input="edited = true">
     <section class="sticky">
       <div>
         <RouterLink :to="{ path: '/heuristics'}">Heuristic Sets</RouterLink>
@@ -144,6 +145,46 @@ input[type="text"], input[type="password"], select, textarea {
     </draggable>
     <button type="button" @click="addHeuristic">Add Heuristic</button>
   </form>
+  <template v-else>
+    <section class="sticky">
+      <div>
+        <RouterLink :to="{ path: '/ratings'}">Rating Sets</RouterLink>
+        <h1>Rating Set: {{heuristicSet.title}}</h1>
+      </div>
+    </section>
+    <p>
+      <label>Title:</label>
+      {{ heuristicSet.title }}
+    </p>
+    <p>
+      <label>Description:</label>
+      {{ heuristicSet.description }}
+    </p>
+    <p>
+      <label>Amount of Heuristics:</label>
+      {{ heuristicSet.heuristics.length }}
+    </p>
+    <p v-if="heuristicSet.user">
+      <label>Owner:</label>
+      {{ heuristicSet.user.firstname }} {{ heuristicSet.user.lastname }}
+    </p>
+    <table>
+      <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Preview</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-for="h in heuristicSet.heuristics">
+        <td>{{ h.title }}</td>
+        <td>{{ h.description }}</td>
+        <td><Chip :chip="h"/></td>
+      </tr>
+      </tbody>
+    </table>
+  </template>
 </template>
 
 
