@@ -51,7 +51,7 @@ function splitFindings() {
   lists.value.merge = reviewed;
   const reviewerIds = Map.groupBy(notReviewed, (item: any) => item.user[0]?.id);
   lists.value.origin = Array.from(reviewerIds, ([userId, items]) => {
-    const name = userId == null ? 'No author' : `${items[0].user[0]?.firstname} ${items[0].user[0]?.lastname}`;
+    const name = userId == null ? 'No author' : `${items[0].user[0]?.lastname} ${items[0].user[0]?.firstname}`;
     return {
       id: userId,
       name: name,
@@ -202,28 +202,32 @@ const save = async () => {
 
     <div class="flex flex-column">
       <h2>Origin Lists</h2>
-      <div>
-        <div v-for="(list, i) in lists.origin" :key="list.id" class="originList">
-          <h3>
-            {{ list.name }}
-            <span v-if="list.originalCount">({{list.originalCount - list.items.length}}/{{list.originalCount}})</span>
+      <div class="tabs">
+        <details v-for="(list, i) in lists.origin" :key="list.id" name="originLists" :open="i == 0">
+          <summary>
+            <span class="name">{{ list.name }}</span>
+            <span class="indicator" v-if="list.originalCount">({{list.originalCount - list.items.length}}/{{list.originalCount}})</span>
+          </summary>
+          <section>
             <button @click="moveAll(i)" :disabled="!list.items.length" style="display: inline">Move Remaining</button>
-          </h3>
-          <draggable
-            v-model="lists.origin[i].items"
-            :group="{ name: 'people', put: false }"
-            item-key="id"
-            :sort="false"
-            @start="onDragStart($event, i)"
-            @end="handleDrop"
-          >
-            <template #item="{ element }">
-              <div class="item-row">
-                <FindingCollapsible :finding="element"/>
-              </div>
-            </template>
-          </draggable>
-        </div>
+            <draggable
+              v-if="list.items.length"
+              v-model="lists.origin[i].items"
+              :group="{ name: 'people', put: false }"
+              item-key="id"
+              :sort="false"
+              @start="onDragStart($event, i)"
+              @end="handleDrop"
+            >
+              <template #item="{ element }">
+                <div class="item-row">
+                  <FindingCollapsible :finding="element"/>
+                </div>
+              </template>
+            </draggable>
+            <span v-else>empty</span>
+          </section>
+        </details>
       </div>
     </div>
   </div>
@@ -266,14 +270,82 @@ body:has(#merging) {
   flex: 1;
 }
 
-div.originList {
-  margin-bottom: 1rem;
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  justify-content: flex-start;
 
-  h3 {
-    margin: .5rem;
+  > details {
+    display: contents;
 
-    button {
-      margin: 0 0 0 1rem;
+    > summary {
+      flex: 1;
+      order: 0;
+      padding: .5rem 1rem;
+      cursor: pointer;
+      border: 1px solid var(--color-border-hover);
+      border-bottom: none;
+      border-radius: .5rem .5rem 0 0;
+      margin-right: -1px;
+      height: 2.8rem;
+
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+
+      .name {
+        display: inline-block;
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      .indicator {
+        display: inline-block;
+        padding: .25rem;
+        border-radius: .5rem;
+        font-weight: bold;
+        font-size: .75rem;
+        height: 1.5rem;
+        background-color: var(--color-border);
+      }
+    }
+
+    &[open] {
+      &::details-content {
+        display: contents;
+      }
+
+      > summary {
+        background-color: var(--color-background-mute);
+        z-index: 1;
+        border-bottom: none;
+      }
+    }
+
+    > section {
+      margin-top: -1px;
+      order: 1;
+      padding: 1rem;
+      width: 100%;
+      background-color: var(--color-background-mute);
+      border: 1px solid var(--color-border-hover);
+      height: calc(100% - 2.75rem);
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+
+      > button {
+        width: fit-content;
+        margin-top: .5rem;
+      }
+
+      > div {
+        margin: 0 -.5rem;
+      }
     }
   }
 }
