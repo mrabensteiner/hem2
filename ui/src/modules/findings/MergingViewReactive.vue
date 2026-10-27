@@ -192,7 +192,7 @@ const save = async () => {
                 @dragleave="setMergeTarget(null)"
                 @drop="startMerge(index)"
               >
-                  <FindingCollapsible :finding="element"/>
+                  <FindingCollapsible v-model="lists.merge[index]" :finding="element" :commit="commit"/>
               </div>
             </div>
           </template>

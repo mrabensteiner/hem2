@@ -1,6 +1,8 @@
 import {prisma} from "../../lib/prisma";
 import {projectService} from "./project.service";
-import type {UserWhereInput} from "../../prisma/generated/models/User";
+import type {UserUpdateManyWithoutFindingsNestedInput, UserWhereInput} from "../../prisma/generated/models/User";
+import type {HeuristicUpdateManyWithoutFindingNestedInput} from "../../prisma/generated/models/Heuristic";
+import type {ImageUpdateManyWithoutFindingsNestedInput} from "../../prisma/generated/models/Image";
 
 async function getAll(projectId: string, userId = ""): Promise<any> {
   const user = userId ? { id: userId ?? undefined } : undefined;
@@ -206,6 +208,11 @@ async function updateAll(data: any, projectId: string, user: any) {
           data: finding
         });
       } else {
+        // nothing is selected, so set them to an emtpy array
+        if (f.userIds?.length == 0) (finding.user as UserUpdateManyWithoutFindingsNestedInput) = { set: [] };
+        if (f.heuristicIds?.length == 0) (finding.heuristics as HeuristicUpdateManyWithoutFindingNestedInput) = { set: [] };
+        if (f.imageIds?.length == 0) (finding.images as ImageUpdateManyWithoutFindingsNestedInput) = { set: [] };
+
         return prisma.finding.update({
           where: {
             id: f.id
