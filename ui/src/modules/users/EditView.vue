@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, computed} from 'vue';
+import {onMounted, computed, watch} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
 import {useUser} from "@/modules/users/useUser.ts";
 import IconSave from "@/components/icons/IconSave.vue";
@@ -28,6 +28,17 @@ onMounted(async () => {
   await loadRoles();
   await loadUser(route.params.id as string, isNew.value);
 });
+
+watch(
+  () => [user.value.firstname, user.value.lastname],
+  ([firstname, lastname]) => {
+    if (isNew.value) {
+      firstname = (firstname ?? '')[0] ?? '';
+      lastname = (lastname ?? '')[0] ?? '';
+      user.value.shortname = (firstname + lastname).toUpperCase();
+    }
+  }
+)
 
 async function save() {
   await saveUser(isNew.value);
@@ -73,6 +84,7 @@ const colorSchemes = [
     <FormControl type="text" label="Username" v-model="user.username" required/>
     <FormControl type="text" label="Firstname" v-model="user.firstname"/>
     <FormControl type="text" label="Lastname" v-model="user.lastname"/>
+    <FormControl type="text" label="Short Name (Initials)" v-model="user.shortname" required/>
     <FormControl type="text" label="Email" v-model="user.email" required/>
     <br/>
 

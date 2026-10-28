@@ -51,7 +51,7 @@ function splitFindings() {
   lists.value.merge = reviewed;
   const reviewerIds = Map.groupBy(notReviewed, (item: any) => item.user[0]?.id);
   lists.value.origin = Array.from(reviewerIds, ([userId, items]) => {
-    const name = userId == null ? 'No author' : `${items[0].user[0]?.lastname} ${items[0].user[0]?.firstname}`;
+    const name = userId == null ? 'No author' : `${items[0].user[0]?.shortname}: ${items[0].user[0]?.firstname} ${items[0].user[0]?.lastname}`;
     return {
       id: userId,
       name: name,

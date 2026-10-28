@@ -49,7 +49,7 @@ function save() {
       <thead>
         <tr>
           <th>Title</th>
-          <th class="right" v-for="m in members">{{users.find(u => u.id == m).lastname}}</th>
+          <th class="right" v-for="m in members">{{users.find(u => u.id == m).shortname}}</th>
           <th class="right">Calculated Mean</th>
           <th>Aggregated</th>
         </tr>

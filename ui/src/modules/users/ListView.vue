@@ -16,6 +16,7 @@ const tablehead = [
   { "key": "id", "title": "ID", "hidden": true },
   { "key": "image", "title": "Image", "type": "imagecircle" },
   { "key": "username", "title": "Username", "type": "link", "locked": true },
+  { "key": "shortname", "title": "Short" },
   { "key": "lastname", "title": "Lastname" },
   { "key": "firstname", "title": "Firstname" },
   { "key": "roleTitle", "title": "Role" },

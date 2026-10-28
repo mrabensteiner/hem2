@@ -37,6 +37,7 @@ async function update(data: any) {
       username: data.username,
       firstname: data.firstname,
       lastname: data.lastname,
+      shortname: data.shortname,
       roleId: data.roleId,
       password: data.password,
       colorScheme: data.colorScheme

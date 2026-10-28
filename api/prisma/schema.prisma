@@ -38,6 +38,7 @@ model User {
   email         String          @unique
   firstname     String          @default("")
   lastname      String          @default("")
+  shortname     String          @default("")
   colorScheme   String          @default("system")
   image         Image?
   role          Role            @relation(fields: [roleId], references: [id])

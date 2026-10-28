@@ -43,6 +43,7 @@ async function main() {
         email: "admin@hem.com",
         firstname: "Adam",
         lastname: "Administrator",
+        shortname: "AA",
         roleId: adminrole.id
       },
     }
@@ -55,6 +56,7 @@ async function main() {
         email: "man.ager@hem.com",
         firstname: "Manuel",
         lastname: "Manager",
+        shortname: "MM",
         roleId: managerrole.id
       },
     }
@@ -67,6 +69,7 @@ async function main() {
         email: "johndoe@hem.com",
         firstname: "John",
         lastname: "Doe",
+        shortname: "JD",
         roleId: userrole.id
       },
     }
@@ -79,6 +82,7 @@ async function main() {
         email: "maxmustermann@hem.com",
         firstname: "Max",
         lastname: "Mustermann",
+        shortname: "MMu",
         roleId: userrole.id
       },
     }
@@ -91,6 +95,7 @@ async function main() {
         email: "mariorossi@hem.com",
         firstname: "Mario",
         lastname: "Rossi",
+        shortname: "MR",
         roleId: userrole.id
       },
     }
