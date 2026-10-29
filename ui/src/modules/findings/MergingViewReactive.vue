@@ -7,6 +7,8 @@ import {useFindings} from "@/modules/findings/useFindings.ts";
 import FindingCollapsible from "@/components/FindingCollapsible.vue";
 import MergeModal from "@/components/MergeModal.vue";
 import IconSave from "@/components/icons/IconSave.vue";
+import IconUndo from "@/components/icons/IconUndo.vue";
+import IconRedo from "@/components/icons/IconRedo.vue";
 
 const route = useRoute();
 
@@ -74,6 +76,8 @@ const onDragStart = (e: any, listIndex: NumberOrNull = null) => {
 };
 
 function startMerge(targetItemIndex: number) {
+  setMergeTarget(null);
+
   if (draggedItemIndex === null || (draggedListIndex === null && draggedItemIndex === targetItemIndex)) {
     return;
   }
@@ -122,8 +126,6 @@ function saveMerge() {
 
  lists.value.merge[targetIndex.value as number] = target;
 
-  setMergeTarget(null);
-
   if (draggedListIndex === null) {
     lists.value.merge = lists.value.merge.filter((item: { id: string }) => item.id !== dragged.id);
   } else {
@@ -166,8 +168,8 @@ const save = async () => {
 <template>
   <section class="sticky">
     <h1>Merge Findings</h1>
-    <button @click="undo" :disabled="!canUndo">Undo</button>
-    <button @click="redo" :disabled="!canRedo">Redo</button>
+    <button @click="undo" :disabled="!canUndo"><IconUndo class="icon"/> Undo</button>
+    <button @click="redo" :disabled="!canRedo"><IconRedo class="icon"/> Redo</button>
     <button @click="save" :disabled="!history"><IconSave class="icon"/> Save</button>
   </section>
 
@@ -178,14 +180,19 @@ const save = async () => {
         <draggable
           v-model="lists.merge"
           item-key="id"
+          draggable=".not-editing"
           @start="onDragStart"
           @end="handleDrop"
           :sort="true"
-          group="people"
+          group="findings"
           class="drop-field">
         >
           <template #item="{ element, index }">
-            <div class="item-row">
+            <div :class="{
+                  'item-row': true,
+                  'editing': element.isEditing,
+                  'not-editing': !element.isEditing ?? true
+                }">
               <div
                 :class="{ 'merge-target': mergeTargetId === element.id }"
                 @dragover.prevent="setMergeTarget(element.id)"
@@ -203,17 +210,18 @@ const save = async () => {
     <div class="flex flex-column">
       <h2>Origin Lists</h2>
       <div class="tabs">
+        <p v-if="lists.origin.length == 0">no more unreviewed or unmerged findings</p>
         <details v-for="(list, i) in lists.origin" :key="list.id" name="originLists" :open="i == 0">
-          <summary>
+          <summary :title="list.name">
             <span class="name">{{ list.name }}</span>
             <span class="indicator" v-if="list.originalCount">({{list.originalCount - list.items.length}}/{{list.originalCount}})</span>
           </summary>
           <section>
             <button @click="moveAll(i)" :disabled="!list.items.length" style="display: inline">Move Remaining</button>
+            <span v-if="list.items.length == 0">empty</span>
             <draggable
-              v-if="list.items.length"
               v-model="lists.origin[i].items"
-              :group="{ name: 'people', put: false }"
+              :group="{ name: 'findings', put: false }"
               item-key="id"
               :sort="false"
               @start="onDragStart($event, i)"
@@ -225,7 +233,6 @@ const save = async () => {
                 </div>
               </template>
             </draggable>
-            <span v-else>empty</span>
           </section>
         </details>
       </div>
@@ -242,6 +249,7 @@ body:has(#merging) {
   main {
     height: 90vh;
     overflow: auto;
+    max-width: 100%;
 
     section.sticky {
       top: -2rem;
@@ -266,6 +274,14 @@ body:has(#merging) {
   }
 }
 
+section.sticky {
+  padding: .5rem 2rem;
+}
+
+h2 {
+  margin: 0;
+}
+
 .flex {
   flex: 1;
 }
@@ -285,7 +301,6 @@ body:has(#merging) {
       padding: .5rem 1rem;
       cursor: pointer;
       border: 1px solid var(--color-border-hover);
-      border-bottom: none;
       border-radius: .5rem .5rem 0 0;
       margin-right: -1px;
       height: 2.8rem;
@@ -314,7 +329,11 @@ body:has(#merging) {
       }
     }
 
-    &[open] {
+    &:last-child > summary {
+      margin-right: 0;
+    }
+
+    &:open {
       &::details-content {
         display: contents;
       }
@@ -353,6 +372,10 @@ body:has(#merging) {
 .item-row {
   margin: .5rem;
   cursor: grab;
+
+  &.editing {
+    cursor: inherit;
+  }
 }
 
 .merge-target {
@@ -366,6 +389,7 @@ div:has(> .drop-field) {
 }
 
 .drop-field {
+  position: relative;
   background-color: var(--color-background-mute);
   min-height: 10rem;
   border: 1px solid var(--color-border-hover);

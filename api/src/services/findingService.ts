@@ -19,6 +19,9 @@ async function getAll(projectId: string, userId = ""): Promise<any> {
       images: true,
       mergedFrom: true,
       mergedTo: true,
+    },
+    orderBy: {
+      updatedat: "asc"
     }
   });
 }

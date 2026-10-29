@@ -29,6 +29,7 @@ watch(
   () => isEditing.value,
   (newVal) => {
     if (newVal) {
+      model.value.isEditing = true;
       editedFinding.value = {
         ...model.value,
         userIds: model.value.user?.map((u: any) => u.id),
@@ -36,6 +37,7 @@ watch(
         imageIds: model.value.images?.map((i: any) => i.id),
       };
     } else {
+      delete model.value.isEditing;
       editedFinding.value = {};
     }
   }
@@ -65,36 +67,42 @@ function save() {
       <IconTriangle class="icon"/>
       <input v-if="isEditing" v-model="editedFinding.title"/>
       <span v-else class="title">{{finding.title}}</span>
-
-      <button type="button" v-if="isEditing" @click="save"><IconSave class="icon icon-only"/></button>
+      <img v-if="finding.images.length && !isEditing" :src="'http://localhost:3000/' + finding.images[0]?.path"/>
+      <button type="button" v-if="isEditing" @click="save"><IconSave class="icon"/></button>
       <button v-if="model" type="button" @click="isEditing = !isEditing">
-        <template v-if="isEditing"><IconCancel type="button" class="icon icon-only"/></template>
-        <template v-else><IconEdit type="button" class="icon icon-only"/></template>
+        <template v-if="isEditing"><IconCancel type="button" class="icon"/></template>
+        <template v-else><IconEdit type="button" class="icon"/></template>
       </button>
     </summary>
     <section>
       <ul>
         <li>
+          <IconClock class="icon"/>
+          <TimeAgo :date="finding.updatedat"/>
+        </li>
+        <li>
           <IconUser class="icon"/>
-          <select v-if="isEditing" v-model="editedFinding.userIds" multiple>
-            <option v-for="uip in project.UserInProject" :value="uip.userId">
-              {{uip.user.firstname}} {{uip.user.lastname}}
-            </option>
-          </select>
+          <template v-if="isEditing">
+            Reviewers
+            <select v-if="isEditing" v-model="editedFinding.userIds" multiple>
+              <option v-for="uip in project.UserInProject" :value="uip.userId">
+                {{uip.user.firstname}} {{uip.user.lastname}}
+              </option>
+            </select>
+          </template>
           <template v-else>
             {{ finding.user.map(u => `${u.firstname} ${u.lastname}`).join(", ") }}
             <span v-if="!finding.user?.length">no reviewer</span>
           </template>
         </li>
         <li>
-          <IconClock class="icon"/>
-          <TimeAgo :date="finding.updatedat"/>
-        </li>
-        <li>
           <IconCheck class="icon"/>
-          <select v-if="isEditing" v-model="editedFinding.heuristicIds" multiple>
-            <option v-for="h in project.heuristicset?.heuristics" :value="h.id"><Chip :chip="h"/></option>
-          </select>
+          <template v-if="isEditing">
+            Heuristics
+            <select v-if="isEditing" v-model="editedFinding.heuristicIds" multiple>
+              <option v-for="h in project.heuristicset?.heuristics" :value="h.id"><Chip :chip="h"/></option>
+            </select>
+          </template>
           <template v-else>
             <Chip v-for="h in finding.heuristics" :chip="h"/>
             <span v-if="!finding.heuristics?.length">no heuristic</span>
@@ -114,11 +122,13 @@ function save() {
 
       <label>Description</label>
       <textarea v-if="isEditing" v-model="finding.description"/>
-      <p v-else>{{finding.description}}</p>
+      <p v-else-if="finding.description.length">{{finding.description}}</p>
+      <p v-else>-</p>
 
       <label>Remarks</label>
       <textarea v-if="isEditing" v-model="finding.remarks"/>
-      <p v-else>{{finding.remarks}}</p>
+      <p v-else-if="finding.remarks.length">{{finding.remarks}}</p>
+      <p v-else>-</p>
 
       <Thumbnails :images="finding.images" v-model="editedFinding.imageIds"/>
       <RouterLink :to="{name: 'FindingsDetails', params: {id: finding.id}}" target="_blank">
@@ -139,7 +149,7 @@ details {
   }
 
   summary, section {
-    padding: 1rem;
+    padding: .75rem;
   }
 
   summary {
@@ -152,13 +162,23 @@ details {
       flex: 1;
     }
 
+    > img {
+      height: 2.5rem;
+      width: 3.5rem;
+      object-fit: cover;
+      border: 1px solid var(--color-border);
+      border-radius: .25rem;
+    }
+
     > .icon {
+      cursor: pointer;
       transition: .2s all ease-in-out;
     }
 
     button {
       margin: 0 0 0 .5rem;
-      width: 2.75rem;
+      padding: .25rem;
+      width: 2.5rem;
       text-align: center;
 
       .icon {
@@ -172,7 +192,7 @@ details {
     }
   }
 
-  &[open] > summary > .icon {
+  &:open > summary > .icon {
     rotate: 90deg;
   }
 
@@ -191,7 +211,7 @@ details {
 }
 
 .icon {
-  height: 1em;
+  height: 1rem;
   margin-right: .5em;
   vertical-align: center;
 
