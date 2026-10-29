@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import {ref} from "vue";
 import {RouterLink, useRoute} from "vue-router";
 import {useAuth} from "@/composables/useAuth.ts";
 import {useProjects} from "@/modules/projects/useProjects.ts";
+import IconSidebar from "@/components/icons/IconSidebar.vue";
 import IconAdd from "@/components/icons/IconAdd.vue";
 import IconEdit from "@/components/icons/IconEdit.vue";
 import IconRate from "@/components/icons/IconRate.vue";
@@ -14,9 +16,7 @@ import IconUser from "@/components/icons/IconUser.vue";
 import Chip from "@/components/Chip.vue";
 
 const route = useRoute();
-const { active } = defineProps<{
-  active: boolean;
-}>();
+const active = ref<boolean>(true);
 
 const { user, isAuthenticated, hasPrivilege, logout } = useAuth();
 const { project, prevStatus, nextStatus } = useProjects();
@@ -25,161 +25,209 @@ const { project, prevStatus, nextStatus } = useProjects();
 
 <template>
   <aside class="sidebar" :class="active ? '' : 'hidden'">
-    <details v-if="route.meta.context == 'project' && project.id" class="project" open>
-      <summary>
-        Project:<br/>
-        {{project.title}}
-      </summary>
-      <section>
-        <img v-if="project.logo" :alt="project.logo.title" :src="'http://localhost:3000/'+project.logo.path"/>
-        <ul>
-          <li>
-            <RouterLink :to="'/project/' + project.id">
-              <IconProject class="icon"/>
-              Project Overview
-            </RouterLink>
-          </li>
-          <li v-if="hasPrivilege('manager', project)">
-            <RouterLink :to="'/project/' + project.id + '/edit'">
-              <IconEdit class="icon"/>
-              Edit Project
-            </RouterLink>
-          </li>
-          <li v-if="hasPrivilege('findingsAdd', project)">
-            <RouterLink :to="'/project/' + project.id + '/findings/new'">
-              <IconAdd class="icon"/>
-              New Finding
-            </RouterLink>
-          </li>
-          <li v-if="hasPrivilege('ratingEdit', project)">
-            <RouterLink :to="'/project/' + project.id + '/findings/rate'">
-              <IconRate class="icon"/>
-              Rate
-            </RouterLink>
-          </li>
-          <li>
-            <RouterLink v-if="hasPrivilege('manager', project)" :to="'/project/' + project.id + '/ratings'">
-              <IconTable class="icon"/>
-              Rating Overview
-            </RouterLink>
-          </li>
-          <template v-if="hasPrivilege('manager', project)">
+    <label class="sidebar-toggle" title="Toggle Sidebar" v-if="isAuthenticated" >
+      <IconSidebar/>
+      <input type="checkbox" v-model="active"/>
+    </label>
+    <nav>
+      <details v-if="route.meta.context == 'project' && project.id" class="project" open>
+        <summary>
+          Project:<br/>
+          {{project.title}}
+        </summary>
+        <section>
+          <img v-if="project.logo" :alt="project.logo.title" :src="'http://localhost:3000/'+project.logo.path"/>
+          <ul>
             <li>
-              <RouterLink :to="'/project/' + project.id + '/findings/merge'">
-                <IconMerge class="icon"/>
-                Merge (ListMerger)
+              <RouterLink :to="'/project/' + project.id">
+                <IconProject class="icon"/>
+                Project Overview
+              </RouterLink>
+            </li>
+            <li v-if="hasPrivilege('manager', project)">
+              <RouterLink :to="'/project/' + project.id + '/edit'">
+                <IconEdit class="icon"/>
+                Edit Project
+              </RouterLink>
+            </li>
+            <li v-if="hasPrivilege('findingsAdd', project)">
+              <RouterLink :to="'/project/' + project.id + '/findings/new'">
+                <IconAdd class="icon"/>
+                New Finding
+              </RouterLink>
+            </li>
+            <li v-if="hasPrivilege('ratingEdit', project)">
+              <RouterLink :to="'/project/' + project.id + '/findings/rate'">
+                <IconRate class="icon"/>
+                Rate
               </RouterLink>
             </li>
             <li>
-              <RouterLink :to="'/project/' + project.id + '/findings/mergev2'">
-                <IconMerge class="icon"/>
-                Merge (Reactive)
+              <RouterLink v-if="hasPrivilege('manager', project)" :to="'/project/' + project.id + '/ratings'">
+                <IconTable class="icon"/>
+                Rating Overview
               </RouterLink>
             </li>
-          </template>
-          <li>
-            Status: <Chip :chip="project.status"/>
-          </li>
-          <li  v-if="hasPrivilege('manager', project)">
-            <button @click="prevStatus()" :disabled="!project.status.prev">
-              <<
-            </button>
-            <button @click="nextStatus()" :disabled="!project.status.next">
-              Next Project Status &nbsp; >>
-            </button>
-          </li>
-        </ul>
-      </section>
-    </details>
-    <details>
-      <summary>System Settings</summary>
-      <section>
-        <ul>
-          <li v-if="hasPrivilege('projectViewAll') || hasPrivilege('projectEditAll')">
-            <RouterLink to="/projects">
-              <IconSettings class="icon"/>
-              Projects
-            </RouterLink>
-          </li>
-          <li v-if="hasPrivilege('projectAdd') && !hasPrivilege('projectViewAll') && !hasPrivilege('projectEditAll')">
-            <RouterLink to="/project/new">
-              <IconAdd class="icon"/>
-              Add Project
-            </RouterLink>
-          </li>
-          <li v-if="hasPrivilege('userEdit')">
-            <RouterLink to="/users">
-              <IconSettings class="icon"/>
-              Users
-            </RouterLink>
-          </li>
-          <li v-if="hasPrivilege('userAdd') && !hasPrivilege('userEdit')">
-            <RouterLink to="/users">
-              <IconAdd class="icon"/>
-              New User
-            </RouterLink>
-          </li>
-          <li v-if="hasPrivilege('roleEdit')">
-            <RouterLink to="/roles">
-              <IconSettings class="icon"/>
-              Roles
-            </RouterLink>
-          </li>
-          <li v-if="hasPrivilege('statusEdit')">
-            <RouterLink to="/statuses">
-              <IconSettings class="icon"/>
-              Statuses
-            </RouterLink>
-          </li>
-          <li v-if="hasPrivilege('heuristicSetEditOwn') | hasPrivilege('heuristicSetEditAll')">
-            <RouterLink to="/heuristics">
-              <IconSettings class="icon"/>
-              Heuristics
-            </RouterLink>
-          </li>
-          <li v-if="hasPrivilege('ratingSetEditOwn') || hasPrivilege('ratingSetEditAll')">
-            <RouterLink to="/ratings">
-              <IconSettings class="icon"/>
-              Ratings
-            </RouterLink>
-          </li>
-        </ul>
-      </section>
-    </details>
-    <details v-if="isAuthenticated && user" :open="route.meta.context == undefined">
-      <summary>
-        <img v-if="user.image" :alt="user.image.title" :src="'http://localhost:3000/'+user.image.path"/>
-        {{ user.firstname }} {{ user.lastname }}
-      </summary>
-      <section>
-        <ul>
-          <li>
-            <RouterLink :to="'/users/' + user.id">
-              <IconUser class="icon"/>
-              My Account
-            </RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/projects">
-              <IconProject class="icon"/>
-              My Projects
-            </RouterLink>
-          </li>
-          <li>
-            <a @click="logout">
-              <IconLogout class="icon" />
-              Logout
-            </a>
-          </li>
-        </ul>
-      </section>
-    </details>
+            <template v-if="hasPrivilege('manager', project)">
+              <li>
+                <RouterLink :to="'/project/' + project.id + '/findings/merge'">
+                  <IconMerge class="icon"/>
+                  Merge (ListMerger)
+                </RouterLink>
+              </li>
+              <li>
+                <RouterLink :to="'/project/' + project.id + '/findings/mergev2'">
+                  <IconMerge class="icon"/>
+                  Merge (Reactive)
+                </RouterLink>
+              </li>
+            </template>
+            <li>
+              Status: <Chip :chip="project.status"/>
+            </li>
+            <li  v-if="hasPrivilege('manager', project)">
+              <button @click="prevStatus()" :disabled="!project.status.prev">
+                <<
+              </button>
+              <button @click="nextStatus()" :disabled="!project.status.next">
+                Next Project Status &nbsp; >>
+              </button>
+            </li>
+          </ul>
+        </section>
+      </details>
+      <details>
+        <summary>System Settings</summary>
+        <section>
+          <ul>
+            <li v-if="hasPrivilege('projectViewAll') || hasPrivilege('projectEditAll')">
+              <RouterLink to="/projects">
+                <IconSettings class="icon"/>
+                Projects
+              </RouterLink>
+            </li>
+            <li v-if="hasPrivilege('projectAdd') && !hasPrivilege('projectViewAll') && !hasPrivilege('projectEditAll')">
+              <RouterLink to="/project/new">
+                <IconAdd class="icon"/>
+                Add Project
+              </RouterLink>
+            </li>
+            <li v-if="hasPrivilege('userEdit')">
+              <RouterLink to="/users">
+                <IconSettings class="icon"/>
+                Users
+              </RouterLink>
+            </li>
+            <li v-if="hasPrivilege('userAdd') && !hasPrivilege('userEdit')">
+              <RouterLink to="/users">
+                <IconAdd class="icon"/>
+                New User
+              </RouterLink>
+            </li>
+            <li v-if="hasPrivilege('roleEdit')">
+              <RouterLink to="/roles">
+                <IconSettings class="icon"/>
+                Roles
+              </RouterLink>
+            </li>
+            <li v-if="hasPrivilege('statusEdit')">
+              <RouterLink to="/statuses">
+                <IconSettings class="icon"/>
+                Statuses
+              </RouterLink>
+            </li>
+            <li v-if="hasPrivilege('heuristicSetEditOwn') | hasPrivilege('heuristicSetEditAll')">
+              <RouterLink to="/heuristics">
+                <IconSettings class="icon"/>
+                Heuristics
+              </RouterLink>
+            </li>
+            <li v-if="hasPrivilege('ratingSetEditOwn') || hasPrivilege('ratingSetEditAll')">
+              <RouterLink to="/ratings">
+                <IconSettings class="icon"/>
+                Ratings
+              </RouterLink>
+            </li>
+          </ul>
+        </section>
+      </details>
+      <details v-if="isAuthenticated && user" :open="route.meta.context == undefined">
+        <summary>
+          <img v-if="user.image" :alt="user.image.title" :src="'http://localhost:3000/'+user.image.path"/>
+          {{ user.firstname }} {{ user.lastname }}
+        </summary>
+        <section>
+          <ul>
+            <li>
+              <RouterLink :to="'/users/' + user.id">
+                <IconUser class="icon"/>
+                My Account
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink to="/projects">
+                <IconProject class="icon"/>
+                My Projects
+              </RouterLink>
+            </li>
+            <li>
+              <a @click="logout">
+                <IconLogout class="icon" />
+                Logout
+              </a>
+            </li>
+          </ul>
+        </section>
+      </details>
+    </nav>
   </aside>
 </template>
 
 
 <style scoped>
+label.sidebar-toggle {
+  height: 2rem;
+  width: 2rem;
+  padding: .5rem;
+  border-radius: 0 1rem 1rem 0;
+
+  background-color: var(--color-background-mute);
+  font-size: .5rem;
+  border: 1px solid var(--color-border);
+
+  position: absolute;
+  top: 2rem;
+  left: calc(var(--sidebar-width) - .5rem);
+  z-index: 1;
+
+  transition: .2s all ease;
+
+  &:hover {
+    cursor: pointer;
+    color: var(--color-text);
+    background-color: var(--color-background);
+  }
+
+  &:has(input:checked) {
+    left: calc(var(--sidebar-width) - 1rem);
+    border-radius: 1rem 1rem;
+    transform: rotate(-180deg);
+  }
+
+  input {
+    display: none;
+  }
+}
+
 aside {
+  nav {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    overflow: auto;
+  }
+
   img {
     display: flex;
     max-height: 4rem;
@@ -263,7 +311,7 @@ details {
     }
   }
 
-  &[open] summary {
+  &:open summary {
     margin-bottom: 1rem;
   }
 }
