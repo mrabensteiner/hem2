@@ -4,6 +4,7 @@
 @import './forms.css';
 @import './layout.css';
 @import './title.css';
+@import './table.css';
 
 body {
   background-color: var(--color-background-soft);

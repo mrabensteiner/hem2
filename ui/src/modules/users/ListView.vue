@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import {onMounted} from 'vue';
 import {useUser} from './useUser.ts';
-import Table from "@/components/Table.vue";
+import DynamicTable from "@/components/DynamicTable.vue";
+import IconAdd from "@/components/icons/IconAdd.vue";
 
 const {
   users,
@@ -26,6 +27,6 @@ const tablehead = [
 
 <template>
   <h1>Users</h1>
-  <Table :head="tablehead" :data="users" sort="username" dir="asc"/>
-  <RouterLink :to="{ path: '/users/new/edit' }" class="button">New User</RouterLink>
+  <DynamicTable :head="tablehead" :data="users" sort="username" dir="asc"/>
+  <RouterLink :to="{ path: '/users/new/edit' }" class="button"><IconAdd class="icon"/> New User</RouterLink>
 </template>

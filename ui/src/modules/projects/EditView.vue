@@ -5,6 +5,7 @@ import {useProjects} from "@/modules/projects/useProjects.ts";
 import IconSave from "@/components/icons/IconSave.vue";
 import ChipSearch from "@/components/ChipSearch.vue";
 import {useEdit} from "@/composables/useEdit.ts";
+import IconCancel from "@/components/icons/IconCancel.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -57,7 +58,7 @@ const { edited } = useEdit();
   <form @submit.prevent="save" @input="edited = true">
     <section class="sticky">
       <h1>Edit Project</h1>
-      <RouterLink class="button" :to="{ name: 'ProjectDetails', params: {pid: route.params.pid, id: route.params.id} }">Cancel</RouterLink>
+      <RouterLink class="button" :to="{ name: 'ProjectDetails', params: {pid: route.params.pid, id: route.params.id} }"><IconCancel class="icon"/> Cancel</RouterLink>
       <button :disabled="!edited"><IconSave class="icon"/> Save</button>
     </section>
 

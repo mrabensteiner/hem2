@@ -59,7 +59,7 @@ const { project, prevStatus, nextStatus } = useProjects();
             <li v-if="hasPrivilege('ratingEdit', project)">
               <RouterLink :to="'/project/' + project.id + '/findings/rate'">
                 <IconRate class="icon"/>
-                Rate
+                Rate Findings
               </RouterLink>
             </li>
             <li>

@@ -175,7 +175,7 @@ const save = async () => {
 
   <div class="flex flex-half" id="merging">
     <div class="flex flex-column">
-      <h2>Merged <span v-if="lists.merge.length">({{lists.merge.length}})</span></h2>
+      <h2>Reviewed Findings <span v-if="lists.merge.length">({{lists.merge.length}})</span></h2>
       <div class="flex">
         <draggable
           v-model="lists.merge"

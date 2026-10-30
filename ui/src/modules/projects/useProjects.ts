@@ -30,7 +30,7 @@ export function useProjects() {
   function prepareProjectsForTable(data: any[]) {
     return data.map((project: any) => ({
       ...project,
-      deactivated: !project.status.projectViewDetails && !hasPrivilege.value("projectViewAll"),
+      deactivated: !project.status.projectViewDetails && !hasPrivilege.value("projectViewAll", project),
       link: `/project/${project.id}`,
       manager: project.UserInProject
         ? project.UserInProject.filter((uip: any) => uip.projectRole === "MANAGER").map((uip: any) => `${uip.user.firstname} ${uip.user.lastname}`)

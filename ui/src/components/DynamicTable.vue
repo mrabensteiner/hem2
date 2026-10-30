@@ -324,44 +324,6 @@ watch(
   margin-bottom: 1rem;
 }
 
-table {
-  min-width: 100%;
-  overflow: hidden;
-  border-collapse: collapse;
-  table-layout: fixed;
-
-  td:has(img) {
-    text-align: center;
-  }
-
-  img {
-    height: 3em;
-  }
-}
-
-thead {
-  border-top: 1px solid dimgrey;
-  border-bottom: 1px solid dimgrey;
-  color: dimgrey;
-  font-size: 1rem;
-
-  th {
-    white-space: nowrap;
-    text-align: left;
-    padding-left: .5rem;
-  }
-}
-
-tbody {
-  tr:nth-child(odd) {
-    background-color: var(--color-background-mute);
-  }
-  td {
-    padding: .5rem;
-  }
-
-}
-
 .hidden {
   display: none;
 }

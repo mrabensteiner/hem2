@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
+import {onMounted, computed, ref} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useProjects } from './useProjects.ts';
 import {useLocalStorage} from "@vueuse/core";
-import Table from "@/components/Table.vue";
+import DynamicTable from "@/components/DynamicTable.vue";
 import Chip from "@/components/Chip.vue";
 import FindingCard from "@/components/FindingCard.vue";
 import IconTable from "@/components/icons/IconTable.vue";
@@ -20,6 +20,8 @@ const route = useRoute();
 const router = useRouter();
 
 const isNewProject = computed(() => route.params.id === 'new');
+const managers = ref<any[]>([]);
+const reviewers = ref<any[]>([]);
 
 const {
   user
@@ -38,13 +40,16 @@ const {
   pushToast
 } = useToast()
 
-onMounted(() => {
-  loadProject(route.params.id as string, isNewProject.value).then(() => {
+onMounted(async () => {
+  await loadProject(route.params.id as string, isNewProject.value).then(() => {
     if (!project.value.id || !checkProjectPrivilege(route.meta.requiredProjectPrivilege as string)) {
       router.push({ name: "ProjectsList" });
       pushToast("Access denied.", "error")
     }
   });
+  const uipIds: any[] = project.value.UserInProject;
+  managers.value = uipIds.filter(uip => uip.projectRole === 'MANAGER').map(uip => uip.user);
+  reviewers.value = uipIds.filter(uip => uip.projectRole === 'MEMBER').map(uip => uip.user);
 });
 
 const findingsTableHead = [
@@ -72,7 +77,7 @@ const ratingStatistic = computed(() => {
     let rating = finding.rating;
 
     if (!rating) {
-      rating = {title: "Not rated", color: "#aaa"};
+      rating = {title: "Not rated", color: "#aaaaaa"};
     }
 
     total += 1;
@@ -138,7 +143,7 @@ const heuristicStatistic = computed(() => {
   return f;
 })
 
-enum viewType {TABLE, CARDS};
+enum viewType {TABLE, CARDS}
 const view = useLocalStorage("view", viewType.TABLE)
 </script>
 
@@ -156,17 +161,18 @@ const view = useLocalStorage("view", viewType.TABLE)
       <label>Status</label><br/>
       <Chip :chip="project.status" /><br/>
 
-      <label>Manager(s)</label>
+      <label v-if="managers.length > 1">Managers</label>
+      <label v-else>Manager</label>
       <ul class="userlist">
-        <li v-for="uip in project.UserInProject?.filter((uip: any) => uip.projectRole === 'MANAGER')">
-          <RouterLink :to="`/users/${uip.user.id}`">{{uip.user.firstname}} {{uip.user.lastname}}</RouterLink>
+        <li v-for="u in managers">
+          <RouterLink :to="`/users/${u.id}`">{{u.firstname}} {{u.lastname}}</RouterLink>
         </li>
       </ul>
 
       <label>Reviewers</label>
       <ul class="userlist">
-        <li v-for="uip in project.UserInProject?.filter((uip: any) => uip.projectRole === 'MEMBER')">
-          <RouterLink :to="`/users/${uip.user.id}`">{{uip.user.firstname}} {{uip.user.lastname}}</RouterLink>
+        <li v-for="u in reviewers">
+          <RouterLink :to="`/users/${u.id}`">{{u.firstname}} {{u.lastname}}</RouterLink>
         </li>
       </ul>
     </div>
@@ -188,7 +194,7 @@ const view = useLocalStorage("view", viewType.TABLE)
     <FindingCard v-for="f in findingsReviewed" :finding="f" />
   </div>
 
-  <Table v-else :head="findingsTableHead" :data="findingsReviewed" sort="updatedat" dir="asc" />
+  <DynamicTable v-else :head="findingsTableHead" :data="findingsReviewed" sort="updatedat" dir="asc" />
 
 
   <h2>My Findings ({{findingsPersonal.length}})
@@ -202,13 +208,10 @@ const view = useLocalStorage("view", viewType.TABLE)
     <FindingCard v-for="f in findingsPersonal" :finding="f" />
   </div>
 
-  <Table v-else :head="findingsTableHead" :data="findingsPersonal" sort="updatedat" dir="asc" />
+  <DynamicTable v-else :head="findingsTableHead" :data="findingsPersonal" sort="updatedat" dir="asc" />
 
 
   <h2>All Findings ({{findings.length}})
-    <abbr class="info" v-if="project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, Findings of other Reviewers are hidden for reviewers.">i</abbr>
-    <abbr class="info" v-if="!project.status?.findingsViewOwn && !project.status?.findingsViewAll" title="In this Project Status, all Findings are hidden for reviewers.">i</abbr>
-
     <div class="view-toggle animation" v-if="findings || project.status?.findingsViewOwn || project.status?.findingsViewAll">
       <label title="Table View"><input type="radio" id="view" v-model="view" :value="viewType.TABLE"/><IconTable/></label>
       <label title="Cards View"><input type="radio" id="aview" v-model="view" :value="viewType.CARDS"/><IconCards/></label>
@@ -219,7 +222,7 @@ const view = useLocalStorage("view", viewType.TABLE)
     <FindingCard v-for="f in findings" :finding="f" />
   </div>
 
-  <Table v-else :head="findingsTableHead" :data="findings" sort="updatedat" dir="asc" />
+  <DynamicTable v-else :head="findingsTableHead" :data="findings" sort="updatedat" dir="asc" />
 
   <div v-if="project.status">
     <h3>Current Project Status Privileges ({{project.status?.title}})</h3>
@@ -236,7 +239,7 @@ const view = useLocalStorage("view", viewType.TABLE)
 
   <div>
     <RouterLink :to="`/project/${project.id}/findings/new`" class="button"><IconAdd class="icon"/> New Finding</RouterLink>
-    <RouterLink :to="`/project/${project.id}/findings/rate`" class="button"><IconRate class="icon"/> Rate</RouterLink>
+    <RouterLink :to="`/project/${project.id}/findings/rate`" class="button"><IconRate class="icon"/> Rate Findings</RouterLink>
     <RouterLink :to="`/project/${project.id}/ratings`" class="button"><IconTable class="icon"/> Rating Overview</RouterLink>
     <RouterLink :to="`/project/${project.id}/findings/merge`" class="button"><IconMerge class="icon"/> Merge Findings</RouterLink>
     <button role="button" @click="exportJson">Export JSON</button>
@@ -245,7 +248,7 @@ const view = useLocalStorage("view", viewType.TABLE)
 
   <h2>Rating Statistics</h2>
   <div>
-    <h3>Authors</h3>
+    <h3>Reviewers</h3>
     <SvgPieChart v-if="userStatistic.length" style="max-height: 12rem;" :data="userStatistic"/>
     <span v-else>no data</span>
 
@@ -281,18 +284,6 @@ h1 img {
 
 .meta {
   gap: 1rem;
-}
-
-.info {
-  color: var(--app-primary);
-  cursor: help;
-  height: 2.5rem;
-  width: 2.5rem;
-  display: inline-block;
-  border: 2px solid var(--app-primary);
-  text-align: center;
-  border-radius: 50%;
-  margin-right: 0.25em;
 }
 
 .row {

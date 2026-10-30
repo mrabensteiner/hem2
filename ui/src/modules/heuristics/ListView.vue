@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useHeuristic } from './useHeuristic.ts';
-import Table from "@/components/Table.vue";
+import DynamicTable from "@/components/DynamicTable.vue";
 
 const { heuristicSets, loadHeuristicSets } = useHeuristic();
 
@@ -18,6 +18,6 @@ const tablehead = [
 
 <template>
   <h1>Heuristic Sets</h1>
-  <Table :head="tablehead" :data="heuristicSets" sort="title" />
+  <DynamicTable :head="tablehead" :data="heuristicSets" sort="title" />
   <RouterLink to="/heuristics/new" class="button">New Set</RouterLink>
 </template>

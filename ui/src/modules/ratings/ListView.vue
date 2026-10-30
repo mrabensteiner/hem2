@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useRating } from './useRating.ts';
-import Table from "@/components/Table.vue";
+import DynamicTable from "@/components/DynamicTable.vue";
+import IconAdd from "@/components/icons/IconAdd.vue";
 
 const { ratingSets, loadRatingSets } = useRating();
 
@@ -18,6 +19,6 @@ const tablehead = [
 
 <template>
   <h1>Rating Sets</h1>
-  <Table :head="tablehead" :data="ratingSets" sort="title" />
-  <RouterLink to="/ratings/new" class="button">New Set</RouterLink>
+  <DynamicTable :head="tablehead" :data="ratingSets" sort="title" />
+  <RouterLink to="/ratings/new" class="button"><IconAdd class="icon"/> New Set</RouterLink>
 </template>

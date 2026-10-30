@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useProjects } from './useProjects.ts';
-import Table from "@/components/Table.vue";
+import DynamicTable from "@/components/DynamicTable.vue";
+import IconAdd from "@/components/icons/IconAdd.vue";
 
 const { projects, loadProjects } = useProjects();
 
@@ -23,6 +24,6 @@ const tablehead = [
 
 <template>
   <h1>Projects</h1>
-  <Table :head="tablehead" :data="projects" sort="updatedat" />
-  <RouterLink to="/project/new" class="button">New Project</RouterLink>
+  <DynamicTable :head="tablehead" :data="projects" sort="updatedat" />
+  <RouterLink to="/project/new" class="button"><IconAdd class="icon"/> New Project</RouterLink>
 </template>

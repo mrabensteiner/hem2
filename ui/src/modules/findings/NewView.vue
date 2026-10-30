@@ -4,6 +4,8 @@ import { useFindings } from "@/modules/findings/useFindings.ts";
 import {useRoute, useRouter} from "vue-router";
 import Chip from "@/components/Chip.vue";
 import {useAuth} from "@/composables/useAuth.ts";
+import IconSave from "@/components/icons/IconSave.vue";
+import IconAdd from "@/components/icons/IconAdd.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -41,8 +43,8 @@ async function save(reload: boolean = false) {
       <RouterLink :to="{ path: '/project/' + route.params.pid}">Project: {{finding.project?.title}}</RouterLink>
       <h1>New Finding</h1>
     </div>
-    <button>Save</button>
-    <button role="button" @click="save(true)">New Finding</button>
+    <button><IconSave class="icon"/> Save</button>
+    <button role="button" @click="save(true)"><IconAdd class="icon"/> Save and Next</button>
   </section>
     <div>
       <input style="font-size: 2rem" type="text" placeholder="Title" v-model="finding.title" />
@@ -66,7 +68,7 @@ async function save(reload: boolean = false) {
       </select>
     </div>
     <div v-if="projectUsers.length && hasPrivilege('manager', finding?.project)">
-      <label>Authors</label><br/>
+      <label>Reviewers</label><br/>
       <select v-model="finding.user" multiple>
         <option v-for="u in projectUsers" :key="u.id" type="checkbox" name="authors" :value="u.id" >
           {{u.firstname}} {{u.lastname}}</option>

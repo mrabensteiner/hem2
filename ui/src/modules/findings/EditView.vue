@@ -6,6 +6,7 @@ import Chip from "@/components/Chip.vue";
 import IconSave from "@/components/icons/IconSave.vue";
 import {useEdit} from "@/composables/useEdit.ts";
 import {useAuth} from "@/composables/useAuth.ts";
+import IconCancel from "@/components/icons/IconCancel.vue";
 
 const route = useRoute();
 
@@ -58,7 +59,7 @@ const { edited } = useEdit();
         <RouterLink :to="{ path: '/project/' + route.params.pid}">Project: {{finding.project?.title}}</RouterLink>
         <h1>Edit Finding: {{ finding.title }}</h1>
       </div>
-      <RouterLink class="button" :to="{ name: 'FindingsDetails', params: {pid: route.params.pid, id: route.params.id} }">Cancel</RouterLink>
+      <RouterLink class="button" :to="{ name: 'FindingsDetails', params: {pid: route.params.pid, id: route.params.id} }"><IconCancel class="icon"/> Cancel</RouterLink>
       <button :disabled="!edited"><IconSave class="icon"/> Save</button>
     </section>
     <div>

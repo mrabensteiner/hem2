@@ -56,7 +56,11 @@ watch(
       <span>{{finding.user?.map(u => [u.firstname, u.lastname].join(" ")).join(", ")}}</span>
     </div>
     <div>
-      <label>Heuristics(s):&nbsp;</label>
+      <label>
+        <template v-if="finding.heuristics?.length > 1">Heuristic:</template>
+        <template v-else>Heuristics:</template>
+        &nbsp;
+      </label>
       <template v-for="h in finding.heuristics" :key="h.id">
         <Chip :chip="h" />
       </template>
@@ -111,7 +115,7 @@ watch(
   </div>
   </div>
 
-  <RouterLink class="button" v-if="hasPrivilege('ratingEdit', finding.project)" :to="{ name: 'FindingsRate', params: {id: route.params.id, return: 'FindingsView'} }"><IconRate class="icon"/> Rate</RouterLink>
+  <RouterLink class="button" v-if="hasPrivilege('ratingEdit', finding.project)" :to="{ name: 'FindingsRate', params: {id: route.params.id, return: 'FindingsView'} }"><IconRate class="icon"/> Rate Findings</RouterLink>
 </template>
 
 <style scoped>
