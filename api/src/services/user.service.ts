@@ -16,7 +16,12 @@ async function getById(id: string) {
     where: { id },
     include: {
       role: {
-        select: {title: true}
+        select: {
+          title: true,
+          canBeEditedFrom: {
+            select: {id: true}
+          }
+        }
       },
       image: true
     }

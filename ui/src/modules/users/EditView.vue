@@ -6,11 +6,21 @@ import IconSave from "@/components/icons/IconSave.vue";
 import {useEdit} from "@/composables/useEdit.ts";
 import {useRoles} from "@/modules/roles/useRoles.ts";
 import FormControl from "@/components/FormControl.vue";
+import {useAuth} from "@/composables/useAuth.ts";
+import {useToast} from "@/composables/useToast.ts";
 
 const route = useRoute();
 const router = useRouter();
 
 const isNew = computed(() => route.params.id === 'new');
+
+const {
+  user: currentUser
+} = useAuth();
+
+const {
+  pushToast
+} = useToast();
 
 const {
   roles,
@@ -27,6 +37,15 @@ const {
 onMounted(async () => {
   await loadRoles();
   await loadUser(route.params.id as string, isNew.value);
+
+  if (!currentUser.value.role.userEditAll) {
+    if (user.value.role && !user.value.role.canBeEditedFrom.find((r: any) => r.id === currentUser.value.role.id)) {
+      edited.value = false;
+      pushToast("User cannot be edited", "error")
+      router.go(-1);
+    }
+    roles.value = roles.value.filter((r: any) => r.canBeEditedFrom.map((er: any) => er.id).includes(currentUser.value.role.id));
+  }
 });
 
 watch(

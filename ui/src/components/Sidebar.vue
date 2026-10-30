@@ -112,16 +112,10 @@ const { project, prevStatus, nextStatus } = useProjects();
                 Add Project
               </RouterLink>
             </li>
-            <li v-if="hasPrivilege('userEdit')">
+            <li v-if="hasPrivilege('userAdd') || hasPrivilege('userEditAll')">
               <RouterLink to="/users">
                 <IconSettings class="icon"/>
                 Users
-              </RouterLink>
-            </li>
-            <li v-if="hasPrivilege('userAdd') && !hasPrivilege('userEdit')">
-              <RouterLink to="/users">
-                <IconAdd class="icon"/>
-                New User
               </RouterLink>
             </li>
             <li v-if="hasPrivilege('roleEdit')">
@@ -164,7 +158,7 @@ const { project, prevStatus, nextStatus } = useProjects();
                 My Account
               </RouterLink>
             </li>
-            <li>
+            <li v-if="!hasPrivilege('projectHidePersonal')">
               <RouterLink to="/projects">
                 <IconProject class="icon"/>
                 My Projects

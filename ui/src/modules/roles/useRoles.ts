@@ -16,6 +16,10 @@ export function useRoles() {
       if (response.success) pushToast(response.success, "success");
       if (response.error) pushToast(response.error, "error");
       roles.value = response.data;
+      roles.value = roles.value.map((r: any) => ({
+        ...r,
+        userEditRoleIds: r.userEditRoles.map((er: any) => er.id)
+      }));
     } catch (err: any) {
       pushToast(err.message, "error");
     } finally {
@@ -31,6 +35,10 @@ export function useRoles() {
       if (response.success) pushToast(response.success, "success");
       if (response.error) pushToast(response.error, "error");
       roles.value = response.data ?? [];
+      roles.value = roles.value.map((r: any) => ({
+        ...r,
+        userEditRoleIds: r.userEditRoles.map((er: any) => er.id)
+      }));
     } catch (err: any) {
       pushToast(err.message, "error");
       throw err;

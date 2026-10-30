@@ -29,7 +29,7 @@ export default [
     meta: {
       title: 'User',
       requiresAuth: true,
-      requiredPrivilege: 'userEdit'
+      //requiredPrivilege: 'userEdit'
     }
   }
 ];

@@ -36,51 +36,61 @@ const { edited } = useEdit();
   </p>
 
   <form @submit.prevent="save" @input="edited = true">
-    <table class="table">
-      <thead>
-        <tr>
-          <td rowspan="2">Title</td>
-          <td colspan="2">User</td>
-          <td colspan="3">Project</td>
-          <td colspan="2">Heuristic Sets</td>
-          <td colspan="2">Rating Sets</td>
-          <td>Statuses</td>
-          <td>Roles</td>
-          <td rowspan="2">Remove</td>
-        </tr>
-        <tr>
-          <td>Add</td>
-          <td>Edit All</td>
-          <td>Add</td>
-          <td>View All</td>
-          <td>Edit All</td>
-          <td>Add + Edit All</td>
-          <td>Add + Edit Own</td>
-          <td>Add + Edit All</td>
-          <td>Add + Edit Own</td>
-          <td>Add + Edit</td>
-          <td>Add + Edit</td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="role in roles" :key="role.id">
-          <td><input v-model="role.title"/></td>
-          <td><input type="checkbox" v-model="role.userAdd" title="Add Users"></td>
-          <td><input type="checkbox" v-model="role.userEdit"></td>
-          <td><input type="checkbox" v-model="role.projectAdd"></td>
-          <td><input type="checkbox" v-model="role.projectViewAll"></td>
-          <td><input type="checkbox" v-model="role.projectEditAll"></td>
-          <td><input type="checkbox" v-model="role.heuristicSetEditAll"></td>
-          <td><input type="checkbox" v-model="role.heuristicSetEditOwn"></td>
-          <td><input type="checkbox" v-model="role.ratingSetEditAll"></td>
-          <td><input type="checkbox" v-model="role.ratingSetEditOwn"></td>
-          <td><input type="checkbox" v-model="role.statusEdit"></td>
-          <td><input type="checkbox" v-model="role.roleEdit"></td>
-          <td>
-            <button type="button" @click="removeRole(role.id)"><IconRemove class="icon"/> Remove</button></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <td rowspan="2">Title</td>
+            <td colspan="3">User</td>
+            <td colspan="4">Project</td>
+            <td colspan="2">Heuristic Sets</td>
+            <td colspan="2">Rating Sets</td>
+            <td>Statuses</td>
+            <td>Roles</td>
+            <td rowspan="2">Remove</td>
+          </tr>
+          <tr>
+            <td>Add</td>
+            <td>Roles to Add</td>
+            <td>Edit All</td>
+            <td>Add</td>
+            <td>View All</td>
+            <td>Edit All</td>
+            <td>Hide Personal</td>
+            <td>Add + Edit All</td>
+            <td>Add + Edit Own</td>
+            <td>Add + Edit All</td>
+            <td>Add + Edit Own</td>
+            <td>Add + Edit</td>
+            <td>Add + Edit</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="role in roles" :key="role.id">
+            <td><input v-model="role.title"/></td>
+            <td><input type="checkbox" v-model="role.userAdd" title="Add Users"></td>
+            <td>
+              <select v-model="role.userEditRoleIds" multiple :disabled="!role.userAdd || role.userEditAll">
+                <option v-for="ri in roles" :value="ri.id">{{ri.title}}</option>
+              </select>
+            </td>
+            <td><input type="checkbox" v-model="role.userEditAll"></td>
+            <td><input type="checkbox" v-model="role.projectAdd"></td>
+            <td><input type="checkbox" v-model="role.projectViewAll"></td>
+            <td><input type="checkbox" v-model="role.projectEditAll"></td>
+            <td><input type="checkbox" v-model="role.projectHidePersonal"></td>
+            <td><input type="checkbox" v-model="role.heuristicSetEditAll"></td>
+            <td><input type="checkbox" v-model="role.heuristicSetEditOwn"></td>
+            <td><input type="checkbox" v-model="role.ratingSetEditAll"></td>
+            <td><input type="checkbox" v-model="role.ratingSetEditOwn"></td>
+            <td><input type="checkbox" v-model="role.statusEdit"></td>
+            <td><input type="checkbox" v-model="role.roleEdit"></td>
+            <td>
+              <button type="button" @click="removeRole(role.id)"><IconRemove class="icon icon-only"/></button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <button type="button" @click="addRole"><IconAdd class="icon"/> Add Role</button>
     <button :disabled="!edited"><IconSave class="icon"/> Save</button>
   </form>
@@ -89,7 +99,6 @@ const { edited } = useEdit();
 
 <style scoped>
 table {
-  width: 100%;
   border-collapse: collapse;
   margin-top: 2rem;
 
@@ -100,6 +109,7 @@ table {
   }
 
   td {
+    min-width: 2.5rem;
     padding: .2rem;
     border-width: 0 1px;
     border-style: solid;
@@ -117,15 +127,21 @@ table {
     tr:first-child td {
       font-weight: bold;
     }
+
+    tr:nth-child(2) {
+      font-size: .75rem;
+    }
+  }
+
+  select {
+    min-width: 9rem;
+    min-height: 0;
+    padding: 0;
+    overflow: auto;
   }
 
   td:not(:first-child) {
-      text-align: center;
-
-  }
-
-  input {
-    width: 100%;
+    text-align: center;
   }
 
   button {

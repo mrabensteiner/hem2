@@ -7,14 +7,15 @@ async function main() {
       title: "Administrator",
       description: "All privileges",
       userAdd: true,
-      userEdit: true,
+      userEditAll: true,
       projectAdd: true,
       projectViewAll: true,
       projectEditAll: true,
+      projectHidePersonal: true,
       heuristicSetEditAll: true,
       ratingSetEditAll: true,
       statusEdit: true,
-      roleEdit: true,
+      roleEdit: true
     }
   });
 
@@ -32,7 +33,8 @@ async function main() {
   const userrole = await prisma.role.create({
     data: {
       title: "Reviewer",
-      description: "No system privileges"
+      description: "No system privileges",
+      canBeEditedFrom: { connect: { id: managerrole.id }}
     }
   });
 

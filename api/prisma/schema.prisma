@@ -18,10 +18,12 @@ model Role {
   description         String  @default("")
   order               Int     @default(autoincrement())
   userAdd             Boolean @default(false)
-  userEdit            Boolean @default(false)
+  userEditRoles       Role[]  @relation("edit")
+  userEditAll         Boolean @default(false)
   projectAdd          Boolean @default(false)
   projectViewAll      Boolean @default(false)
   projectEditAll      Boolean @default(false)
+  projectHidePersonal Boolean @default(false)
   heuristicSetEditAll Boolean @default(false)
   heuristicSetEditOwn Boolean @default(false)
   ratingSetEditAll    Boolean @default(false)
@@ -29,6 +31,7 @@ model Role {
   statusEdit          Boolean @default(false)
   roleEdit            Boolean @default(false)
   users               User[]
+  canBeEditedFrom     Role[]  @relation("edit")
 }
 
 model User {

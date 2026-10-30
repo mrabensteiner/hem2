@@ -6,7 +6,11 @@ import IconProject from "@/components/icons/IconProject.vue";
 import IconLogout from "@/components/icons/IconLogout.vue";
 import IconUser from "@/components/icons/IconUser.vue";
 
-const { user, logout } = useAuth();
+const {
+  user,
+  logout,
+  hasPrivilege
+} = useAuth();
 
 const open = ref<boolean>(false);
 </script>
@@ -27,7 +31,7 @@ const open = ref<boolean>(false);
             My Account
           </RouterLink>
         </li>
-        <li>
+        <li v-if="!hasPrivilege('projectHidePersonal')">
           <RouterLink to="/projects">
             <IconProject class="icon"/>
             My Projects
