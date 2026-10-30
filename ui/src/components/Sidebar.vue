@@ -72,13 +72,7 @@ const { project, prevStatus, nextStatus } = useProjects();
               <li>
                 <RouterLink :to="'/project/' + project.id + '/findings/merge'">
                   <IconMerge class="icon"/>
-                  Merge (ListMerger)
-                </RouterLink>
-              </li>
-              <li>
-                <RouterLink :to="'/project/' + project.id + '/findings/mergev2'">
-                  <IconMerge class="icon"/>
-                  Merge (Reactive)
+                  Merge Findings
                 </RouterLink>
               </li>
             </template>
