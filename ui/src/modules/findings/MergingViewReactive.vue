@@ -246,14 +246,8 @@ const save = async () => {
 body:has(#merging) {
   overflow: hidden;
 
-  main {
-    height: 90vh;
-    overflow: auto;
-    max-width: 100%;
-
-    section.sticky {
-      top: -2rem;
-    }
+  main section.sticky {
+    top: -2rem;
   }
 
   footer {

@@ -27,6 +27,9 @@
   --app-primary: rgb(var(--app-primary-rgb));
   --app-secondary: rgb(var(--app-secondary-rgb));
   --app-tertiary: #0c5a77;
+  --height-header: 3rem;
+  --height-footer: 1.5rem;
+  --height-main: calc(100vh - var(--height-header) - var(--height-footer));
 }
 
 /* semantic color variables for this project */
@@ -86,7 +89,7 @@ html:has(body[data-theme='light']) {
 }
 
 body {
-  min-height: 100vh;
+  height: 100vh;
   color: var(--color-text);
   background: var(--color-background);
   line-height: 1.6;

@@ -1,7 +1,7 @@
 header {
-  position: sticky;
   top: 0;
-  z-index: 0;
+  z-index: 1;
+  height: var(--height-header);
 
   background-color: var(--app-secondary);
   color: var(--vt-c-white);
@@ -19,7 +19,7 @@ header {
   nav > a, nav > details {
     cursor: pointer;
     color: var(--vt-c-white);
-    font-size: 1.25rem;
+    font-size: 1rem;
     margin: 0 .5rem;
     border-bottom: 2px solid transparent;
 
@@ -54,7 +54,7 @@ nav.user {
 
 .logo {
   background-color: white;
-  font-size: 2rem;
+  font-size: 1.5rem;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -74,7 +74,7 @@ section.sticky {
   padding: 1rem 2rem;
   position: sticky;
   z-index: 1;
-  top: 0;
+  top: -2rem;
   display: flex;
   align-items: center;
 
