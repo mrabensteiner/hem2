@@ -25,5 +25,8 @@ const tablehead = [
 <template>
   <h1>Projects</h1>
   <DynamicTable :head="tablehead" :data="projects" sort="updatedat" />
-  <RouterLink to="/project/new" class="button"><IconAdd class="icon"/> New Project</RouterLink>
+  <div>
+    <RouterLink to="/project/new" class="button"><IconAdd class="icon"/> New Project</RouterLink>
+    <RouterLink to="/project/import" class="button"><IconAdd class="icon"/> Import Project</RouterLink>
+  </div>
 </template>

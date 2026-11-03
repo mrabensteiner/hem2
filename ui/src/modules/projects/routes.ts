@@ -3,6 +3,7 @@ import DetailsView from "@/modules/projects/DetailsView.vue";
 import NewView from "@/modules/projects/NewView.vue";
 import EditView from "@/modules/projects/EditView.vue";
 import RatingsView from "@/modules/projects/RatingsView.vue";
+import ImportView from "@/modules/projects/ImportView.vue";
 
 export default [
   {
@@ -39,6 +40,14 @@ export default [
     path: '/project/new',
     name: 'ProjectNew',
     component: NewView,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/project/import',
+    name: 'ProjectImport',
+    component: ImportView,
     meta: {
       requiresAuth: true
     }

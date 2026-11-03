@@ -179,6 +179,22 @@ export function useProjects() {
     }
   }
 
+  async function importProject(data: any) {
+    try {
+      const response = await projectApi.importJson(data);
+
+      if (response.success) {
+        pushToast(response.success, "success")
+        return response.id;
+      }
+
+      if (response.error) pushToast(response.error, "error");
+    } catch (err: any) {
+      pushToast(err.message, "error");
+      throw err;
+    }
+  }
+
   async function updateStatus(id: string) {
     try {
       const payload = {
@@ -276,6 +292,7 @@ export function useProjects() {
     nextStatus,
     uploadImage,
     checkProjectPrivilege,
+    importProject,
     exportJson,
     exportReportLatex
   };

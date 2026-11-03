@@ -11,6 +11,12 @@ export const projectApi = {
     return apiClient(`${endpoint}/${id}`);
   },
 
+  async importJson(data: any) {
+    return apiClient(`import/${endpoint}/json`, Method.POST, {
+      body: data
+    });
+  },
+
   async exportJson(id: string) {
     return apiClient(`export/${endpoint}/json/${id}`);
   },
