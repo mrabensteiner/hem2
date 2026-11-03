@@ -320,7 +320,6 @@ watch(
 <style scoped>
 .tablecontainer {
   width: 100%;
-  overflow-x: auto;
   margin-bottom: 1rem;
 }
 
@@ -398,6 +397,10 @@ watch(
   &.active .filter-icon {
     background-color: var(--app-primary);
     color: var(--color-background);
+  }
+
+  label {
+    padding: .5rem;
   }
 }
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {onMounted} from 'vue';
 import { useFindings } from "@/modules/findings/useFindings.ts";
+import router from "@/router";
 import {useRoute} from "vue-router";
 import Chip from "@/components/Chip.vue";
 import IconSave from "@/components/icons/IconSave.vue";
@@ -31,6 +32,7 @@ onMounted(() => {
 async function save() {
   await saveFinding();
   edited.value = false;
+  router.push({name: "FindingsDetails"})
 }
 
 const uploadImagesHandler = async (event: Event) => {

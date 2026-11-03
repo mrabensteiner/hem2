@@ -24,8 +24,8 @@ const { isAuthenticated, user } = useAuth();
     <Sidebar v-if="isAuthenticated"/>
     <main>
       <RouterView />
-      <Toast/>
     </main>
   </div>
+  <Toast/>
   <footer>Martin Rabensteiner 2026 <Version/></footer>
 </template>

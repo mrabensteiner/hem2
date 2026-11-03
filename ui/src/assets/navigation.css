@@ -80,6 +80,7 @@ section.sticky {
 
   h1 {
     margin: 0;
+    line-height: 1.5;
   }
 
   > :first-child {

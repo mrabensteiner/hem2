@@ -43,6 +43,7 @@ aside {
 
   @media (max-width: 768px) {
     position: absolute;
+    top: var(--height-header);
     z-index: 2;
   }
 

@@ -19,3 +19,38 @@ const { finding } = defineProps<{
   </template>
 </template>
 
+<style scoped>
+.chip {
+  font-size: .75rem;
+  padding: .25rem .5rem;
+  border-radius: .5rem;
+  margin: .1rem;
+  white-space: pre;
+  display: inline-block;
+
+  vertical-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &.chip-merged {
+    background-color: dodgerblue;
+    color: white;
+  }
+
+  &.chip-merged-into {
+    background-color: darkturquoise;
+    color: white;
+  }
+
+  &.chip-reviewed {
+    background-color: green;
+    color: white;
+  }
+
+  &.chip-not-reviewed {
+    background-color: grey;
+    color: white;
+  }
+}
+</style>

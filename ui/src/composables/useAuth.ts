@@ -38,12 +38,13 @@ export function useAuth() {
       if (!isAuthenticated.value) return false;
 
       if (project) {
-        const uip = project.UserInProject?.find((uip: any) => (uip.userId === user.value.id)) ?? "";
+        const uip1 = project.UserInProject?.find((uip: any) => uip.userId === user.value.id && uip.projectRole === "MANAGER");
+        const uip2 = project.UserInProject?.find((uip: any) => uip.userId === user.value.id && uip.projectRole === "MEMBER");
 
-        if (privileges.value.includes("projectViewAll") || (uip && uip.projectRole == "MANAGER") || user.value.role.projectEditAll) {
+        if (privileges.value.includes("projectViewAll") || uip1 || user.value.role.projectEditAll) {
           return true;
         }
-        return project.status ? project.status[name] : false;
+        return project.status ? uip2 && project.status[name] : false;
       }
       return privileges.value.includes(name);
     }

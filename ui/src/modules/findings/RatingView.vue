@@ -23,7 +23,8 @@ const {
 } = useFindings();
 
 onMounted(() => {
-  loadFinding(route.params.id as string, false, route.params.pid as string).then(() =>
+  const id = (route.params.id as string) ?? "";
+  loadFinding(id, false, route.params.pid as string).then(() =>
     router.replace({params: {id: finding.value.id}})
   );
 });
@@ -52,10 +53,13 @@ function save(event: SubmitEvent) {
 
 
 <template>
-  <RouterLink :to="{ path: '/project/' + route.params.pid}">Project: {{finding.project?.title}}</RouterLink>
-  <h1>Rate: {{ finding.title }}</h1>
-  <hr/>
-  <div v-if="finding.id">
+  <section class="sticky">
+    <div>
+      <RouterLink :to="{ path: '/project/' + route.params.pid}">Project: {{finding.project?.title}}</RouterLink>
+      <h1>Rate: {{ finding.title }}</h1>
+    </div>
+  </section>
+  <div v-if="route.params.id && finding.id">
   <div class="row">
   <div class="col-3">
   <p><label>Reviewer(s):</label>
@@ -81,19 +85,20 @@ function save(event: SubmitEvent) {
   </div>
   </div>
   <form @submit.prevent="save">
-  <h3>Rate</h3>
-  <div class="ratingbuttons">
-    <label v-for="r in finding.project?.ratingset.ratings" :style="'--main-bg-color:'+ r.color + ';--main-text-color:'+ r.textcolor">
-      <input type="radio" name="rating" :value="r.id" v-model="userRating">
-      <span>{{r.title}}</span>
-    </label>
-  </div>
-  <button type="button" @click="userRating = null">Reset Rating</button>
-  <RouterLink v-if="finding.id" :to="{name: 'FindingsDetails', params: { id: finding.id }}" class="button">Back to View</RouterLink>
-  <RouterLink v-if="hasPrivilege('findingEditOwn', finding.project)" :to="{name: 'FindingsEdit'}" class="button"><IconEdit class="icon"/> Edit</RouterLink>
-  <button><IconSave class="icon"/> Save</button>
-  <button data-next="true"><IconOpen class="icon"/> Save and Rate Next</button>
-
+    <h3>Rate</h3>
+    <div class="ratingbuttons">
+      <label v-for="r in finding.project?.ratingset.ratings" :style="'--main-bg-color:'+ r.color + ';--main-text-color:'+ r.textcolor">
+        <input type="radio" name="rating" :value="r.id" v-model="userRating">
+        <span>{{r.title}}</span>
+      </label>
+    </div>
+    <div class="button-row">
+      <button type="button" @click="userRating = null">Reset Rating</button>
+      <RouterLink v-if="finding.id" :to="{name: 'FindingsDetails', params: { id: finding.id }}" class="button">Back to View</RouterLink>
+      <RouterLink v-if="hasPrivilege('findingEditOwn', finding.project)" :to="{name: 'FindingsEdit'}" class="button"><IconEdit class="icon"/> Edit</RouterLink>
+      <button :disabled="!userRating"><IconSave class="icon"/> Save</button>
+      <button :disabled="!userRating" data-next="true"><IconOpen class="icon"/> Save and Rate Next</button>
+    </div>
   </form>
   </div>
 
@@ -134,6 +139,9 @@ function save(event: SubmitEvent) {
     color: var(--main-bg-color);
     display: flex;
     justify-content: center;
+
+    line-height: 1.3;
+    padding: .5rem;
 
     span {
       font-weight: bold;

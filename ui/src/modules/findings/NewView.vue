@@ -51,7 +51,11 @@ async function save(reload: boolean = false) {
     </div>
     <div>
       <label>Description</label>
-      <textarea type="text" placeholder="Description" v-model="finding.description"></textarea>
+      <textarea type="text" placeholder="Description" v-model="finding.description"/>
+    </div>
+    <div>
+      <label>Remarks or Recommendations</label>
+      <textarea type="text" placeholder="Remarks or Recommendations" v-model="finding.remarks"/>
     </div>
     <div v-if="hasPrivilege('ratingEdit', finding?.project)">
       <label>Personal Rating</label>

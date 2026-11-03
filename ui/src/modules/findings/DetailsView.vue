@@ -94,7 +94,7 @@ watch(
     </p>
 
     <div>
-      <label>Status: &nbsp;</label>
+      <label>Finding Status: &nbsp;</label>
       <FindingStatus :finding="finding"/>
     </div>
 
@@ -115,7 +115,7 @@ watch(
   </div>
   </div>
 
-  <RouterLink class="button" v-if="hasPrivilege('ratingEdit', finding.project)" :to="{ name: 'FindingsRate', params: {id: route.params.id, return: 'FindingsView'} }"><IconRate class="icon"/> Rate Findings</RouterLink>
+  <RouterLink class="button" v-if="hasPrivilege('ratingEdit', finding.project)" :to="{ name: 'FindingsRate', params: {id: route.params.id, return: 'FindingsView'} }"><IconRate class="icon"/> Rate Finding</RouterLink>
 </template>
 
 <style scoped>

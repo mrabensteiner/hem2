@@ -237,7 +237,7 @@ const view = useLocalStorage("view", viewType.TABLE)
     </ul>
   </div>
 
-  <div>
+  <div class="button-row">
     <RouterLink :to="`/project/${project.id}/findings/new`" class="button"><IconAdd class="icon"/> New Finding</RouterLink>
     <RouterLink :to="`/project/${project.id}/findings/rate`" class="button"><IconRate class="icon"/> Rate Findings</RouterLink>
     <RouterLink :to="`/project/${project.id}/ratings`" class="button"><IconTable class="icon"/> Rating Overview</RouterLink>
@@ -268,7 +268,7 @@ const view = useLocalStorage("view", viewType.TABLE)
       ({{findings.filter((f: any) => f.user.includes(`${user.firstname} ${user.lastname}`)).length}})
 
       <ul>
-        <li v-for="f in findings.filter((f: any) => f.user.includes(`${user.firstname} ${user.lastname}`))">
+        <li v-for="f in findings.filter((ff: any) => ff.user.includes(`${user.firstname} ${user.lastname}`))">
           <RouterLink :to="{ path: `${route.path}/findings/${f.id}` }">{{f.title}}</RouterLink>
         </li>
       </ul>

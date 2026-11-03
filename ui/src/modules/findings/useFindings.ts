@@ -24,7 +24,7 @@ export function useFindings() {
       if (response.success) pushToast(response.success, "success");
       if (response.error) pushToast(response.error, "error");
       finding.value = response.data;
-      finding.value = response.data;
+      images.value = response.data.images;
 
       finding.value.personalRating = response.data.userRatingId ?? "";
       userRating.value = response.data.userRatingId ?? "";
