@@ -175,18 +175,21 @@ defineExpose({
 table {
   table-layout: fixed;
   width: 100%;
+  margin-top: -1rem;
 }
 
 thead {
   position: sticky;
-  top: 0;
+  top: -1rem;
   background-color: var(--color-background);
   box-shadow: 0 .25rem .5rem var(--color-border);
   margin: -1rem;
-}
 
-th {
-  font-weight: bold;
+  th {
+    font-weight: bold;
+    font-size: 1.25rem;
+    padding-top: 1rem;
+  }
 }
 
 tr.title th {
@@ -218,6 +221,8 @@ dialog {
 }
 
 .footer {
+  display: flex;
+  justify-content: end;
   position: sticky;
   bottom: -1rem;
   margin: 1rem -1rem -1rem -1rem;
