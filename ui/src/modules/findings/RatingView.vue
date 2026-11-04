@@ -2,8 +2,7 @@
 import { onMounted, watch } from 'vue';
 import { useFindings } from "@/modules/findings/useFindings.ts";
 import {useRoute, useRouter} from "vue-router";
-import Chip from "@/components/Chip.vue";
-import TimeAgo from "@/components/TimeAgo.vue";
+import FindingFull from "@/components/FindingFull.vue";
 import IconSave from "@/components/icons/IconSave.vue";
 import IconOpen from "@/components/icons/IconOpen.vue";
 import IconEdit from "@/components/icons/IconEdit.vue";
@@ -59,63 +58,32 @@ function save(event: SubmitEvent) {
       <h1>Rate: {{ finding.title }}</h1>
     </div>
   </section>
-  <div v-if="route.params.id && finding.id">
-  <div class="row">
-  <div class="col-3">
-  <p><label>Reviewer(s):</label>
-    <span>{{finding.user?.map(u => [u.firstname, u.lastname].join(" ")).join(", ")}}</span>
-  </p>
-  <p><label>Heuristics(s):</label>
-    <template v-for="h in finding.heuristics" :key="h.id">
-      <Chip :chip="h" />
-    </template>
-  </p>
-    <p><label>Last Update:</label>
-      <span><TimeAgo :date="finding.updatedat"/></span>
-    </p>
-  </div>
-  <div class="col-9">
-  <label>Description:</label>
-  <p>{{ finding.description }}</p>
 
-  <label>Images</label>
-  <div class="thumbnails">
-    <img v-for="i in finding.images" :src="'http://localhost:3000/'+i.path" width="100"/>
-  </div>
-  </div>
-  </div>
-  <form @submit.prevent="save">
-    <h3>Rate</h3>
-    <div class="ratingbuttons">
-      <label v-for="r in finding.project?.ratingset.ratings" :style="'--main-bg-color:'+ r.color + ';--main-text-color:'+ r.textcolor">
-        <input type="radio" name="rating" :value="r.id" v-model="userRating">
-        <span>{{r.title}}</span>
-      </label>
-    </div>
-    <div class="button-row">
-      <button type="button" @click="userRating = null">Reset Rating</button>
-      <RouterLink v-if="finding.id" :to="{name: 'FindingsDetails', params: { id: finding.id }}" class="button">Back to View</RouterLink>
-      <RouterLink v-if="hasPrivilege('findingEditOwn', finding.project)" :to="{name: 'FindingsEdit'}" class="button"><IconEdit class="icon"/> Edit</RouterLink>
-      <button :disabled="!userRating"><IconSave class="icon"/> Save</button>
-      <button :disabled="!userRating" data-next="true"><IconOpen class="icon"/> Save and Rate Next</button>
-    </div>
-  </form>
+  <div v-if="route.params.id && finding.id">
+    <FindingFull :finding="finding" :hide-status="true"/>
+
+    <form @submit.prevent="save">
+      <h3>Rate</h3>
+      <div class="ratingbuttons">
+        <label v-for="r in finding.project?.ratingset.ratings" :style="'--main-bg-color:'+ r.color + ';--main-text-color:'+ r.textcolor">
+          <input type="radio" name="rating" :value="r.id" v-model="userRating">
+          <span>{{r.title}}</span>
+        </label>
+      </div>
+      <div class="button-row">
+        <button type="button" @click="userRating = null">Reset Rating</button>
+        <RouterLink v-if="finding.id" :to="{name: 'FindingsDetails', params: { id: finding.id }}" class="button">Back to View</RouterLink>
+        <RouterLink v-if="hasPrivilege('findingEditOwn', finding.project)" :to="{name: 'FindingsEdit'}" class="button"><IconEdit class="icon"/> Edit</RouterLink>
+        <button :disabled="!userRating"><IconSave class="icon"/> Save</button>
+        <button :disabled="!userRating" data-next="true"><IconOpen class="icon"/> Save and Rate Next</button>
+      </div>
+    </form>
   </div>
 
   <p v-if="!finding.id">No more findings to rate.</p>
 </template>
 
 <style scoped>
-.row {
-  display: flex;
-}
-.col-3 {
-  width: 33%;
-}
-.col-9 {
-  width: 66%;
-}
-
 .ratingbuttons {
   --main-bg-color: #777;
   --main-text-color: #fff;
