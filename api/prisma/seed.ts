@@ -92,12 +92,12 @@ async function main() {
 
   let reviewer3 = await prisma.user.create({
       data: {
-        username: "mariorossi",
-        password: "mariorossi",
-        email: "mariorossi@hem.com",
-        firstname: "Mario",
-        lastname: "Rossi",
-        shortname: "MR",
+        username: "reviewer",
+        password: "reviewer",
+        email: "reviewer@hem.com",
+        firstname: "Ron R.",
+        lastname: "Reviewer",
+        shortname: "RR",
         roleId: userrole.id
       },
     }

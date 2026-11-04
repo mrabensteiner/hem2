@@ -90,12 +90,11 @@ pnpm dev:ui
 
 ## Example Users
 
-Initially, a default admin user is created:  
-Username: `admin`  
-Password: `admin`
+The default users are:
 
-Some other users are created as well. by default, they have the
-same password as their user name.
+* Administrator - Username: `admin` Password: `admin`
+* Manager - Username: `manager` Password: `manager`
+* Reviewer - Username: `reviewer` Password: `reviewer`
 
 
 
