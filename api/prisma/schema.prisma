@@ -78,6 +78,13 @@ model Project {
   ratingsetId    String?
   UserInProject  UserInProject[]
   Findings       Finding[]
+  githubToken    String          @default("")
+  githubRepo     String          @default("")
+  githubUser     String          @default("")
+  gitlabHost     String          @default("")
+  gitlabToken    String          @default("")
+  gitlabRepo     String          @default("")
+  gitlabUser     String          @default("")
 }
 
 model Finding {
@@ -100,6 +107,9 @@ model Finding {
   mergedToId  String?
   mergedTo    Finding?     @relation("merge", fields: [mergedToId], references: [id])
   mergedFrom  Finding[]    @relation("merge")
+  githubLink  String       @default("")
+  gitlabLink  String       @default("")
+  otherLink   String       @default("")
 }
 
 model UserRating {
