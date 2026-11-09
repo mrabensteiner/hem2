@@ -15,6 +15,7 @@ import IconRate from "@/components/icons/IconRate.vue";
 import IconMerge from "@/components/icons/IconMerge.vue";
 import {useAuth} from "@/composables/useAuth.ts";
 import {useToast} from "@/composables/useToast.ts";
+import IconOpen from "@/components/icons/IconOpen.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -31,9 +32,7 @@ const {
   project,
   findings,
   loadProject,
-  checkProjectPrivilege,
-  exportJson,
-  exportReportLatex
+  checkProjectPrivilege
 } = useProjects();
 
 const {
@@ -242,8 +241,7 @@ const view = useLocalStorage("view", viewType.TABLE)
     <RouterLink :to="`/project/${project.id}/findings/rate`" class="button"><IconRate class="icon"/> Rate Findings</RouterLink>
     <RouterLink :to="`/project/${project.id}/ratings`" class="button"><IconTable class="icon"/> Rating Overview</RouterLink>
     <RouterLink :to="`/project/${project.id}/findings/merge`" class="button"><IconMerge class="icon"/> Merge Findings</RouterLink>
-    <button role="button" @click="exportJson">Export JSON</button>
-    <button role="button" @click="exportReportLatex">Export TEX</button>
+    <RouterLink :to="`/project/${project.id}/export`" class="button"><IconOpen class="icon"/> Export</RouterLink>
   </div>
 
   <h2>Rating Statistics</h2>

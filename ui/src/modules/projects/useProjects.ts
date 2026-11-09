@@ -271,6 +271,14 @@ export function useProjects() {
     window.URL.revokeObjectURL(downloadUrl);
   }
 
+  async function exportGithub() {
+    // TODO
+  }
+
+  async function exportGitlab() {
+    // TODO
+  }
+
   return {
     projects,
     project,
@@ -294,6 +302,8 @@ export function useProjects() {
     checkProjectPrivilege,
     importProject,
     exportJson,
-    exportReportLatex
+    exportReportLatex,
+    exportGithub,
+    exportGitlab
   };
 }

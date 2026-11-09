@@ -4,6 +4,7 @@ import NewView from "@/modules/projects/NewView.vue";
 import EditView from "@/modules/projects/EditView.vue";
 import RatingsView from "@/modules/projects/RatingsView.vue";
 import ImportView from "@/modules/projects/ImportView.vue";
+import ExportView from "@/modules/projects/ExportView.vue";
 
 export default [
   {
@@ -49,6 +50,15 @@ export default [
     name: 'ProjectImport',
     component: ImportView,
     meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/project/:id/export',
+    name: 'ProjectExport',
+    component: ExportView,
+    meta: {
+      context: 'project',
       requiresAuth: true
     }
   },
