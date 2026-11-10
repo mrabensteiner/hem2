@@ -20,7 +20,31 @@ async function projectReportLatex(req: Request, res: Response) {
   }
 }
 
+async function projectGithub(req: Request, res: Response) {
+  try {
+    const response = await exportService.findingsGithub(req.body, req.user);
+    res.json({
+      success: `Exported ${response} new issues to GitHub.`
+    });
+  } catch (error: any) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+async function projectGitlab(req: Request, res: Response) {
+  try {
+    const response = await exportService.findingsGitlab(req.body, req.user);
+    res.json({
+      success: `Exported ${response} new issues to GitLab.`
+    });
+  } catch (error: any) {
+    res.status(500).json({error: error.message});
+  }
+}
+
 export const exportController = {
   projectJson,
-  projectReportLatex
+  projectReportLatex,
+  projectGithub,
+  projectGitlab
 };

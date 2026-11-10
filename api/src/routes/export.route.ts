@@ -8,5 +8,7 @@ router.use(requireAuth);
 
 router.get('/projects/json/:id', exportController.projectJson);
 router.get('/projects/latex/:id', exportController.projectReportLatex);
+router.post('/projects/github', exportController.projectGithub);
+router.post('/projects/gitlab', exportController.projectGitlab);
 
 export default router;

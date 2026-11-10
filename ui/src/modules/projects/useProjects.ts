@@ -272,11 +272,29 @@ export function useProjects() {
   }
 
   async function exportGithub() {
-    // TODO
+    try {
+      pushToast("Starting the export to GitHub.", "info");
+
+      const response = await projectApi.exportGithub(project.value);
+      if (response.success) pushToast(response.success, "success");
+      if (response.error) pushToast(response.error, "error");
+    } catch (err: any) {
+      pushToast(err.message, "error");
+      throw err;
+    }
   }
 
   async function exportGitlab() {
-    // TODO
+    try {
+      pushToast("Starting the export to GitLab.", "info");
+
+      const response = await projectApi.exportGitlab(project.value);
+      if (response.success) pushToast(response.success, "success");
+      if (response.error) pushToast(response.error, "error");
+    } catch (err: any) {
+      pushToast(err.message, "error");
+      throw err;
+    }
   }
 
   return {

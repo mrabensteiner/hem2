@@ -18,11 +18,23 @@ export const projectApi = {
   },
 
   async exportJson(id: string) {
-    return apiClient(`export/${endpoint}/json/${id}`);
+    return apiClient(`export/${endpoint}/json/${id}`, Method.GET, {}, true);
   },
 
   async exportReportLatex(id: string) {
-    return apiClient(`export/${endpoint}/latex/${id}`);
+    return apiClient(`export/${endpoint}/latex/${id}`, Method.GET, {}, true);
+  },
+
+  async exportGithub(data: any) {
+    return apiClient(`export/${endpoint}/github`, Method.POST, {
+      body: data
+    });
+  },
+
+  async exportGitlab(data: any) {
+    return apiClient(`export/${endpoint}/gitlab`, Method.POST, {
+      body: data
+    });
   },
 
   async save(projectData: any, isNew: boolean) {

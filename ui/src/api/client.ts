@@ -11,7 +11,7 @@ export enum Method {
   DELETE = 'DELETE'
 }
 
-export async function apiClient(endpoint: string, method = Method.GET, options: RequestOptions = {}) {
+export async function apiClient(endpoint: string, method = Method.GET, options: RequestOptions = {}, blob = false) {
   const url = `${BASE_URL}/${endpoint.replace(/^\//, '')}`;
 
   options.method = method;
@@ -57,7 +57,7 @@ export async function apiClient(endpoint: string, method = Method.GET, options: 
       }
     }
 
-    if (endpoint.startsWith("export")) {
+    if (blob) {
       return await response.blob();
     }
     return await response.json();

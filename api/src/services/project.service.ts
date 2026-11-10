@@ -136,6 +136,23 @@ async function updateStatus(data: any) {
   return await addStatusOrder(project);
 }
 
+async function updateExportService(data: any) {
+  return prisma.project.update({
+    where: {
+      id : data.id
+    },
+    data: {
+      githubToken: data.githubToken,
+      githubRepo: data.githubRepo,
+      githubUser: data.githubUser,
+      gitlabHost: data.gitlabHost,
+      gitlabToken: data.gitlabToken,
+      gitlabRepo: data.gitlabRepo,
+      gitlabUser: data.gitlabUser
+    }
+  });
+}
+
 async function changes(id: string) {
   return prisma.project.update({
     where: { id },
@@ -229,6 +246,7 @@ export const projectService = {
   create,
   update,
   updateStatus,
+  updateExportService,
   addStatusOrder,
   changes,
   getPrivileges
