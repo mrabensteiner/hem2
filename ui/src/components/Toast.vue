@@ -35,6 +35,8 @@ const { toasts } = useToast();
       font-size: 1.5rem;
       line-height: 1rem;
       margin-right: .5rem;
+      position: relative;
+      top: .2rem;
     }
 
     &[data-type="error"] {
@@ -50,6 +52,14 @@ const { toasts } = useToast();
 
       &::before {
         content: '✓';
+      }
+    }
+
+    &[data-type="info"] {
+      --box-color: lightblue;
+
+      &::before {
+        content: '🛈';
       }
     }
   }
