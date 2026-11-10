@@ -3,6 +3,8 @@ import Thumbnails from "@/components/Thumbnails.vue";
 import TimeAgo from "@/components/TimeAgo.vue";
 import FindingStatus from "@/components/FindingStatus.vue";
 import Chip from "@/components/Chip.vue";
+import IconGitlab from "@/components/icons/IconGitlab.vue";
+import IconGithub from "@/components/icons/IconGithub.vue";
 
 const { finding } = defineProps<{
   finding: any,
@@ -81,6 +83,18 @@ const { finding } = defineProps<{
           </RouterLink>
           <template v-if="i + 1 < finding.mergedFrom?.length">, </template>
         </template>
+      </div>
+
+      <div v-if="finding.githubLink || finding.gitlabLink">
+        <label>Exports</label><br/>
+        <ul>
+          <li v-if="finding.githubLink">
+            <a :href="finding.githubLink" target="_blank"><IconGithub class="icon"/> GitHub</a>
+          </li>
+          <li v-if="finding.gitlabLink">
+            <a :href="finding.gitlabLink" target="_blank"><IconGitlab class="icon"/> GitLab</a>
+          </li>
+        </ul>
       </div>
     </div>
   </div>

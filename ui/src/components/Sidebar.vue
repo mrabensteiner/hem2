@@ -14,6 +14,7 @@ import IconSettings from "@/components/icons/IconSettings.vue";
 import IconLogout from "@/components/icons/IconLogout.vue";
 import IconUser from "@/components/icons/IconUser.vue";
 import Chip from "@/components/Chip.vue";
+import IconOpen from "@/components/icons/IconOpen.vue";
 
 const route = useRoute();
 const active = ref<boolean>(true);
@@ -73,6 +74,14 @@ const { project, prevStatus, nextStatus } = useProjects();
                 <RouterLink :to="'/project/' + project.id + '/findings/merge'">
                   <IconMerge class="icon"/>
                   Merge Findings
+                </RouterLink>
+              </li>
+            </template>
+            <template v-if="hasPrivilege('manager', project)">
+              <li>
+                <RouterLink :to="'/project/' + project.id + '/export'">
+                  <IconOpen class="icon"/>
+                  Export Project
                 </RouterLink>
               </li>
             </template>
