@@ -2,6 +2,23 @@
 import { prisma } from "../lib/prisma";
 
 async function main() {
+
+  const settings = await prisma.systemSetting.createMany({
+    data: [
+      {
+        name: "Frontend URL",
+        key: "frontendUrl",
+        value: "http://localhost:5173",
+        description: "Basic Client URL"
+      }, {
+        name: "Backend URL",
+        key: "backendUrl",
+        value: "http://localhost:3000",
+        description: "Basic Server URL"
+      }
+    ]
+  });
+
   const adminrole = await prisma.role.create({
     data: {
       title: "Administrator",
@@ -15,7 +32,8 @@ async function main() {
       heuristicSetEditAll: true,
       ratingSetEditAll: true,
       statusEdit: true,
-      roleEdit: true
+      roleEdit: true,
+      systemSettingsEdit: true
     }
   });
 

@@ -12,6 +12,7 @@ import findingsRoutes from "./routes/finding.routes";
 import imageRoutes from "./routes/image.routes";
 import importRoute from "./routes/import.route";
 import exportRoute from "./routes/export.route";
+import settingRoutes from "./routes/setting.routes";
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use('/findings', findingsRoutes);
 app.use('/images', imageRoutes);
 app.use('/import', importRoute);
 app.use('/export', exportRoute);
+app.use('/settings', settingRoutes);
 
 app.listen(3000, () => console.log('API server port 3000'));
 

@@ -7,6 +7,13 @@ datasource db {
   provider = "postgresql"
 }
 
+model SystemSetting {
+  key         String  @id @unique
+  value       String  @default("")
+  name        String?
+  description String?
+}
+
 enum projectRole {
   MANAGER
   MEMBER
@@ -30,6 +37,7 @@ model Role {
   ratingSetEditOwn    Boolean @default(false)
   statusEdit          Boolean @default(false)
   roleEdit            Boolean @default(false)
+  systemSettingsEdit  Boolean @default(false)
   users               User[]
   canBeEditedFrom     Role[]  @relation("edit")
 }
