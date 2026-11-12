@@ -6,25 +6,26 @@ async function getAll(): Promise<any> {
 
 async function create(data = {}) {
   return prisma.systemSetting.create({
-    data: data
+    data: {
+      key: "new",
+      ...data
+    }
   });
 }
 
 async function remove(data: any) {
   await prisma.systemSetting.delete({
-    where: { id: data.id }
+    where: { key: data.key }
   });
   return getAll();
 }
 
 async function updateMany(data: any) {
   return prisma.$transaction(
-    data.map((s: any, i: Number) => {
+    data.map((s: any) => {
       return prisma.systemSetting.update({
-        where: { id: s.id },
-        data: {
-          ...s
-        }
+        where: { key: s.key },
+        data: s
       })
     })
   );

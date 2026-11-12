@@ -7,6 +7,7 @@ import userRoutes from '@/modules/users/routes';
 import projectRoutes from '@/modules/projects/routes';
 import statusRoutes from '@/modules/statuses/routes';
 import roleRoutes from '@/modules/roles/routes';
+import settingRoutes from '@/modules/settings/routes';
 import heuristicRoutes from '@/modules/heuristics/routes';
 import ratingRoutes from '@/modules/ratings/routes';
 import findingRoutes from '@/modules/findings/routes';
@@ -30,6 +31,7 @@ const router = createRouter({
     ...projectRoutes,
     ...statusRoutes,
     ...roleRoutes,
+    ...settingRoutes,
     ...heuristicRoutes,
     ...ratingRoutes,
     ...findingRoutes,

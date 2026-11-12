@@ -47,6 +47,7 @@ const { edited } = useEdit();
             <td colspan="2">Rating Sets</td>
             <td>Statuses</td>
             <td>Roles</td>
+            <td>System Settings</td>
             <td rowspan="2">Remove</td>
           </tr>
           <tr>
@@ -61,6 +62,7 @@ const { edited } = useEdit();
             <td>Add + Edit Own</td>
             <td>Add + Edit All</td>
             <td>Add + Edit Own</td>
+            <td>Add + Edit</td>
             <td>Add + Edit</td>
             <td>Add + Edit</td>
           </tr>
@@ -85,6 +87,7 @@ const { edited } = useEdit();
             <td><input type="checkbox" v-model="role.ratingSetEditOwn"></td>
             <td><input type="checkbox" v-model="role.statusEdit"></td>
             <td><input type="checkbox" v-model="role.roleEdit"></td>
+            <td><input type="checkbox" v-model="role.systemSettingsEdit"></td>
             <td>
               <button type="button" @click="removeRole(role.id)"><IconRemove class="icon icon-only"/></button></td>
           </tr>

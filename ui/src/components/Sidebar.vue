@@ -145,6 +145,12 @@ const { project, prevStatus, nextStatus } = useProjects();
                 Ratings
               </RouterLink>
             </li>
+            <li v-if="hasPrivilege('systemSettingsEdit')">
+              <RouterLink to="/settings">
+                <IconSettings class="icon"/>
+                System Settings
+              </RouterLink>
+            </li>
           </ul>
         </section>
       </details>
