@@ -1,4 +1,6 @@
-const BASE_URL = 'http://localhost:3000';
+import {apiUrl} from "@/api/url.ts";
+
+const BASE_URL = apiUrl;
 
 interface RequestOptions extends RequestInit {
   body?: any;

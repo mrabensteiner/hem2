@@ -6,6 +6,7 @@ import IconSave from "@/components/icons/IconSave.vue";
 import ChipSearch from "@/components/ChipSearch.vue";
 import {useEdit} from "@/composables/useEdit.ts";
 import IconCancel from "@/components/icons/IconCancel.vue";
+import {apiUrl} from "@/api/url.ts";
 
 const route = useRoute();
 const router = useRouter();
@@ -84,7 +85,7 @@ const { edited } = useEdit();
     <div>
       <label>Logo</label>
       <div>
-        <img class="inline-logo" v-if="project.logo || newLogo" :alt="project.logo?.title ?? ''" :src="('http://localhost:3000/' + project.logo?.path) ?? ''"/>
+        <img class="inline-logo" v-if="project.logo || newLogo" :alt="project.logo?.title ?? ''" :src="(apiUrl + '/' + project.logo?.path) ?? ''"/>
         <input type="file" @change="uploadImageHandler" accept="image/png, image/jpeg, image/gif, image/svg+xml">
       </div>
     </div>

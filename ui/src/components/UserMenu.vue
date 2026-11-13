@@ -5,6 +5,7 @@ import {useAuth} from "@/composables/useAuth.ts";
 import IconProject from "@/components/icons/IconProject.vue";
 import IconLogout from "@/components/icons/IconLogout.vue";
 import IconUser from "@/components/icons/IconUser.vue";
+import {apiUrl} from "@/api/url.ts";
 
 const {
   user,
@@ -19,7 +20,7 @@ const open = ref<boolean>(false);
 <template>
   <details :open="open" @mouseenter="open = true" @mouseleave="open = false">
     <summary>
-      <img v-if="user.image" :alt="user.image.title" :src="'http://localhost:3000/'+user.image.path"/>
+      <img v-if="user.image" :alt="user.image.title" :src="apiUrl + '/' + user.image.path"/>
       {{ user.firstname }} {{user.lastname}}
     </summary>
 

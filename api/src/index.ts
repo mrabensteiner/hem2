@@ -17,7 +17,7 @@ import settingRoutes from "./routes/setting.routes";
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:5173"
+  origin: process.env.VITE_UI_URL
 }));
 app.use(express.json());
 

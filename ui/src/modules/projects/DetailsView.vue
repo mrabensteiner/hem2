@@ -16,6 +16,7 @@ import IconMerge from "@/components/icons/IconMerge.vue";
 import {useAuth} from "@/composables/useAuth.ts";
 import {useToast} from "@/composables/useToast.ts";
 import IconOpen from "@/components/icons/IconOpen.vue";
+import {apiUrl} from "@/api/url.ts";
 
 const route = useRoute();
 const router = useRouter();
@@ -149,7 +150,7 @@ const view = useLocalStorage("view", viewType.TABLE)
 <template>
   <section class="sticky">
     <h1>
-      <img v-if="project.logo" :src="'http://localhost:3000/' + project.logo.path" />
+      <img v-if="project.logo" :src="apiUrl + '/' + project.logo.path" />
       Project: {{ project.title }}
     </h1>
     <RouterLink class="button" :to="{ path: `${route.path}/edit`}"><IconEdit class="icon"/> Edit</RouterLink>

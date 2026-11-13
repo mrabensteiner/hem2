@@ -4,6 +4,7 @@ import {useRoute} from 'vue-router';
 import {useUser} from "@/modules/users/useUser.ts";
 import IconEdit from "@/components/icons/IconEdit.vue";
 import IconUser from "@/components/icons/IconUser.vue";
+import {apiUrl} from "@/api/url.ts";
 
 const route = useRoute();
 
@@ -30,7 +31,7 @@ onMounted(() => {
   <div class="flex">
     <div>
       <div class="user-image">
-        <img v-if="user.image" :alt="user.image.title" :src="'http://localhost:3000/'+user.image.path"/>
+        <img v-if="user.image" :alt="user.image.title" :src="apiUrl + '/' + user.image.path"/>
         <IconUser v-else/>
       </div>
     </div>

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import Thumbnail from "@/components/Thumbnail.vue";
+import {apiUrl} from "@/api/url.ts";
 
-const baseurl = 'http://localhost:3000/';
+const baseurl = apiUrl + "/";
 
 const props = defineProps<{
   images: any[];

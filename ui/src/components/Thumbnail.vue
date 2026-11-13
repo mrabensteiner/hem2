@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const baseurl = 'http://localhost:3000/';
+import {apiUrl} from "@/api/url.ts";
+
+const baseurl = apiUrl + "/";
 
 defineProps<{
   image: any;

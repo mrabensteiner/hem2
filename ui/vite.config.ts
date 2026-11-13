@@ -30,5 +30,6 @@ export default defineConfig({
     __COMMIT__: JSON.stringify(commit),
     __VERSION__: JSON.stringify(version),
     __REPOSITORY__: JSON.stringify(repository)
-  }
-})
+  },
+  envDir: '../'
+});

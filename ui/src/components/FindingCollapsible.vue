@@ -12,6 +12,7 @@ import IconTriangle from "@/components/icons/IconTriangle.vue";
 import IconEdit from "@/components/icons/IconEdit.vue";
 import IconSave from "@/components/icons/IconSave.vue";
 import IconCancel from "@/components/icons/IconCancel.vue";
+import {apiUrl} from "@/api/url.ts";
 
 const model = defineModel<any>();
 
@@ -67,7 +68,7 @@ function save() {
       <IconTriangle class="icon"/>
       <input v-if="isEditing" v-model="editedFinding.title"/>
       <span v-else class="title">{{finding.title}}</span>
-      <img v-if="finding.images.length && !isEditing" :src="'http://localhost:3000/' + finding.images[0]?.path"/>
+      <img v-if="finding.images.length && !isEditing" :src="apiUrl + '/' + finding.images[0]?.path"/>
       <button type="button" v-if="isEditing" @click="save"><IconSave class="icon"/></button>
       <button v-if="model" type="button" @click="isEditing = !isEditing">
         <template v-if="isEditing"><IconCancel type="button" class="icon"/></template>

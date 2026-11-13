@@ -5,6 +5,7 @@ import TimeAgo from "@/components/TimeAgo.vue";
 import IconFilter from "@/components/icons/IconFilter.vue";
 import IconTableColumns from "@/components/icons/IconTableColumns.vue";
 import IconOpen from "@/components/icons/IconOpen.vue";
+import {apiUrl} from "@/api/url.ts";
 
 interface HeaderColumn {
   key: string;
@@ -291,14 +292,14 @@ watch(
             <TimeAgo :date="r[h.key]"/>
           </template>
           <template v-else-if="h.type === 'image'">
-            <img v-if="r[h.key]" :src="'http://localhost:3000/' + r[h.key].path" />
+            <img v-if="r[h.key]" :src="apiUrl + '/' + r[h.key].path" />
           </template>
           <template v-else-if="h.type === 'imagecircle'">
-            <img v-if="r[h.key]" :src="'http://localhost:3000/' + r[h.key].path" />
+            <img v-if="r[h.key]" :src="apiUrl + '/' + r[h.key].path" />
           </template>
           <template v-else-if="h.type === 'imagelink'">
             <RouterLink :to="{ path: r.link }" v-if="!r.deactivated">
-              <img v-if="r[h.key]" :src="'http://localhost:3000/' + r[h.key].path" />
+              <img v-if="r[h.key]" :src="apiUrl + '/' + r[h.key].path" />
             </RouterLink>
           </template>
           <template v-else-if="h.type === 'boolean'">

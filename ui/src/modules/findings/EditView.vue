@@ -8,6 +8,7 @@ import IconSave from "@/components/icons/IconSave.vue";
 import {useEdit} from "@/composables/useEdit.ts";
 import {useAuth} from "@/composables/useAuth.ts";
 import IconCancel from "@/components/icons/IconCancel.vue";
+import {apiUrl} from "@/api/url.ts";
 
 const route = useRoute();
 
@@ -131,7 +132,7 @@ const { edited } = useEdit();
       <label>Images</label><br/>
       <input type="file" @change="uploadImagesHandler" multiple accept="image/png, image/jpeg, image/gif">
       <div class="thumbnails">
-        <img v-for="i in images" :alt="i.title" :src="'http://localhost:3000/'+i.path" width="100"/>
+        <img v-for="i in images" :alt="i.title" :src="apiUrl + '/' + i.path" width="100"/>
       </div>
     </div>
   </form>

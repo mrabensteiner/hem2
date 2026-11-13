@@ -15,6 +15,7 @@ import IconLogout from "@/components/icons/IconLogout.vue";
 import IconUser from "@/components/icons/IconUser.vue";
 import Chip from "@/components/Chip.vue";
 import IconOpen from "@/components/icons/IconOpen.vue";
+import {apiUrl} from "@/api/url.ts";
 
 const route = useRoute();
 const active = ref<boolean>(true);
@@ -37,7 +38,7 @@ const { project, prevStatus, nextStatus } = useProjects();
           {{project.title}}
         </summary>
         <section>
-          <img v-if="project.logo" :alt="project.logo.title" :src="'http://localhost:3000/'+project.logo.path"/>
+          <img v-if="project.logo" :alt="project.logo.title" :src="apiUrl + '/' + project.logo.path"/>
           <ul>
             <li>
               <RouterLink :to="'/project/' + project.id">
@@ -156,7 +157,7 @@ const { project, prevStatus, nextStatus } = useProjects();
       </details>
       <details v-if="isAuthenticated && user" :open="route.meta.context == undefined">
         <summary>
-          <img v-if="user.image" :alt="user.image.title" :src="'http://localhost:3000/'+user.image.path"/>
+          <img v-if="user.image" :alt="user.image.title" :src="apiUrl + '/' + user.image.path"/>
           {{ user.firstname }} {{ user.lastname }}
         </summary>
         <section>

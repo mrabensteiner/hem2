@@ -4,6 +4,7 @@ import TimeAgo from "@/components/TimeAgo.vue";
 import IconClock from "@/components/icons/IconClock.vue";
 import IconUser from "@/components/icons/IconUser.vue";
 import IconCheck from "@/components/icons/IconCheck.vue";
+import {apiUrl} from "@/api/url.ts";
 
 const { finding } = defineProps<{
   finding: any
@@ -28,7 +29,7 @@ const { finding } = defineProps<{
       </p>
       <p>{{finding.description}}</p>
     </div>
-    <img v-if="finding.images?.length" :src="'http://localhost:3000/' + finding.images[0].path" />
+    <img v-if="finding.images?.length" :src="apiUrl + '/' + finding.images[0].path" />
   </a>
 </template>
 

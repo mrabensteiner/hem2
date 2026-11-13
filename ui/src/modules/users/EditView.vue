@@ -8,6 +8,7 @@ import {useRoles} from "@/modules/roles/useRoles.ts";
 import FormControl from "@/components/FormControl.vue";
 import {useAuth} from "@/composables/useAuth.ts";
 import {useToast} from "@/composables/useToast.ts";
+import {apiUrl} from "@/api/url.ts";
 
 const route = useRoute();
 const router = useRouter();
@@ -110,8 +111,8 @@ const colorSchemes = [
     <div>
       <label>Image</label>
       <div>
-        <img class="inline-logo" v-if="user.image" :alt="user.image.title" :src="'http://localhost:3000/'+user.image.path"/>
-        <img class="inline-logo" v-else alt="No User Image" src="http://localhost:3000/examples/"/>
+        <img class="inline-logo" v-if="user.image" :alt="user.image.title" :src="apiUrl + '/' + user.image.path"/>
+        <img class="inline-logo" v-else alt="No User Image" :src="apiUrl + '/examples/'"/>
         <input type="file" @change="uploadImageHandler" accept="image/png, image/jpeg, image/gif, image/svg+xml">
       </div>
     </div>
