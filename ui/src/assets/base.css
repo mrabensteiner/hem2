@@ -27,9 +27,10 @@
   --app-primary: rgb(var(--app-primary-rgb));
   --app-secondary: rgb(var(--app-secondary-rgb));
   --app-tertiary: #0c5a77;
+  --height-full: 100svh;
   --height-header: 3rem;
   --height-footer: 1.5rem;
-  --height-main: calc(100vh - var(--height-header) - var(--height-footer));
+  --height-main: calc(var(--height-full) - var(--height-header) - var(--height-footer));
 }
 
 /* semantic color variables for this project */
@@ -89,7 +90,7 @@ html:has(body[data-theme='light']) {
 }
 
 body {
-  height: 100vh;
+  height: var(--height-full);
   color: var(--color-text);
   background: var(--color-background);
   line-height: 1.6;
@@ -97,7 +98,7 @@ body {
     'Mozilla Text',
     system-ui,
     sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

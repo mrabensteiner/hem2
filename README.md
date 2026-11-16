@@ -97,6 +97,14 @@ The default users are:
 * Reviewer - Username: `reviewer` Password: `reviewer`
 
 
+## Open Ports for other Devices (Development)
+
+To use the tool on other devices in the local network, the IP address and the port needs to be changed in the `.env` file.
+Within the `VITE_API_URL` and `VITE_UI_URL` variables, `localhost` needs to be replaced with the local IP e.g. `192.168.1.1`.
+Further, the `--host` flag needs to be added to the PNPM command, e.g. `pnpm dev --host` to start the UI in the local network mode,
+and both ports (`3000` for the API and `5173` for the UI) need to be enabled by the firewall.
+
+
 
 ## Reset
 
