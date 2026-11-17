@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {RouterLink, useRoute} from "vue-router";
+import { useEventListener } from '@vueuse/core'
 import {useAuth} from "@/composables/useAuth.ts";
 import {useProjects} from "@/modules/projects/useProjects.ts";
 import IconSidebar from "@/components/icons/IconSidebar.vue";
@@ -17,19 +18,43 @@ import Chip from "@/components/Chip.vue";
 import IconOpen from "@/components/icons/IconOpen.vue";
 import {apiUrl} from "@/api/url.ts";
 
+const WIDTH_INIT = 300;
+const WIDTH_MIN = 200;
+const WIDTH_MAX = 500;
+
 const route = useRoute();
 const active = ref<boolean>(true);
+const changingWidth = ref<boolean>(false);
+const width = ref<number>(WIDTH_INIT);
 
 const { user, isAuthenticated, hasPrivilege, logout } = useAuth();
 const { project, prevStatus, nextStatus } = useProjects();
+
+
+useEventListener('pointermove', (event: MouseEvent) => {
+  const newWidth = event.clientX;
+  if (changingWidth.value && newWidth > WIDTH_MIN && newWidth < WIDTH_MAX) {
+    width.value = newWidth;
+  } else if (changingWidth.value && newWidth < 100) {
+    width.value = WIDTH_INIT;
+    active.value = false;
+  }
+})
+
+useEventListener('pointerup', () => {
+  changingWidth.value = false;
+})
 </script>
 
 
 <template>
-  <aside class="sidebar" :class="active ? '' : 'hidden'">
-    <label class="sidebar-toggle" title="Toggle Sidebar" v-if="isAuthenticated" >
+  <aside class="sidebar" :class="{hidden: !active, changingWidth: changingWidth}" :style="'--sidebar-width:' + width + 'px'">
+    <label class="sidebar-toggle" title="Toggle Sidebar" v-if="isAuthenticated">
       <IconSidebar/>
       <input type="checkbox" v-model="active"/>
+    </label>
+    <label class="sidebar-handle" title="Change Sidebar Width" v-if="isAuthenticated" @pointerdown.prevent="active = true; changingWidth = true">
+      <IconSidebar/>
     </label>
     <nav>
       <details v-if="route.meta.context == 'project' && project.id" class="project" open>
@@ -188,6 +213,19 @@ const { project, prevStatus, nextStatus } = useProjects();
 </template>
 
 
+<style>
+body:has(aside.changingWidth) {
+  cursor: col-resize;
+  user-select: none;
+
+  aside,
+  aside label.sidebar-toggle,
+  aside label.sidebar-handle {
+    transition: all .3s ease;
+  }
+}
+</style>
+
 <style scoped>
 label.sidebar-toggle {
   height: 2rem;
@@ -220,6 +258,28 @@ label.sidebar-toggle {
 
   input {
     display: none;
+  }
+}
+
+label.sidebar-handle {
+  height: 2rem;
+  width: .25rem;
+  padding: .25rem;
+
+  position: absolute;
+  top: 45svh;
+  left: calc(var(--sidebar-width) - .35rem);
+  z-index: 1;
+
+  background-color: var(--color-background-mute);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem 1rem;
+
+  touch-action: none;
+
+  &:hover {
+    cursor: col-resize;
+    background-color: var(--color-background);
   }
 }
 
@@ -281,7 +341,7 @@ aside ul {
     }
 
     button:last-child {
-     flex: 1 1 100%;
+      flex: 1 1 100%;
     }
   }
 }
