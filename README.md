@@ -105,6 +105,17 @@ Further, the `--host` flag needs to be added to the PNPM command, e.g. `pnpm dev
 and both ports (`3000` for the API and `5173` for the UI) need to be enabled by the firewall.
 
 
+## GitHub and GitLab Linkage
+
+Issues of a project can be exported to GitHub and GitLab within the Export settings.
+The host (only for GitLab), owner (organisation or user), repository ID and a personal 
+access token needs to be set for each project individually. Cf. a repository link is normally
+compound from `https://host/owner/repositoryID`, e.g. `https://github.com/mrabensteiner/HEM2`.
+The find-grained personal access token (PAT) can be generated at https://github.com/settings/personal-access-tokens, resp.
+https://gitlab.com/-/user_settings/personal_access_tokens, or in your personal instance with
+similar link. When setting the PAT, it is important to set the rights for `Issues` to `Read and Write` (GitHub),
+resp. `Work Item` to `Update` (GitLab).
+
 
 ## Reset
 

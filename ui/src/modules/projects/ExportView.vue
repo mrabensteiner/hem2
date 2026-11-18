@@ -35,7 +35,10 @@ onMounted(() => {
     <form @submit.prevent="exportGithub">
       <h3>GitHub</h3>
       <div>
-        <label>Personal Token</label><br/>
+        <label>
+          Personal Token&nbsp;
+          <a :disabled="!project.githubHost" target="_blank" title="A Host needs to be set" href="https://github.com/settings/personal-access-tokens">Generate</a>
+        </label><br/>
         <input type="text" v-model="project.githubToken" placeholder="github_pat_..."/>
       </div>
       <div>
@@ -58,7 +61,10 @@ onMounted(() => {
         <input type="text" v-model="project.gitlabHost" placeholder="https://gitlab.tugraz.at/"/>
       </div>
       <div>
-        <label>Personal Token</label><br/>
+        <label>
+          Personal Token&nbsp;
+          <a :disabled="!project.gitlabHost" target="_blank" title="A Host needs to be set" :href="`${project.gitlabHost}/-/user_settings/personal_access_tokens`">Generate</a>
+        </label><br/>
         <input type="text" v-model="project.gitlabToken" placeholder="glpat-..."/>
       </div>
       <div>
