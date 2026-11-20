@@ -1,10 +1,11 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../prisma/generated/client";
+import { existsSync } from "node:fs";
 import { loadEnvFile } from "node:process";
 import bcrypt from 'bcrypt';
 
-loadEnvFile('./../.env');
+if (existsSync('./../.env')) loadEnvFile('./../.env');
 
 const connectionString = `${process.env.DATABASE_URL}`;
 

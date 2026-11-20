@@ -1,8 +1,7 @@
 import {prisma} from "../../lib/prisma";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secure-secret-key';
+import {JWT_SECRET} from "../../lib/jwt";
 
 async function login(username: string, password: string) {
   const user = await prisma.user.findUnique({

@@ -1,8 +1,7 @@
 import type {Request, Response} from "express";
 import jwt from "jsonwebtoken";
 import {prisma} from "../../lib/prisma";
-
-const JWT_SECRET = process.env.JWT_SECRET || "super-secure-secret-key";
+import {JWT_SECRET} from "../../lib/jwt";
 
 export const requireAuth = async (req: Request, res: Response, next: Function): Promise<void> => {
   const authHeader = req.headers.authorization;

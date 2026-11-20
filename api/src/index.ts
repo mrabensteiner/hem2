@@ -25,6 +25,7 @@ app.get('/', (req:any, res:any) => {
   res.send("hello hem2api");
 });
 
+app.use("/uploads/examples", express.static("static/examples"));
 app.use("/uploads", express.static("uploads"));
 
 app.use('/projects', projectRoutes);
@@ -40,5 +41,6 @@ app.use('/import', importRoute);
 app.use('/export', exportRoute);
 app.use('/settings', settingRoutes);
 
-app.listen(3000, () => console.log('API server port 3000'));
+const PORT = Number(process.env.API_PORT) || 3000;
+app.listen(PORT, () => console.log(`API server port ${PORT}`));
 
